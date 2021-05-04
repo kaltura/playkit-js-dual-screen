@@ -38,5 +38,6 @@ declare global {
       };
     };
     getPlayer(targetId?: string): any;
+    setup(options: any): any;
   };
 }
