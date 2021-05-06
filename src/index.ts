@@ -1,4 +1,5 @@
 /// <reference path="./global-types/kaltura-player/kaltura-player.d.ts" />
+/// <reference path="./global-types/kaltura-player/base-plugin.d.ts" />
 
 import { DualScreen } from "./dualscreen";
 

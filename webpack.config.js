@@ -28,9 +28,9 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
+        loader: 'ts-loader',
         options: {
-          configFile: "tsconfig.json"
+          configFile: 'tsconfig.json'
         },
         exclude: /node_modules/
       }
@@ -41,10 +41,11 @@ module.exports = {
     // host: '192.168.68.107'
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: ['.tsx', '.ts', '.js'],
     modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
   externals: {
+    preact: 'root KalturaPlayer.ui.preact',
     'kaltura-player-js': ['KalturaPlayer']
   }
 };

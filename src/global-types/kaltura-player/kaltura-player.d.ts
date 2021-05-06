@@ -1,4 +1,4 @@
-import * as ContribPreact from 'preact';
+import { DualScreen } from "./dualscreen";
 
 declare global {
   const KalturaPlayer: {
@@ -38,6 +38,6 @@ declare global {
       };
     };
     getPlayer(targetId?: string): any;
-    setup(options: any): any;
+    setup(options: any): KalturaPlayer;
   };
 }
