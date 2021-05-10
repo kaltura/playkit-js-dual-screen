@@ -18,7 +18,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
    * @static
    */
   static defaultConfig: DualScreenConfig = {
-    mode: Mode.PIP
+    mode: Mode.PIP,
+    secondarySizePercentage: 25
   };
 
   constructor(name: string, player: any, config: Object) {
@@ -49,7 +50,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         // replaceComponent: 'LiveTag',
         container: ReservedPresetAreas.InteractiveArea,
-        get: () => <Pip childPlayer={this._secondaryKalturaPlayer} />
+        get: () => <Pip percentage={this.config.secondarySizePercentage} childPlayer={this._secondaryKalturaPlayer} />
       })
     );
   }
@@ -62,12 +63,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         // replaceComponent: 'LiveTag',
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <Pip inverse childPlayer={this._secondaryKalturaPlayer} />
+        get: () => <Pip percentage={this.config.secondarySizePercentage} inverse childPlayer={this._secondaryKalturaPlayer} />
       })
     );
-    const origPlayerParent : HTMLElement = this._player.getView().parentElement;
+    const origPlayerParent: HTMLElement = this._player.getView().parentElement;
     this._removeActivesArr.push(() => {
-      origPlayerParent.appendChild(this._player.getView())
+      origPlayerParent.appendChild(this._player.getView());
     });
 
     this._removeActivesArr.push(
@@ -76,10 +77,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         // replaceComponent: 'LiveTag',
         container: ReservedPresetAreas.InteractiveArea,
-        get: () => <Pip childPlayer={this._player} />
+        get: () => <Pip percentage={this.config.secondarySizePercentage} childPlayer={this._player} />
       })
     );
-
   }
 
   public switchToPIPMinimized() {
@@ -95,27 +95,27 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   }
   public switchToSideBySide() {
     this._removeActives();
-    
-    const origPlayerParent : HTMLElement = this._player.getView().parentElement;
+
+    const origPlayerParent: HTMLElement = this._player.getView().parentElement;
     this._removeActivesArr.push(() => {
-      origPlayerParent.appendChild(this._player.getView())
+      origPlayerParent.appendChild(this._player.getView());
     });
 
     this._removeActivesArr.push(
-        this._player.ui.addComponent({
-          label: 'kaltura-dual-screen-side-by-side',
-          presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
-          container: ReservedPresetAreas.VideoContainer,
-          get: () => <SideBySide secondaryPlayer={this._player} />
-        })
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-side-by-side',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.VideoContainer,
+        get: () => <SideBySide secondaryPlayer={this._player} />
+      })
     );
     this._removeActivesArr.push(
-        this._player.ui.addComponent({
-          label: 'kaltura-dual-screen-side-by-side',
-          presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
-          container: ReservedPresetAreas.VideoContainer,
-          get: () => <SideBySide secondaryPlayer={this._secondaryKalturaPlayer} />
-        })
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-side-by-side',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.VideoContainer,
+        get: () => <SideBySide secondaryPlayer={this._secondaryKalturaPlayer} />
+      })
     );
   }
 
@@ -124,9 +124,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     childPlaceholder.setAttribute('id', 'childPlaceholder');
     childPlaceholder.style.width = '240px';
     childPlaceholder.style.height = '135px';
+    childPlaceholder.hidden = true;
     document.body.appendChild(childPlaceholder);
     const childPlayerConfig = {
       targetId: 'childPlaceholder',
+      ui: {
+        disable: true
+      },
       provider: {
         partnerId: 1091,
         env: {

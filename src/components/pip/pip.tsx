@@ -3,6 +3,7 @@ import * as styles from './pip.scss';
 
 interface PIPComponentProps {
   childPlayer: any;
+  percentage: number
   inverse?: boolean
 }
 export class Pip extends Component<PIPComponentProps> {
@@ -14,7 +15,7 @@ export class Pip extends Component<PIPComponentProps> {
 
   render(props: any) {
     return (
-        <div ref={this.ref} className={props.inverse ? styles.childPlayerInverse : styles.childPlayer} />
+        <div style={`height: ${props.percentage}%; width: ${props.percentage}%`} ref={this.ref} className={props.inverse ? styles.childPlayerInverse : styles.childPlayer} />
     );
   }
 }
