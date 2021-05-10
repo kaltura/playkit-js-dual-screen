@@ -33,7 +33,28 @@ module.exports = {
           configFile: 'tsconfig.json'
         },
         exclude: /node_modules/
-      }
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: '[name]__[local]___[hash:base64:5]',
+                exportLocalsConvention: 'camelCase'
+              },
+
+            }
+          },
+          {
+            loader: 'sass-loader'
+          }
+        ]
+      },
     ]
   },
   devServer: {
