@@ -13,7 +13,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _secondaryKalturaPlayer: any;
   private _layout: Layout = Layout.PIP;
   private _removeActivesArr: Function[] = [];
-  private _videoSyncManager: any;
+  private _videoSyncManager: VideoSyncManager;
 
   /**
    * The default configuration of the plugin.
@@ -32,7 +32,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._addBindings();
     this._createDummyChildPlayer();
     this._initMode();
-    this._videoSyncManager = new VideoSyncManager(this.eventManager, player, this._secondaryKalturaPlayer);
+    this._videoSyncManager = new VideoSyncManager(this.eventManager, player, this._secondaryKalturaPlayer, this.logger);
   }
 
   private _addBindings() {
@@ -178,5 +178,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
 
   destroy(): void {
     this.eventManager.destroy();
+    this._videoSyncManager.destroy();
   }
 }

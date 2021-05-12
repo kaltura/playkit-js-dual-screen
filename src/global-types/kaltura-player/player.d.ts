@@ -13,14 +13,14 @@ declare namespace KalturaPlayerTypes {
     dispatchEvent(event: FakeEvent): boolean;
     seekToLiveEdge(): void;
     paused: boolean;
+    seeking: boolean;
     isOnLiveEdge: () => boolean;
     getVideoElement(): HTMLVideoElement;
     addEventListener(type: string, listener: CoreEventListener): void;
     removeEventListener: (type: string, listener: CoreEventListener) => void;
-    _detachMediaSource(): void;
-    _attachMediaSource(): void;
     Event: Record<string, string>;
     currentTime: number;
+    playbackRate: number;
     duration: number;
     ended: boolean;
     env: KalturaPlayerTypes.Env;
