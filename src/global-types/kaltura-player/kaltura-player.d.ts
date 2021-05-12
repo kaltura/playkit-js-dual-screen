@@ -1,4 +1,5 @@
 import { DualScreen } from "./dualscreen";
+import { SecondaryVideoSync } from "./dualscreen";
 
 declare global {
   const KalturaPlayer: {

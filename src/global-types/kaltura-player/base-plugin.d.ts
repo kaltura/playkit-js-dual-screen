@@ -3,5 +3,6 @@ declare namespace KalturaPlayerTypes {
         player: KalturaPlayerTypes.Player;
         eventManager: any;
         config: any;
+        logger: any;
     }
 }
