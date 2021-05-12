@@ -1,9 +1,8 @@
 .childPlayer{
   position: absolute;
-  right: 0;
-  bottom: 0;
-}
-
-.childPlayerInverse{
-  width: 640px;
+  right: 16px;
+  bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.3);
 }
