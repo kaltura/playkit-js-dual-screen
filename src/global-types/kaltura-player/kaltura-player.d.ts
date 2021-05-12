@@ -21,6 +21,7 @@ declare global {
       preacti18n: any;
     };
     core: {
+      EventType: Record<string, string>;
       registerPlugin(name: string, component: any): void;
       BasePlugin: {
         new (...args: any[]): KalturaPlayerTypes.BasePlugin;

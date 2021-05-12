@@ -4,13 +4,15 @@ import {ReservedPresetAreas} from './enums/reservedPresetAreasEnum';
 import {h} from 'preact';
 import {Pip} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
-import {SideBySide} from 'components/side-by-side';
+import {SideBySide} from './components/side-by-side';
+import {VideoSyncManager} from './videoSyncManager';
 
 export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _player: any;
   private _secondaryKalturaPlayer: any;
   private _mode: Mode = Mode.PIP;
   private _removeActivesArr: Function[] = [];
+  private _videoSyncManager: any;
 
   /**
    * The default configuration of the plugin.
@@ -27,6 +29,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._player = player;
     this._createDummyChildPlayer();
     this._initMode();
+    this._videoSyncManager = new VideoSyncManager(this.eventManager, player, this._secondaryKalturaPlayer);
   }
 
   private _initMode() {
