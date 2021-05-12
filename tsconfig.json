@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "skipLibCheck": true,
     "target": "ES5",
     "module": "commonjs",
