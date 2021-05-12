@@ -60,30 +60,22 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.InteractiveArea,
-        get: () => <Pip height={this.secondaryHeight} width={this.secondaryWidth} childPlayer={this._secondaryKalturaPlayer} />
+        get: () => (
+          <Pip secondarySizePercentage={this.config.secondarySizePercentage} childPlayer={this._secondaryKalturaPlayer} position={this.config.position} />
+        )
       })
     );
   }
 
-  private get secondaryHeight(): string {
-    return (this._player.getView().clientHeight * this.config.secondarySizePercentage * 2) / 100 + 'px';
-  }
-
-  private get secondaryWidth(): string {
-    return (this._player.getView().clientWidth * this.config.secondarySizePercentage * 2) / 100 + 'px';
-  }
-
   private _switchToPIPInverse() {
     this._layout = Layout.PIPInverse;
-    const width = this.secondaryWidth;
-    const height = this.secondaryHeight;
     this._removeActives();
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.InteractiveArea,
-        get: () => <Pip height={height} width={width} childPlayer={this._player} />
+        get: () => <Pip secondarySizePercentage={this.config.secondarySizePercentage} childPlayer={this._player} position={this.config.position} />
       })
     );
 
@@ -92,7 +84,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <Pip height="100%" width="100%" inverse childPlayer={this._secondaryKalturaPlayer} />
+        get: () => <Pip secondarySizePercentage={this.config.secondarySizePercentage} inverse childPlayer={this._secondaryKalturaPlayer} position={this.config.position} />
       })
     );
     const origPlayerParent: HTMLElement = this._player.getView().parentElement;
