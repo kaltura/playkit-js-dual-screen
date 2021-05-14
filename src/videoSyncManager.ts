@@ -20,7 +20,6 @@ export class VideoSyncManager {
 
   private _syncEvents = () => {
     let lastSync = 0;
-    let bufferTimerId: ReturnType<typeof setTimeout>;
     let shouldResumePlayback = false;
     const synchInterval = 1000;
     this._eventManager.listen(this._mainPlayer, EventType.PLAY, () => {
@@ -67,19 +66,15 @@ export class VideoSyncManager {
         return;
       }
       this._logger.debug('syncEvents :: main player triggered WAITING');
-      clearTimeout(bufferTimerId);
-      bufferTimerId = setTimeout(() => {
-        this._secondaryPlayer.pause();
-        shouldResumePlayback = true;
-      }, 500);
+      this._secondaryPlayer.pause();
+      shouldResumePlayback = true;
     });
     this._eventManager.listen(this._mainPlayer, EventType.CAN_PLAY, () => {
       this._logger.debug('syncEvents :: main player triggered CAN_PLAY');
-      clearTimeout(bufferTimerId);
       if (shouldResumePlayback) {
         this._secondaryPlayer.play();
+        shouldResumePlayback = false;
       }
-      shouldResumePlayback = false;
     });
   };
 
