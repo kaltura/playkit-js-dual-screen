@@ -20,6 +20,8 @@ export class VideoSyncManager {
 
   private _syncEvents = () => {
     let lastSync = 0;
+    let bufferTimerId: ReturnType<typeof setTimeout>;
+    let shouldResumePlayback = false;
     const synchInterval = 1000;
     this._eventManager.listen(this._mainPlayer, EventType.PLAY, () => {
       if (this._shouldSyncState) {
@@ -44,11 +46,11 @@ export class VideoSyncManager {
       }
     });
     this._eventManager.listen(this._mainPlayer, EventType.SEEKING, () => {
-      this._logger.debug('syncEvents :: seeking main player to to ' + this._mainPlayer);
+      this._logger.debug(`syncEvents :: seeking main player to to ${this._mainPlayer}`);
       this._secondaryPlayer!.pause();
     });
     this._eventManager.listen(this._mainPlayer, EventType.SEEKED, () => {
-      this._logger.debug('syncEvents :: seeked main player to ' + this._mainPlayer.currentTime);
+      this._logger.debug(`syncEvents :: seeked main player to ${this._mainPlayer.currentTime}`);
       if (this._mainPlayer.paused) {
         this._secondaryPlayer.pause();
       } else {
@@ -59,6 +61,25 @@ export class VideoSyncManager {
       this._logger.debug('syncEvents :: secondary player pause + seek to 0.01');
       this._secondaryPlayer.pause();
       this._seekSecondaryPlayer(0.01);
+    });
+    this._eventManager.listen(this._mainPlayer, EventType.WAITING, () => {
+      if (this._mainPlayer.seeking || this._mainPlayer.paused) {
+        return;
+      }
+      this._logger.debug('syncEvents :: main player triggered WAITING');
+      clearTimeout(bufferTimerId);
+      bufferTimerId = setTimeout(() => {
+        this._secondaryPlayer.pause();
+        shouldResumePlayback = true;
+      }, 500);
+    });
+    this._eventManager.listen(this._mainPlayer, EventType.CAN_PLAY, () => {
+      this._logger.debug('syncEvents :: main player triggered CAN_PLAY');
+      clearTimeout(bufferTimerId);
+      if (shouldResumePlayback) {
+        this._secondaryPlayer.play();
+      }
+      shouldResumePlayback = false;
     });
   };
 
@@ -127,11 +148,11 @@ export class VideoSyncManager {
     if (this._secondaryPlayer.ended && this._secondaryPlayer.duration && Math.ceil(seekTime) > this._secondaryPlayer.duration) {
       // trying to seek out of bounds after secondary Player already ended
       // pause secondary Player
-      this._logger.debug('seekSecondaryPlayer :: seekTime ' + seekTime + ' is out of bounds 0..' + this._secondaryPlayer.duration + '. pause secondary player');
+      this._logger.debug(`seekSecondaryPlayer :: seekTime ${seekTime} is out of bounds 0..${this._secondaryPlayer.duration}. pause secondary player`);
       this._secondaryPlayer.pause();
       return;
     }
-    this._logger.debug('seekSecondaryPlayer :: seeking to=' + seekTime + ', ahead=' + aheadTime);
+    this._logger.debug(`seekSecondaryPlayer :: seeking to=${seekTime}, ahead=${aheadTime}`);
     this._secondaryPlayer.currentTime = seekTime + aheadTime;
     if (this._mainPlayer.paused) {
       this._secondaryPlayer.pause();
