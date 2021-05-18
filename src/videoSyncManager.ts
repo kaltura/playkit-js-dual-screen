@@ -1,5 +1,5 @@
 import {isInInterval} from './utils';
-const {EventType} = KalturaPlayer.core;
+const {EventType, FakeEvent, Error} = KalturaPlayer.core;
 
 export class VideoSyncManager {
   private _isSyncDelay = false;
@@ -16,7 +16,21 @@ export class VideoSyncManager {
     this._secondaryPlayer = secondaryPlayer;
     this._logger = logger;
     this._syncEvents();
+    this._errorHandling();
   }
+
+  private _errorHandling = () => {
+    this._eventManager.listen(this._secondaryPlayer, EventType.ERROR, (e: Error) => {
+      this._logger.debug('errorHandling :: secondary player got error');
+      const error = new Error(Error.Severity.CRITICAL, Error.Category.PLAYER, Error.Code.VIDEO_ERROR, e);
+      this._mainPlayer.pause();
+      this._mainPlayer.dispatchEvent(new FakeEvent(EventType.ERROR, error));
+    });
+    this._eventManager.listen(this._mainPlayer, EventType.ERROR, () => {
+      this._logger.debug('errorHandling :: main player got error');
+      this._secondaryPlayer.pause();
+    });
+  };
 
   private _syncEvents = () => {
     let lastSync = 0;
