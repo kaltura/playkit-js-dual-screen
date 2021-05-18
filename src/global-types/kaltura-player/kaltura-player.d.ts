@@ -25,6 +25,7 @@ declare global {
       EventType: Record<string, string>;
       FakeEvent: any;
       Error: any;
+      StateType: Record<string, string>;
       registerPlugin(name: string, component: any): void;
       BasePlugin: {
         new (...args: any[]): KalturaPlayerTypes.BasePlugin;
