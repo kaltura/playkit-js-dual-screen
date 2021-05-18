@@ -1,9 +1,8 @@
 import {isInInterval} from './utils';
-const {EventType, FakeEvent, Error} = KalturaPlayer.core;
+const {EventType, FakeEvent, Error, StateType} = KalturaPlayer.core;
 
 export class VideoSyncManager {
   private _isSyncDelay = false;
-  private _shouldSyncState = true;
 
   _eventManager: any;
   _mainPlayer: KalturaPlayerTypes.Player;
@@ -34,24 +33,18 @@ export class VideoSyncManager {
 
   private _syncEvents = () => {
     let lastSync = 0;
-    let shouldResumePlayback = false;
     const synchInterval = 1000;
     this._eventManager.listen(this._mainPlayer, EventType.PLAY, () => {
-      if (this._shouldSyncState) {
-        this._logger.debug('syncEvents :: secondary player play');
-        this._secondaryPlayer!.play();
-      }
+      this._logger.debug('syncEvents :: secondary player play');
+      this._secondaryPlayer.play();
     });
     this._eventManager.listen(this._mainPlayer, EventType.PAUSE, () => {
-      if (this._shouldSyncState) {
-        this._logger.debug('syncEvents :: secondary player pause');
-        this._secondaryPlayer!.pause();
-      }
+      this._logger.debug('syncEvents :: secondary player pause');
+      this._secondaryPlayer.pause();
     });
     this._eventManager.listen(this._mainPlayer, EventType.TIME_UPDATE, () => {
-      if (!this._isSyncDelay && this._shouldSyncState) {
-        var now = Date.now();
-
+      if (!this._isSyncDelay) {
+        const now = Date.now();
         if (now - lastSync > synchInterval || this._mainPlayer.paused) {
           lastSync = now;
           this._mediaSync();
@@ -75,19 +68,16 @@ export class VideoSyncManager {
       this._secondaryPlayer.pause();
       this._seekSecondaryPlayer(0.01);
     });
-    this._eventManager.listen(this._mainPlayer, EventType.WAITING, () => {
-      if (this._mainPlayer.seeking || this._mainPlayer.paused) {
+
+    this._eventManager.listen(this._mainPlayer, EventType.PLAYER_STATE_CHANGED, ({payload}: any) => {
+      if (payload.newState.type === StateType.BUFFERING && !(this._mainPlayer.seeking || this._mainPlayer.paused) && !this._secondaryPlayer.paused) {
+        this._logger.debug('syncEvents :: main player got BUFFERING');
+        this._secondaryPlayer.pause();
         return;
       }
-      this._logger.debug('syncEvents :: main player triggered WAITING');
-      this._secondaryPlayer.pause();
-      shouldResumePlayback = true;
-    });
-    this._eventManager.listen(this._mainPlayer, EventType.CAN_PLAY, () => {
-      this._logger.debug('syncEvents :: main player triggered CAN_PLAY');
-      if (shouldResumePlayback) {
+      if (payload.newState.type === StateType.PLAYING && payload.oldState.type === StateType.BUFFERING && this._secondaryPlayer.paused) {
+        this._logger.debug('syncEvents :: main player resume PLAYING');
         this._secondaryPlayer.play();
-        shouldResumePlayback = false;
       }
     });
   };
