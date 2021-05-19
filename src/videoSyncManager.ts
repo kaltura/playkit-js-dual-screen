@@ -1,5 +1,7 @@
 import {isInInterval} from './utils';
-const {EventType, FakeEvent, Error, StateType} = KalturaPlayer.core;
+// @ts-ignore
+import {core} from 'kaltura-player-js';
+const {EventType, FakeEvent, Error, StateType} = core;
 
 export class VideoSyncManager {
   private _isSyncDelay = false;
