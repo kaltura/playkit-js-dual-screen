@@ -3,7 +3,7 @@ import {EventManager} from '@playkit-js/playkit-js';
 import * as TestUtils from './utils/test-utils';
 import {VideoSyncManager} from '../../src/videoSyncManager';
 import {core} from 'kaltura-player-js';
-const {EventType} = core;
+const {EventType, FakeEvent, Error, StateType} = core;
 
 describe('KDualscreenPlugin', function () {
   let playerMain, playerSecondary, sandbox;
@@ -61,14 +61,75 @@ describe('KDualscreenPlugin', function () {
         return setup({...config, targetId: target});
       });
     });
-    it('should sync play & pause', done => {
-      let eventManager = new EventManager();
-      new VideoSyncManager(eventManager, playerMain, playerSecondary, {debug: noop});
+
+    it('should sync play & pause events', done => {
+      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: noop});
       playerSecondary.addEventListener(EventType.PLAY, () => {
         playerSecondary.addEventListener(EventType.PAUSE, () => {
           done();
         });
         playerMain.pause();
+      });
+      playerMain.play();
+    });
+
+    it('should sync seek event', done => {
+      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: noop});
+      playerMain.addEventListener(EventType.PLAY, () => {
+        playerSecondary.addEventListener(EventType.SEEKED, () => {
+          done();
+        });
+        playerMain.currentTime = 5;
+      });
+      playerMain.play();
+    });
+
+    it('should sync ended event', done => {
+      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: noop});
+      playerMain.addEventListener(EventType.ENDED, () => {
+        try {
+          expect(playerSecondary.paused).to.be.true;
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+      playerSecondary.addEventListener(EventType.PLAYING, () => {
+        playerMain.dispatchEvent(new FakeEvent(EventType.ENDED));
+      });
+      playerMain.play();
+    });
+
+    it('should handle error', done => {
+      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: noop});
+      playerMain.addEventListener(EventType.ERROR, () => {
+        done();
+      });
+      playerMain.addEventListener(EventType.PLAYING, () => {
+        playerSecondary.dispatchEvent(
+          new FakeEvent(EventType.ERROR, new Error(Error.Severity.CRITICAL, Error.Category.PLAYER, Error.Code.VIDEO_ERROR, {message: 'fake error'}))
+        );
+      });
+      playerMain.play();
+    });
+
+    it('should handle buffering', done => {
+      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: noop});
+      playerMain.addEventListener(EventType.PLAYER_STATE_CHANGED, ({payload}) => {
+        if (payload.newState.type === StateType.BUFFERING) {
+          playerSecondary.addEventListener(EventType.PAUSE, () => {
+            playerMain.addEventListener(EventType.PLAYER_STATE_CHANGED, ({payload}) => {
+              if (payload.newState.type === StateType.PLAYING && payload.oldState.type === StateType.BUFFERING) {
+                playerSecondary.addEventListener(EventType.PLAY, () => {
+                  done();
+                });
+              }
+            });
+          });
+        }
+      });
+      playerSecondary.addEventListener(EventType.PLAYING, () => {
+        playerMain.currentTime = 5;
       });
       playerMain.play();
     });
