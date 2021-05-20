@@ -1,5 +1,6 @@
 export enum ReservedPresetAreas {
   PresetFloating = 'PresetFloating',
+  BottomBar = 'BottomBar',
   BottomBarLeftControls = 'BottomBarLeftControls',
   BottomBarRightControls = 'BottomBarRightControls',
   TopBarLeftControls = 'TopBarLeftControls',
