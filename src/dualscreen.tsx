@@ -22,7 +22,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
    */
   static defaultConfig: DualScreenConfig = {
     layout: Layout.PIP,
-    secondarySizePercentage: 25,
+    childSizePercentage: 30,
     position: Position.BottomRight
   };
 
@@ -46,7 +46,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._layout = config.layout;
     switch (this._layout) {
       case Layout.PIP:
-        this.switchToPIP();
+        this._switchToPIP();
+        break;
+      case Layout.PIPMinimized:
+        this._switchToPIPMinimized();
     }
   }
   private _removeActives() {
@@ -55,7 +58,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     });
     this._removeActivesArr = [];
   }
-  private switchToPIP() {
+  private _switchToPIP = () => {
     this._layout = Layout.PIP;
     this._removeActives();
     this._removeActivesArr.push(
@@ -64,11 +67,16 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.InteractiveArea,
         get: () => (
-          <Pip secondarySizePercentage={this.config.secondarySizePercentage} childPlayer={this._secondaryKalturaPlayer} position={this.config.position} />
+          <Pip
+            childSizePercentage={this.config.childSizePercentage}
+            childPlayer={this._secondaryKalturaPlayer}
+            position={this.config.position}
+            hide={this._switchToPIPMinimized}
+          />
         )
       })
     );
-  }
+  };
 
   private _switchToPIPInverse() {
     this._layout = Layout.PIPInverse;
@@ -78,7 +86,14 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.InteractiveArea,
-        get: () => <Pip secondarySizePercentage={this.config.secondarySizePercentage} childPlayer={this._player} position={this.config.position} />
+        get: () => (
+          <Pip
+            childSizePercentage={this.config.childSizePercentage}
+            childPlayer={this._player}
+            position={this.config.position}
+            hide={this._switchToPIPMinimized}
+          />
+        )
       })
     );
 
@@ -87,7 +102,15 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <Pip secondarySizePercentage={this.config.secondarySizePercentage} inverse childPlayer={this._secondaryKalturaPlayer} position={this.config.position} />
+        get: () => (
+          <Pip
+            hide={this._switchToPIPMinimized}
+            childSizePercentage={this.config.childSizePercentage}
+            inverse
+            childPlayer={this._secondaryKalturaPlayer}
+            position={this.config.position}
+          />
+        )
       })
     );
     const origPlayerParent: HTMLElement = this._player.getView().parentElement;
@@ -96,17 +119,18 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     });
   }
 
-  private _switchToPIPMinimized() {
+  private _switchToPIPMinimized = () => {
+    this._layout = Layout.PIPMinimized;
     this._removeActives();
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip-minimized',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
-        container: ReservedPresetAreas.BottomBarRightControls,
-        get: () => <PipMinimized secondaryPlayer={this._secondaryKalturaPlayer} />
+        container: ReservedPresetAreas.BottomBar,
+        get: () => <PipMinimized show={this._switchToPIP} childPlayer={this._secondaryKalturaPlayer} />
       })
     );
-  }
+  };
   private _switchToSideBySide() {
     this._layout = Layout.SideBySide;
     this._removeActives();

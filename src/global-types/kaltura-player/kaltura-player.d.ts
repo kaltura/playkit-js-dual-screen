@@ -17,6 +17,8 @@ declare global {
       components: {
         withPlayer: any;
         Tooltip: any;
+        Icon: any;
+        IconType: any;
       };
       preactHooks: any;
       preacti18n: any;
