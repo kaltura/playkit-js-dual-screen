@@ -19,6 +19,7 @@ declare global {
         Tooltip: any;
         Icon: any;
         IconType: any;
+        PLAYER_SIZE: Record<string, string>;
       };
       preactHooks: any;
       preacti18n: any;
