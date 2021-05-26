@@ -9,8 +9,8 @@ const MIN_SIZES = [PLAYER_SIZE.EXTRA_SMALL, PLAYER_SIZE.SMALL];
 
 interface ResponsiveManagerOwnProps {
   children: VNode;
-  onMinSize?: () => void;
-  onDefaultSize?: () => void;
+  onMinSize: () => void;
+  onDefaultSize: () => void;
 }
 interface ResponsiveManagerConnectProps {
   playerSize?: string;
@@ -29,11 +29,11 @@ export class ResponsiveManager extends Component<ResponsiveManagerProps> {
       return;
     }
     if (MIN_SIZES.includes(playerSize!) && !MIN_SIZES.includes(prevProps.playerSize!)) {
-      onMinSize!();
+      onMinSize();
       return;
     }
     if (!MIN_SIZES.includes(playerSize!) && MIN_SIZES.includes(prevProps.playerSize!)) {
-      onDefaultSize!();
+      onDefaultSize();
     }
   }
   private _renderChildComponent = (): VNode => {

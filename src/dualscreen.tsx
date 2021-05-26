@@ -22,6 +22,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
    * @static
    */
   static defaultConfig: DualScreenConfig = {
+    inverse: false,
     layout: Layout.PIP,
     childSizePercentage: 30,
     position: Position.BottomRight
@@ -35,8 +36,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._layout = this.config.layout;
     this._setMode();
     this._videoSyncManager = new VideoSyncManager(this.eventManager, player, this._secondaryKalturaPlayer, this.logger);
-    (window as any).mainPlayer = player;
-    (window as any).secondplayer = this._secondaryKalturaPlayer;
   }
 
   private _addBindings() {
