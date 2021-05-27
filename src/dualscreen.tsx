@@ -265,7 +265,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-side-by-side',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <SideBySide secondaryPlayer={this._player} />
+        get: () => <SideBySide secondaryPlayer={this._player} onPIPSwitch={this._switchToPIP}/>
       })
     );
     this._removeActivesArr.push(
@@ -279,7 +279,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
               this._switchToPIPMinimized(false);
             }}
             onDefaultSize={this._setMode}>
-            <SideBySide secondaryPlayer={this._secondaryKalturaPlayer} />
+            <SideBySide secondaryPlayer={this._secondaryKalturaPlayer} onPIPSwitch={this._switchToPIPInverse}/>
           </ResponsiveManager>
         )
       })

@@ -72,9 +72,13 @@ export class Pip extends Component<PIPComponentProps> {
         break;
       default:
     }
+    const videoContainerStyles = {
+      height: `${height + 'px'}`,
+      width: `${width + 'px'}`
+    };
     return (
       <div className={styleClass.join(' ')}>
-        <div className={styles.videoContainer} style={`height: ${height + 'px'}; width: ${width + 'px'}`} ref={this.ref} />
+        <div className={styles.videoContainer} style={videoContainerStyles} ref={this.ref} />
         {this._renderHoverButton()}
       </div>
     );
