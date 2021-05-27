@@ -13,6 +13,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _player: any;
   private _secondaryKalturaPlayer: any;
   private _layout: Layout = Layout.PIP;
+  private _inverse = false;
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager: VideoSyncManager;
 
@@ -34,6 +35,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._addBindings();
     this._createDummyChildPlayer();
     this._layout = this.config.layout;
+    this._inverse = this.config.inverse;
     this._setMode();
     this._videoSyncManager = new VideoSyncManager(this.eventManager, player, this._secondaryKalturaPlayer, this.logger);
   }
@@ -45,20 +47,17 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   }
 
   private _setMode = () => {
-    switch (this._layout) {
-      case Layout.PIP:
-        this._switchToPIP();
-        break;
-      case Layout.PIPMinimized:
-        this._switchToPIPMinimized();
-        break;
-      case Layout.PIPInverse:
-        this._switchToPIPInverse();
-        break;
-      case Layout.SideBySide:
-        this._switchToSideBySide();
+    if (this._layout === Layout.PIP) {
+      this._inverse ? this._switchToPIPInverse() : this._switchToPIP();
+      return;
     }
-  }
+    if (this._layout === Layout.PIPMinimized) {
+      this._switchToPIPMinimized();
+      return;
+    }
+    this._switchToSideBySide();
+  };
+
   private _removeActives() {
     this._removeActivesArr.forEach(value => {
       value();
@@ -69,8 +68,29 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _switchToPIP = (manualChange: boolean = true) => {
     if (manualChange) {
       this._layout = Layout.PIP;
+      this._inverse = false;
     }
     this._removeActives();
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.VideoContainer,
+        get: () => (
+          <Pip
+            hide={this._switchToPIPMinimized}
+            childSizePercentage={this.config.childSizePercentage}
+            inverse
+            childPlayer={this._player}
+            position={this.config.position}
+          />
+        )
+      })
+    );
+    const origPlayerParent: HTMLElement = this._player.getView().parentElement;
+    this._removeActivesArr.push(() => {
+      origPlayerParent.appendChild(this._player.getView());
+    });
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
@@ -98,25 +118,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
 
   private _switchToPIPInverse = (manualChange: boolean = true) => {
     if (manualChange) {
-      this._layout = Layout.PIPInverse;
+      this._layout = Layout.PIP;
+      this._inverse = true;
     }
     this._removeActives();
-    this._removeActivesArr.push(
-      this._player.ui.addComponent({
-        label: 'kaltura-dual-screen-pip',
-        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
-        container: ReservedPresetAreas.InteractiveArea,
-        get: () => (
-          <Pip
-            childSizePercentage={this.config.childSizePercentage}
-            childPlayer={this._player}
-            position={this.config.position}
-            hide={this._switchToPIPMinimized}
-            onInversePIP={this._switchToPIP}
-          />
-        )
-      })
-    );
 
     this._removeActivesArr.push(
       this._player.ui.addComponent({
@@ -125,7 +130,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         container: ReservedPresetAreas.VideoContainer,
         get: () => (
           <Pip
-            hide={this._switchToPIPMinimized}
+            hide={this._switchToPIPMinimizedInverse}
             childSizePercentage={this.config.childSizePercentage}
             inverse
             childPlayer={this._secondaryKalturaPlayer}
@@ -138,13 +143,53 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(() => {
       origPlayerParent.appendChild(this._player.getView());
     });
-  }
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.InteractiveArea,
+        get: () => (
+          <ResponsiveManager
+            onMinSize={() => {
+              this._switchToPIPMinimizedInverse(false);
+            }}
+            onDefaultSize={this._setMode}>
+            <Pip
+              childSizePercentage={this.config.childSizePercentage}
+              childPlayer={this._player}
+              position={this.config.position}
+              hide={this._switchToPIPMinimizedInverse}
+              onSideBySideSwitch={this._switchToSideBySide}
+              onInversePIP={this._switchToPIP}
+            />
+          </ResponsiveManager>
+        )
+      })
+    );
+  };
 
   private _switchToPIPMinimized = (manualChange: boolean = true) => {
     if (manualChange) {
       this._layout = Layout.PIPMinimized;
+      this._inverse = false;
     }
     this._removeActives();
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.VideoContainer,
+        get: () => (
+          <Pip
+            hide={this._switchToPIPMinimized}
+            childSizePercentage={this.config.childSizePercentage}
+            inverse
+            childPlayer={this._player}
+            position={this.config.position}
+          />
+        )
+      })
+    );
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip-minimized',
@@ -156,12 +201,54 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
               this._switchToPIPMinimized(false);
             }}
             onDefaultSize={this._setMode}>
-            <PipMinimized show={this._switchToPIP} childPlayer={this._secondaryKalturaPlayer} />
+            <PipMinimized show={this._switchToPIP} childPlayer={this._secondaryKalturaPlayer} onInverse={this._switchToPIPMinimizedInverse} />
           </ResponsiveManager>
         )
       })
     );
   };
+
+  private _switchToPIPMinimizedInverse = (manualChange: boolean = true) => {
+    if (manualChange) {
+      this._layout = Layout.PIPMinimized;
+      this._inverse = true;
+    }
+    this._removeActives();
+
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.VideoContainer,
+        get: () => (
+          <Pip
+            hide={this._switchToPIPMinimizedInverse}
+            childSizePercentage={this.config.childSizePercentage}
+            inverse
+            childPlayer={this._secondaryKalturaPlayer}
+            position={this.config.position}
+          />
+        )
+      })
+    );
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip-minimized',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.BottomBar,
+        get: () => (
+          <ResponsiveManager
+            onMinSize={() => {
+              this._switchToPIPMinimizedInverse(false);
+            }}
+            onDefaultSize={this._setMode}>
+            <PipMinimized show={this._switchToPIPInverse} childPlayer={this._player} onInverse={this._switchToPIPMinimized} />
+          </ResponsiveManager>
+        )
+      })
+    );
+  };
+
   private _switchToSideBySide = (manualChange: boolean = true) => {
     if (manualChange) {
       this._layout = Layout.SideBySide;
@@ -197,7 +284,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         )
       })
     );
-  }
+  };
 
   private _createDummyChildPlayer() {
     let childPlaceholder = document.createElement('div');

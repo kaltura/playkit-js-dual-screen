@@ -8,6 +8,7 @@ const SHOW_ICON_PATH =
 interface PIPMinimizedProps {
   childPlayer: any;
   show: () => void;
+  onInverse: () => void;
   hideButtons?: boolean;
 }
 
@@ -19,20 +20,18 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
   }
 
   private _renderHoverButton = () => {
-    const {show, hideButtons} = this.props;
-    if (hideButtons) {
-      return null;
-    }
+    const {show, onInverse, hideButtons} = this.props;
     return (
       <Fragment>
-        <div onMouseUp={show} role="button" className={styles.showContainer}>
-          <div className={styles.iconContainer}>
-            <Icon id="dualscreen-pip-minimized-show" height={16} width={16} path={icons.SHOW_ICON_PATH} />
+        {!hideButtons && (
+          <div onMouseUp={show} role="button" className={styles.showContainer}>
+            <div className={styles.iconContainer}>
+              <Icon id="dualscreen-pip-minimized-show" height={16} width={16} path={icons.SHOW_ICON_PATH} />
+            </div>
+            Show
           </div>
-          Show
-        </div>
-
-        <div className={styles.innerButtons}>
+        )}
+        <div onMouseUp={onInverse} className={[styles.innerButtons, hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
           <div className={styles.iconContainer}>
             <Icon id="dualscreen-pip-minimized-swap" height={24} width={24} path={icons.SWAP_ICON_PATH} />
           </div>
@@ -44,7 +43,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
   render(props: PIPMinimizedProps) {
     return (
       <div className={styles.childPlayerContainer}>
-        <div ref={this.ref} className={styles.childPlayer} />
+        <div ref={this.ref} className={[styles.childPlayer, props.hideButtons ? styles.tinyChildPlayer : ''].join(' ')} />
         {this._renderHoverButton()}
       </div>
     );
