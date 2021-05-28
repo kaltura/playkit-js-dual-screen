@@ -5,7 +5,7 @@ const {Icon} = KalturaPlayer.ui.components;
 const {connect} = KalturaPlayer.ui.redux;
 
 interface SideBySideComponentOwnProps {
-  secondaryPlayer: any;
+  secondaryPlayer: KalturaPlayerTypes.Player;
   onPIPSwitch: () => void;
 }
 interface SideBySideComponentConnectProps {

@@ -10,8 +10,8 @@ import {VideoSyncManager} from './videoSyncManager';
 import {ResponsiveManager} from './components/responsive-manager';
 
 export class DualScreen extends KalturaPlayer.core.BasePlugin {
-  private _player: any;
-  private _secondaryKalturaPlayer: any;
+  private _player: KalturaPlayerTypes.Player;
+  private _secondaryKalturaPlayer: KalturaPlayerTypes.Player;
   private _layout: Layout = Layout.PIP;
   private _inverse = false;
   private _removeActivesArr: Function[] = [];
@@ -33,7 +33,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     super(name, player, config);
     this._player = player;
     this._addBindings();
-    this._createDummyChildPlayer();
+    this._secondaryKalturaPlayer = this._createDummyChildPlayer();
+    this._secondaryKalturaPlayer.loadMedia({entryId: '1_q31s7nkk'});
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
     this._setMode();
@@ -87,7 +88,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         )
       })
     );
-    const origPlayerParent: HTMLElement = this._player.getView().parentElement;
+    const origPlayerParent: HTMLElement = this._player.getView().parentElement!;
     this._removeActivesArr.push(() => {
       origPlayerParent.appendChild(this._player.getView());
     });
@@ -139,7 +140,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         )
       })
     );
-    const origPlayerParent: HTMLElement = this._player.getView().parentElement;
+    const origPlayerParent: HTMLElement = this._player.getView().parentElement!;
     this._removeActivesArr.push(() => {
       origPlayerParent.appendChild(this._player.getView());
     });
@@ -255,7 +256,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     }
     this._removeActives();
 
-    const origPlayerParent: HTMLElement = this._player.getView().parentElement;
+    const origPlayerParent: HTMLElement = this._player.getView().parentElement!;
     this._removeActivesArr.push(() => {
       origPlayerParent.appendChild(this._player.getView());
     });
@@ -299,24 +300,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         disable: true
       },
       provider: {
-        partnerId: 1091,
-        env: {
-          cdnUrl: 'https://qa-apache-php7.dev.kaltura.com/',
-          serviceUrl: 'https://qa-apache-php7.dev.kaltura.com/api_v3'
-        }
+        partnerId: 811441,
       },
-      playback: {
-        // options: {
-        //   html5: {
-        //     hls: {
-        //     },
-        //   }
-        // }
-      }
     };
 
-    this._secondaryKalturaPlayer = KalturaPlayer.setup(childPlayerConfig);
-    this._secondaryKalturaPlayer.loadMedia({entryId: '0_wifqaipd'});
+    return KalturaPlayer.setup(childPlayerConfig);
   }
 
   /**

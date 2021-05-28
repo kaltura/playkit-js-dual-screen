@@ -6,12 +6,17 @@ const {EventType, FakeEvent, Error, StateType} = core;
 export class VideoSyncManager {
   private _isSyncDelay = false;
 
-  _eventManager: any;
+  _eventManager: KalturaPlayerTypes.EventManager;
   _mainPlayer: KalturaPlayerTypes.Player;
   _secondaryPlayer: KalturaPlayerTypes.Player;
   _logger: KalturaPlayerTypes.Logger;
 
-  constructor(eventManager: any, mainPlayer: KalturaPlayerTypes.Player, secondaryPlayer: KalturaPlayerTypes.Player, logger: any) {
+  constructor(
+    eventManager: KalturaPlayerTypes.EventManager,
+    mainPlayer: KalturaPlayerTypes.Player,
+    secondaryPlayer: KalturaPlayerTypes.Player,
+    logger: KalturaPlayerTypes.Logger
+  ) {
     this._eventManager = eventManager;
     this._mainPlayer = mainPlayer;
     this._secondaryPlayer = secondaryPlayer;
@@ -29,7 +34,7 @@ export class VideoSyncManager {
     });
     this._eventManager.listen(this._mainPlayer, EventType.ERROR, () => {
       this._logger.debug('errorHandling :: main player got error');
-      this._secondaryPlayer.pause();
+      this._secondaryPlayer.destroy();
     });
   };
 
@@ -71,17 +76,25 @@ export class VideoSyncManager {
       this._seekSecondaryPlayer(0.01);
     });
 
-    this._eventManager.listen(this._mainPlayer, EventType.PLAYER_STATE_CHANGED, ({payload}: any) => {
-      if (payload.newState.type === StateType.BUFFERING && !(this._mainPlayer.seeking || this._mainPlayer.paused) && !this._secondaryPlayer.paused) {
-        this._logger.debug('syncEvents :: main player got BUFFERING');
-        this._secondaryPlayer.pause();
-        return;
+    this._eventManager.listen(
+      this._mainPlayer,
+      EventType.PLAYER_STATE_CHANGED,
+      ({payload}: {payload: {newState: {type: typeof StateType}; oldState: {type: typeof StateType}}}) => {
+        if (
+          payload.newState.type === StateType.BUFFERING &&
+          !(this._mainPlayer.seeking || this._mainPlayer.paused) &&
+          !this._secondaryPlayer.paused
+        ) {
+          this._logger.debug('syncEvents :: main player got BUFFERING');
+          this._secondaryPlayer.pause();
+          return;
+        }
+        if (payload.newState.type === StateType.PLAYING && payload.oldState.type === StateType.BUFFERING && this._secondaryPlayer.paused) {
+          this._logger.debug('syncEvents :: main player resume PLAYING');
+          this._secondaryPlayer.play();
+        }
       }
-      if (payload.newState.type === StateType.PLAYING && payload.oldState.type === StateType.BUFFERING && this._secondaryPlayer.paused) {
-        this._logger.debug('syncEvents :: main player resume PLAYING');
-        this._secondaryPlayer.play();
-      }
-    });
+    );
   };
 
   private _mediaSync = () => {

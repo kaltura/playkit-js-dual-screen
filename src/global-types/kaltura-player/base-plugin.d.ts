@@ -1,8 +1,8 @@
 declare namespace KalturaPlayerTypes {
     export interface BasePlugin {
         player: KalturaPlayerTypes.Player;
-        eventManager: any;
+        eventManager: KalturaPlayerTypes.EventManager;
         config: any;
-        logger: any;
+        logger: KalturaPlayerTypes.Logger;
     }
 }

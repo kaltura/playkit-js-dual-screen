@@ -12,9 +12,12 @@ declare namespace KalturaPlayerTypes {
     isDvr: () => boolean;
     dispatchEvent(event: FakeEvent): boolean;
     seekToLiveEdge(): void;
+    destroy(): void;
+    getView: () => Node;
     paused: boolean;
     seeking: boolean;
     isOnLiveEdge: () => boolean;
+    loadMedia: (options: {entryId: string}) => void;
     getVideoElement(): HTMLVideoElement;
     addEventListener(type: string, listener: CoreEventListener): void;
     removeEventListener: (type: string, listener: CoreEventListener) => void;
@@ -25,7 +28,7 @@ declare namespace KalturaPlayerTypes {
     ended: boolean;
     env: KalturaPlayerTypes.Env;
     configure: Function;
-    config: KalturaPlayerTypes.PlayerConfig &
-      DeepPartial<KalturaPlayerContribTypes.ContribConfig>;
+    ui: any;
+    config: KalturaPlayerTypes.PlayerConfig & DeepPartial<KalturaPlayerContribTypes.ContribConfig>;
   }
 }

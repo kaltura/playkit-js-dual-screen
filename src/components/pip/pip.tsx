@@ -12,7 +12,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 interface PIPComponentOwnProps {
-  childPlayer: any;
+  childPlayer: KalturaPlayerTypes.Player;
   childSizePercentage: number;
   inverse?: boolean;
   position: Position;
@@ -64,7 +64,7 @@ export class Pip extends Component<PIPComponentProps> {
       styleClass.push(styles.hover);
     }
     const height: number = props.inverse ? props.guiClientRect!.height : (props.guiClientRect!.height * props.childSizePercentage) / 100;
-    const width: number = (height * 16) / 9;
+    const width: number = props.inverse ? props.guiClientRect!.width : (height * 16) / 9;
     switch (props.position) {
       case Position.BottomRight:
         styleClass.push(styles.bottom);
