@@ -11,14 +11,14 @@
   }
 
   &.bottom {
-    bottom: $gutter;
-    &.hover {
-      bottom: 0;
-    }
+    bottom: 0;
   }
 
   &.right {
-    right: $gutter;
+    right: 0;
+  }
+  &.left {
+    left: 0;
   }
 
   .hideContainer {

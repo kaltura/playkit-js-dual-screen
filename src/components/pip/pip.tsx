@@ -38,6 +38,10 @@ export class Pip extends Component<PIPComponentProps> {
         styleClass.push(styles.bottom);
         styleClass.push(styles.right);
         break;
+        case Position.BottomLeft:
+        styleClass.push(styles.bottom);
+        styleClass.push(styles.left);
+        break;
       default:
     }
     return (
