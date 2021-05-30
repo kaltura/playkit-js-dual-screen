@@ -19,12 +19,16 @@ declare global {
         Tooltip: any;
         Icon: any;
         IconType: any;
+        PLAYER_SIZE: Record<string, string>;
       };
       preactHooks: any;
       preacti18n: any;
     };
     core: {
       EventType: Record<string, string>;
+      FakeEvent: any;
+      Error: any;
+      StateType: Record<string, string>;
       registerPlugin(name: string, component: any): void;
       BasePlugin: {
         new (...args: any[]): KalturaPlayerTypes.BasePlugin;

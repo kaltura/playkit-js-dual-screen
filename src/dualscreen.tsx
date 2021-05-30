@@ -7,11 +7,13 @@ import {PipMinimized} from './components/pip-minimized';
 import {SideBySide} from './components/side-by-side';
 import {Position} from './enums/positionEnum';
 import {VideoSyncManager} from './videoSyncManager';
+import {ResponsiveManager} from './components/responsive-manager';
 
 export class DualScreen extends KalturaPlayer.core.BasePlugin {
-  private _player: any;
-  private _secondaryKalturaPlayer: any;
+  private _player: KalturaPlayerTypes.Player;
+  private _secondaryKalturaPlayer: KalturaPlayerTypes.Player;
   private _layout: Layout = Layout.PIP;
+  private _inverse = false;
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager: VideoSyncManager;
 
@@ -21,6 +23,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
    * @static
    */
   static defaultConfig: DualScreenConfig = {
+    inverse: false,
     layout: Layout.PIP,
     childSizePercentage: 30,
     position: Position.BottomRight
@@ -30,8 +33,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     super(name, player, config);
     this._player = player;
     this._addBindings();
-    this._createDummyChildPlayer();
-    this._initMode();
+    this._secondaryKalturaPlayer = this._createDummyChildPlayer();
+    this._secondaryKalturaPlayer.loadMedia({entryId: '1_q31s7nkk'});
+    this._layout = this.config.layout;
+    this._inverse = this.config.inverse;
+    this._setMode();
     this._videoSyncManager = new VideoSyncManager(this.eventManager, player, this._secondaryKalturaPlayer, this.logger);
   }
 
@@ -41,62 +47,31 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     });
   }
 
-  private _initMode() {
-    const config: DualScreenConfig = this.config;
-    this._layout = config.layout;
-    switch (this._layout) {
-      case Layout.PIP:
-        this._switchToPIP();
-        break;
-      case Layout.PIPMinimized:
-        this._switchToPIPMinimized();
+  private _setMode = () => {
+    if (this._layout === Layout.PIP) {
+      this._inverse ? this._switchToPIPInverse() : this._switchToPIP();
+      return;
     }
-  }
+    if (this._layout === Layout.PIPMinimized) {
+      this._switchToPIPMinimized();
+      return;
+    }
+    this._switchToSideBySide();
+  };
+
   private _removeActives() {
     this._removeActivesArr.forEach(value => {
       value();
     });
     this._removeActivesArr = [];
   }
-  private _switchToPIP = () => {
-    this._layout = Layout.PIP;
-    this._removeActives();
-    this._removeActivesArr.push(
-      this._player.ui.addComponent({
-        label: 'kaltura-dual-screen-pip',
-        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
-        container: ReservedPresetAreas.InteractiveArea,
-        get: () => (
-          <Pip
-            childSizePercentage={this.config.childSizePercentage}
-            childPlayer={this._secondaryKalturaPlayer}
-            position={this.config.position}
-            hide={this._switchToPIPMinimized}
-          />
-        )
-      })
-    );
-  };
 
-  private _switchToPIPInverse() {
-    this._layout = Layout.PIPInverse;
+  private _switchToPIP = (manualChange: boolean = true) => {
+    if (manualChange) {
+      this._layout = Layout.PIP;
+      this._inverse = false;
+    }
     this._removeActives();
-    this._removeActivesArr.push(
-      this._player.ui.addComponent({
-        label: 'kaltura-dual-screen-pip',
-        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
-        container: ReservedPresetAreas.InteractiveArea,
-        get: () => (
-          <Pip
-            childSizePercentage={this.config.childSizePercentage}
-            childPlayer={this._player}
-            position={this.config.position}
-            hide={this._switchToPIPMinimized}
-          />
-        )
-      })
-    );
-
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
@@ -107,35 +82,181 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
             hide={this._switchToPIPMinimized}
             childSizePercentage={this.config.childSizePercentage}
             inverse
+            childPlayer={this._player}
+            position={this.config.position}
+          />
+        )
+      })
+    );
+    const origPlayerParent: HTMLElement = this._player.getView().parentElement!;
+    this._removeActivesArr.push(() => {
+      origPlayerParent.appendChild(this._player.getView());
+    });
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.InteractiveArea,
+        get: () => (
+          <ResponsiveManager
+            onMinSize={() => {
+              this._switchToPIPMinimized(false);
+            }}
+            onDefaultSize={this._setMode}>
+            <Pip
+              childSizePercentage={this.config.childSizePercentage}
+              childPlayer={this._secondaryKalturaPlayer}
+              position={this.config.position}
+              hide={this._switchToPIPMinimized}
+              onSideBySideSwitch={this._switchToSideBySide}
+              onInversePIP={this._switchToPIPInverse}
+            />
+          </ResponsiveManager>
+        )
+      })
+    );
+  };
+
+  private _switchToPIPInverse = (manualChange: boolean = true) => {
+    if (manualChange) {
+      this._layout = Layout.PIP;
+      this._inverse = true;
+    }
+    this._removeActives();
+
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.VideoContainer,
+        get: () => (
+          <Pip
+            hide={this._switchToPIPMinimizedInverse}
+            childSizePercentage={this.config.childSizePercentage}
+            inverse
             childPlayer={this._secondaryKalturaPlayer}
             position={this.config.position}
           />
         )
       })
     );
-    const origPlayerParent: HTMLElement = this._player.getView().parentElement;
+    const origPlayerParent: HTMLElement = this._player.getView().parentElement!;
     this._removeActivesArr.push(() => {
       origPlayerParent.appendChild(this._player.getView());
     });
-  }
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.InteractiveArea,
+        get: () => (
+          <ResponsiveManager
+            onMinSize={() => {
+              this._switchToPIPMinimizedInverse(false);
+            }}
+            onDefaultSize={this._setMode}>
+            <Pip
+              childSizePercentage={this.config.childSizePercentage}
+              childPlayer={this._player}
+              position={this.config.position}
+              hide={this._switchToPIPMinimizedInverse}
+              onSideBySideSwitch={this._switchToSideBySide}
+              onInversePIP={this._switchToPIP}
+            />
+          </ResponsiveManager>
+        )
+      })
+    );
+  };
 
-  private _switchToPIPMinimized = () => {
-    this._layout = Layout.PIPMinimized;
+  private _switchToPIPMinimized = (manualChange: boolean = true) => {
+    if (manualChange) {
+      this._layout = Layout.PIPMinimized;
+      this._inverse = false;
+    }
     this._removeActives();
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.VideoContainer,
+        get: () => (
+          <Pip
+            hide={this._switchToPIPMinimized}
+            childSizePercentage={this.config.childSizePercentage}
+            inverse
+            childPlayer={this._player}
+            position={this.config.position}
+          />
+        )
+      })
+    );
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip-minimized',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.BottomBar,
-        get: () => <PipMinimized show={this._switchToPIP} childPlayer={this._secondaryKalturaPlayer} />
+        get: () => (
+          <ResponsiveManager
+            onMinSize={() => {
+              this._switchToPIPMinimized(false);
+            }}
+            onDefaultSize={this._setMode}>
+            <PipMinimized show={this._switchToPIP} childPlayer={this._secondaryKalturaPlayer} onInverse={this._switchToPIPMinimizedInverse} />
+          </ResponsiveManager>
+        )
       })
     );
   };
-  private _switchToSideBySide() {
-    this._layout = Layout.SideBySide;
+
+  private _switchToPIPMinimizedInverse = (manualChange: boolean = true) => {
+    if (manualChange) {
+      this._layout = Layout.PIPMinimized;
+      this._inverse = true;
+    }
     this._removeActives();
 
-    const origPlayerParent: HTMLElement = this._player.getView().parentElement;
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.VideoContainer,
+        get: () => (
+          <Pip
+            hide={this._switchToPIPMinimizedInverse}
+            childSizePercentage={this.config.childSizePercentage}
+            inverse
+            childPlayer={this._secondaryKalturaPlayer}
+            position={this.config.position}
+          />
+        )
+      })
+    );
+    this._removeActivesArr.push(
+      this._player.ui.addComponent({
+        label: 'kaltura-dual-screen-pip-minimized',
+        presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
+        container: ReservedPresetAreas.BottomBar,
+        get: () => (
+          <ResponsiveManager
+            onMinSize={() => {
+              this._switchToPIPMinimizedInverse(false);
+            }}
+            onDefaultSize={this._setMode}>
+            <PipMinimized show={this._switchToPIPInverse} childPlayer={this._player} onInverse={this._switchToPIPMinimized} />
+          </ResponsiveManager>
+        )
+      })
+    );
+  };
+
+  private _switchToSideBySide = (manualChange: boolean = true) => {
+    if (manualChange) {
+      this._layout = Layout.SideBySide;
+    }
+    this._removeActives();
+
+    const origPlayerParent: HTMLElement = this._player.getView().parentElement!;
     this._removeActivesArr.push(() => {
       origPlayerParent.appendChild(this._player.getView());
     });
@@ -145,7 +266,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-side-by-side',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <SideBySide secondaryPlayer={this._player} />
+        get: () => <SideBySide secondaryPlayer={this._player} onPIPSwitch={this._switchToPIP}/>
       })
     );
     this._removeActivesArr.push(
@@ -153,10 +274,18 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-side-by-side',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <SideBySide secondaryPlayer={this._secondaryKalturaPlayer} />
+        get: () => (
+          <ResponsiveManager
+            onMinSize={() => {
+              this._switchToPIPMinimized(false);
+            }}
+            onDefaultSize={this._setMode}>
+            <SideBySide secondaryPlayer={this._secondaryKalturaPlayer} onPIPSwitch={this._switchToPIPInverse}/>
+          </ResponsiveManager>
+        )
       })
     );
-  }
+  };
 
   private _createDummyChildPlayer() {
     let childPlaceholder = document.createElement('div');
@@ -171,16 +300,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         disable: true
       },
       provider: {
-        partnerId: 1091,
-        env: {
-          cdnUrl: 'https://qa-apache-php7.dev.kaltura.com/',
-          serviceUrl: 'https://qa-apache-php7.dev.kaltura.com/api_v3'
-        }
-      }
+        partnerId: 811441,
+      },
     };
 
-    this._secondaryKalturaPlayer = KalturaPlayer.setup(childPlayerConfig);
-    this._secondaryKalturaPlayer.loadMedia({entryId: '0_wifqaipd'});
+    return KalturaPlayer.setup(childPlayerConfig);
   }
 
   /**

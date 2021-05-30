@@ -11,6 +11,10 @@
     box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.2), 0px 8px 60px -16px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     overflow: hidden;
+    &.tinyChildPlayer {
+      height: 34px;
+      width: 60px;
+    }
   }
 
   .showContainer {
@@ -47,8 +51,11 @@
     }
   }
 
-  .innerButtons{
+  .innerButtons {
     justify-content: center;
     align-items: center;
+    &.tinyInnerButtons {
+      height: 34px;
+    }
   }
 }
