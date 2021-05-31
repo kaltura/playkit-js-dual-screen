@@ -5,29 +5,10 @@
   position: relative;
   margin: auto;
   flex: 1;
-  .toPipContainer {
-    position: absolute;
-    right: 13px;
-    top: 13px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 6px;
-    color: #ffffff;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 18px;
 
-    border-radius: 4px;
-    cursor: pointer;
+  .innerButtons {
     z-index: 1;
-    &:hover {
-      background: rgba(0, 0, 0, 0.7);
-    }
-    .iconContainer {
-      height: $smallBorderLessIconSize;
-      width: $smallBorderLessIconSize;
-    }
+    padding: 16px;
+    flex-direction: row-reverse;
   }
 }
