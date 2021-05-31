@@ -31,9 +31,9 @@ export class SideBySide extends Component<SideBySideComponentProps> {
     };
     return (
       <div ref={this.ref} className={styles.secondaryPlayer} style={playerContainerStyles}>
-        <div className={styles.toPipContainer} onMouseUp={onPIPSwitch}>
-          <div className={styles.iconContainer}>
-            <Icon id="dualscreen-side-by-side-pip" height={28} width={28} path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH} />
+        <div className={styles.innerButtons}>
+          <div className={styles.iconContainer} onMouseUp={onPIPSwitch}>
+            <Icon id="dualscreen-side-by-side-pip" height={24} width={24} path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH} />
           </div>
         </div>
       </div>
