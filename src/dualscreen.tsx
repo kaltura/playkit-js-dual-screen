@@ -34,7 +34,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._player = player;
     this._addBindings();
     this._secondaryKalturaPlayer = this._createDummyChildPlayer();
-    this._secondaryKalturaPlayer.loadMedia({entryId: '1_q31s7nkk'});
+    // this._secondaryKalturaPlayer.loadMedia({entryId: '1_3zk6uujf'});
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
     this._setMode();
@@ -300,7 +300,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         disable: true
       },
       provider: {
-        partnerId: 811441,
+        partnerId: 976461,
       },
     };
 
