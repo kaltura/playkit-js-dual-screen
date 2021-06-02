@@ -49,6 +49,13 @@ export class VideoSyncManager {
       this._logger.debug('syncEvents :: secondary player pause');
       this._secondaryPlayer.pause();
     });
+    this._eventManager.listen(this._secondaryPlayer, EventType.CHANGE_SOURCE_STARTED, () => {
+      // if secondary was loaded after the main has already started playing
+      if (!this._mainPlayer.paused) {
+        this._secondaryPlayer.currentTime = this._mainPlayer.currentTime;
+        this._secondaryPlayer.play();
+      }
+    });
     this._eventManager.listen(this._mainPlayer, EventType.TIME_UPDATE, () => {
       if (!this._isSyncDelay) {
         const now = Date.now();

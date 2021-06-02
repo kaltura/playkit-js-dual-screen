@@ -8,6 +8,7 @@ import {SideBySide} from './components/side-by-side';
 import {Position} from './enums/positionEnum';
 import {VideoSyncManager} from './videoSyncManager';
 import {ResponsiveManager} from './components/responsive-manager';
+const {RequestBuilder, ResponseProfileType} = KalturaPlayer.providers;
 
 export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _player: KalturaPlayerTypes.Player;
@@ -15,7 +16,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _layout: Layout = Layout.PIP;
   private _inverse = false;
   private _removeActivesArr: Function[] = [];
-  private _videoSyncManager: VideoSyncManager;
+  private _videoSyncManager?: VideoSyncManager;
 
   /**
    * The default configuration of the plugin.
@@ -33,12 +34,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     super(name, player, config);
     this._player = player;
     this._addBindings();
-    this._secondaryKalturaPlayer = this._createDummyChildPlayer();
-    // this._secondaryKalturaPlayer.loadMedia({entryId: '1_3zk6uujf'});
+    this._secondaryKalturaPlayer = this._createChildPlayer();
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
-    this._setMode();
-    this._videoSyncManager = new VideoSyncManager(this.eventManager, player, this._secondaryKalturaPlayer, this.logger);
+  }
+
+  loadMedia(): void {
+    this._getSecondaryMedia();
   }
 
   private _addBindings() {
@@ -266,7 +268,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-side-by-side',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <SideBySide secondaryPlayer={this._player} onPIPSwitch={this._switchToPIP}/>
+        get: () => <SideBySide secondaryPlayer={this._player} onPIPSwitch={this._switchToPIP} />
       })
     );
     this._removeActivesArr.push(
@@ -280,14 +282,36 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
               this._switchToPIPMinimized(false);
             }}
             onDefaultSize={this._setMode}>
-            <SideBySide secondaryPlayer={this._secondaryKalturaPlayer} onPIPSwitch={this._switchToPIPInverse}/>
+            <SideBySide secondaryPlayer={this._secondaryKalturaPlayer} onPIPSwitch={this._switchToPIPInverse} />
           </ResponsiveManager>
         )
       })
     );
   };
 
-  private _createDummyChildPlayer() {
+  private _getSecondaryMedia() {
+    const headers: Map<string, string> = new Map();
+    headers.set('Content-Type', 'application/json');
+    const request = new RequestBuilder(headers);
+    request.service = 'baseEntry';
+    request.action = 'list';
+    request.method = 'POST';
+    request.tag = 'list';
+    request.params = {
+      filter: {objectType: 'KalturaBaseEntryFilter', parentEntryIdEqual: this._player.getMediaInfo().entryId},
+      responseProfile: {
+        type: ResponseProfileType.INCLUDE_FIELDS,
+        fields: 'id'
+      }
+    };
+    this._player.provider.getCustomData({requests: [request]}).then((response: any) => {
+      this._secondaryKalturaPlayer.loadMedia({entryId: response[0].data.objects[0].id});
+      this._setMode();
+      this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
+    });
+  }
+
+  private _createChildPlayer() {
     let childPlaceholder = document.createElement('div');
     childPlaceholder.setAttribute('id', 'childPlaceholder');
     childPlaceholder.style.width = '240px';
@@ -300,8 +324,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         disable: true
       },
       provider: {
-        partnerId: 976461,
-      },
+        partnerId: this._player.config.provider.partnerId
+      }
     };
 
     return KalturaPlayer.setup(childPlayerConfig);
@@ -318,6 +342,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
 
   destroy(): void {
     this.eventManager.destroy();
-    this._videoSyncManager.destroy();
+    if (this._videoSyncManager) {
+      this._videoSyncManager.destroy();
+    }
   }
 }

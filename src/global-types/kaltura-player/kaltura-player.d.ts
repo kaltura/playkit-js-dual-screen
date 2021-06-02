@@ -3,6 +3,10 @@ import { SecondaryVideoSync } from "./dualscreen";
 
 declare global {
   const KalturaPlayer: {
+    providers:{
+      RequestBuilder: any
+      ResponseProfileType: any
+    };
     ui: {
       EventType: Record<string, string>;
       redux: {
