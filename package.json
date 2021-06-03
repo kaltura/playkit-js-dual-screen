@@ -1,6 +1,6 @@
 {
   "name": "playkit-js-dual-screen",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "clean": "rm -rf ./dist",
     "prebuild": "npm run clean",
