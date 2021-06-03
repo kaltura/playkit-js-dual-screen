@@ -13,6 +13,7 @@ declare namespace KalturaPlayerTypes {
     dispatchEvent(event: FakeEvent): boolean;
     seekToLiveEdge(): void;
     destroy(): void;
+    reset(): void;
     getView: () => Node;
     getMediaInfo: () => any;
     paused: boolean;

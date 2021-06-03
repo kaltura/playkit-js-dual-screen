@@ -8,7 +8,7 @@ import {SideBySide} from './components/side-by-side';
 import {Position} from './enums/positionEnum';
 import {VideoSyncManager} from './videoSyncManager';
 import {ResponsiveManager} from './components/responsive-manager';
-const {RequestBuilder, ResponseProfileType} = KalturaPlayer.providers;
+// const {RequestBuilder, ResponseProfileType} = KalturaPlayer.providers;
 
 export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _player: KalturaPlayerTypes.Player;
@@ -27,7 +27,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     inverse: false,
     layout: Layout.PIP,
     childSizePercentage: 30,
-    position: Position.BottomRight
+    position: Position.BottomRight,
+    // TEMPORARY
+    secondaryEntryId: "1_hwls7ruj"
   };
 
   constructor(name: string, player: any, config: DualScreenConfig) {
@@ -40,7 +42,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   }
 
   loadMedia(): void {
-    this._getSecondaryMedia();
+    // this._getSecondaryMedia();
+      this._secondaryKalturaPlayer.loadMedia({ entryId: this.config.secondaryEntryId });
+      this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
+      this._setMode();
   }
 
   private _addBindings() {
@@ -289,27 +294,27 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     );
   };
 
-  private _getSecondaryMedia() {
-    const headers: Map<string, string> = new Map();
-    headers.set('Content-Type', 'application/json');
-    const request = new RequestBuilder(headers);
-    request.service = 'baseEntry';
-    request.action = 'list';
-    request.method = 'POST';
-    request.tag = 'list';
-    request.params = {
-      filter: {objectType: 'KalturaBaseEntryFilter', parentEntryIdEqual: this._player.getMediaInfo().entryId},
-      responseProfile: {
-        type: ResponseProfileType.INCLUDE_FIELDS,
-        fields: 'id'
-      }
-    };
-    this._player.provider.getCustomData({requests: [request]}).then((response: any) => {
-      this._secondaryKalturaPlayer.loadMedia({entryId: response[0].data.objects[0].id});
-      this._setMode();
-      this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
-    });
-  }
+  // private _getSecondaryMedia() {
+  //   const headers: Map<string, string> = new Map();
+  //   headers.set('Content-Type', 'application/json');
+  //   const request = new RequestBuilder(headers);
+  //   request.service = 'baseEntry';
+  //   request.action = 'list';
+  //   request.method = 'POST';
+  //   request.tag = 'list';
+  //   request.params = {
+  //     filter: {objectType: 'KalturaBaseEntryFilter', parentEntryIdEqual: this._player.getMediaInfo().entryId},
+  //     responseProfile: {
+  //       type: ResponseProfileType.INCLUDE_FIELDS,
+  //       fields: 'id'
+  //     }
+  //   };
+  //   this._player.provider.getCustomData({requests: [request]}).then((response: any) => {
+  //     this._secondaryKalturaPlayer.loadMedia({entryId: response[0].data.objects[0].id});
+  //     this._setMode();
+  //     this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
+  //   });
+  // }
 
   private _createChildPlayer() {
     let childPlaceholder = document.createElement('div');
@@ -327,7 +332,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         partnerId: this._player.config.provider.partnerId
       }
     };
-
     return KalturaPlayer.setup(childPlayerConfig);
   }
 

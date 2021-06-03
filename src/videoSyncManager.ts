@@ -34,7 +34,7 @@ export class VideoSyncManager {
     });
     this._eventManager.listen(this._mainPlayer, EventType.ERROR, () => {
       this._logger.debug('errorHandling :: main player got error');
-      this._secondaryPlayer.destroy();
+      this._secondaryPlayer.reset();
     });
   };
 
