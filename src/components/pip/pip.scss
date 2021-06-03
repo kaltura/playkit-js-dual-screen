@@ -10,17 +10,6 @@
     box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.3);
   }
 
-  &.bottom {
-    bottom: 0;
-  }
-
-  &.right {
-    right: 0;
-  }
-  &.left {
-    left: 0;
-  }
-
   .hideContainer {
     display: flex;
     flex-direction: row;

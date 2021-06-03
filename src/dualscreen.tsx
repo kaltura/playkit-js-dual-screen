@@ -8,14 +8,17 @@ import {SideBySide} from './components/side-by-side';
 import {Position} from './enums/positionEnum';
 import {VideoSyncManager} from './videoSyncManager';
 import {ResponsiveManager} from './components/responsive-manager';
+import {DragAndSnapManager} from "./dragAndSnapManager";
 
 export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _player: KalturaPlayerTypes.Player;
   private _secondaryKalturaPlayer: KalturaPlayerTypes.Player;
   private _layout: Layout = Layout.PIP;
   private _inverse = false;
+  private _pipPosition: Position = Position.BottomRight;
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager: VideoSyncManager;
+  private _dragAndSnapManager: DragAndSnapManager;
 
   /**
    * The default configuration of the plugin.
@@ -34,11 +37,14 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._player = player;
     this._addBindings();
     this._secondaryKalturaPlayer = this._createDummyChildPlayer();
-    this._secondaryKalturaPlayer.loadMedia({entryId: '1_q31s7nkk'});
+    this._secondaryKalturaPlayer.loadMedia({entryId: '0_4rvdnj48'});
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
+    this._pipPosition = this.config.position;
     this._setMode();
     this._videoSyncManager = new VideoSyncManager(this.eventManager, player, this._secondaryKalturaPlayer, this.logger);
+    this._dragAndSnapManager = new DragAndSnapManager(this.eventManager, this.logger);
+    this._dragAndSnapManager.onPositionChanged(this._setPipPosition);
   }
 
   private _addBindings() {
@@ -66,6 +72,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr = [];
   }
 
+  private _setPipPosition = (position: Position) => {
+    this._pipPosition = position;
+  }
+
   private _switchToPIP = (manualChange: boolean = true) => {
     if (manualChange) {
       this._layout = Layout.PIP;
@@ -79,11 +89,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         container: ReservedPresetAreas.VideoContainer,
         get: () => (
           <Pip
+            dragAndSnapManager={this._dragAndSnapManager}
             hide={this._switchToPIPMinimized}
             childSizePercentage={this.config.childSizePercentage}
             inverse
             childPlayer={this._player}
-            position={this.config.position}
+            position={this._pipPosition}
           />
         )
       })
@@ -104,9 +115,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
             }}
             onDefaultSize={this._setMode}>
             <Pip
+              dragAndSnapManager={this._dragAndSnapManager}
               childSizePercentage={this.config.childSizePercentage}
               childPlayer={this._secondaryKalturaPlayer}
-              position={this.config.position}
+              position={this._pipPosition}
               hide={this._switchToPIPMinimized}
               onSideBySideSwitch={this._switchToSideBySide}
               onInversePIP={this._switchToPIPInverse}
@@ -135,7 +147,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
             childSizePercentage={this.config.childSizePercentage}
             inverse
             childPlayer={this._secondaryKalturaPlayer}
-            position={this.config.position}
+            position={this._pipPosition}
           />
         )
       })
@@ -158,7 +170,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
             <Pip
               childSizePercentage={this.config.childSizePercentage}
               childPlayer={this._player}
-              position={this.config.position}
+              position={this._pipPosition}
               hide={this._switchToPIPMinimizedInverse}
               onSideBySideSwitch={this._switchToSideBySide}
               onInversePIP={this._switchToPIP}
@@ -186,7 +198,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
             childSizePercentage={this.config.childSizePercentage}
             inverse
             childPlayer={this._player}
-            position={this.config.position}
+            position={this._pipPosition}
           />
         )
       })
@@ -227,7 +239,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
             childSizePercentage={this.config.childSizePercentage}
             inverse
             childPlayer={this._secondaryKalturaPlayer}
-            position={this.config.position}
+            position={this._pipPosition}
           />
         )
       })
@@ -319,5 +331,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   destroy(): void {
     this.eventManager.destroy();
     this._videoSyncManager.destroy();
+    this._dragAndSnapManager.reset();
   }
 }

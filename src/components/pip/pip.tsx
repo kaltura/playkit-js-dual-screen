@@ -2,6 +2,8 @@ import {h, createRef, Component} from 'preact';
 import * as styles from './pip.scss';
 import {Position} from '../../enums/positionEnum';
 import {icons} from '../../icons';
+import {DragAndSnapManager} from '../../dragAndSnapManager';
+import {GuiClientRect} from '../../types';
 const {connect} = KalturaPlayer.ui.redux;
 const {utils, reducers} = KalturaPlayer.ui;
 const {Icon} = KalturaPlayer.ui.components;
@@ -19,18 +21,41 @@ interface PIPComponentOwnProps {
   hide: () => void;
   onSideBySideSwitch?: () => void;
   onInversePIP?: () => void;
+  dragAndSnapManager?: DragAndSnapManager;
 }
 interface PIPComponentConnectProps {
-  guiClientRect?: {height: number; width: number};
+  guiClientRect?: GuiClientRect;
   playerHover?: boolean;
+}
+interface PIPComponentState {
+  position: Position;
 }
 type PIPComponentProps = PIPComponentOwnProps & PIPComponentConnectProps;
 @connect(mapStateToProps, utils.bindActions(reducers.shell.actions))
-export class Pip extends Component<PIPComponentProps> {
-  ref = createRef();
+export class Pip extends Component<PIPComponentProps, PIPComponentState> {
+  videoContainerRef = createRef<HTMLDivElement>();
+  pipContainerRef = createRef<HTMLDivElement>();
+  constructor(props: PIPComponentProps) {
+    super(props);
+    this.state = {
+      position: props.position
+    };
+  }
 
   componentDidMount() {
-    this.ref.current.appendChild(this.props.childPlayer.getView());
+    const {childPlayer, dragAndSnapManager} = this.props;
+    this.videoContainerRef?.current?.appendChild(childPlayer.getView());
+    if (dragAndSnapManager && this.pipContainerRef.current) {
+      dragAndSnapManager.setDraggableContainer(this.pipContainerRef.current);
+      dragAndSnapManager.onPositionChanged(this._onPositionChanged);
+    }
+  }
+
+  componentDidUpdate() {
+    const {dragAndSnapManager, guiClientRect} = this.props;
+    if (dragAndSnapManager && guiClientRect) {
+      dragAndSnapManager.setGuiClientRect(guiClientRect);
+    }
   }
 
   private _renderHoverButton() {
@@ -58,31 +83,51 @@ export class Pip extends Component<PIPComponentProps> {
     );
   }
 
+  private _onPositionChanged = (position: Position) => {
+    this.setState({
+      position
+    });
+  };
+
   render(props: PIPComponentProps) {
     let styleClass = props.inverse ? [] : [styles.childPlayer];
+
     if (props.playerHover) {
       styleClass.push(styles.hover);
     }
+
+    const pipContainerStyles: Record<string, number> = {};
+
+    if (!props.inverse) {
+      switch (this.state.position) {
+        case Position.BottomRight:
+          pipContainerStyles.bottom = 0;
+          pipContainerStyles.right = 0;
+          break;
+        case Position.BottomLeft:
+          pipContainerStyles.bottom = 0;
+          pipContainerStyles.left = 0;
+          break;
+        case Position.TopRight:
+          pipContainerStyles.top = 0;
+          pipContainerStyles.right = 0;
+          break;
+        case Position.TopLeft:
+          pipContainerStyles.top = 0;
+          pipContainerStyles.left = 0;
+      }
+    }
+
     const height: number = props.inverse ? props.guiClientRect!.height : (props.guiClientRect!.height * props.childSizePercentage) / 100;
     const width: number = props.inverse ? props.guiClientRect!.width : (height * 16) / 9;
-    switch (props.position) {
-      case Position.BottomRight:
-        styleClass.push(styles.bottom);
-        styleClass.push(styles.right);
-        break;
-      case Position.BottomLeft:
-        styleClass.push(styles.bottom);
-        styleClass.push(styles.left);
-        break;
-      default:
-    }
     const videoContainerStyles = {
       height: `${height + 'px'}`,
       width: `${width + 'px'}`
     };
+
     return (
-      <div className={styleClass.join(' ')}>
-        <div className={styles.videoContainer} style={videoContainerStyles} ref={this.ref} />
+      <div className={styleClass.join(' ')} ref={this.pipContainerRef} style={pipContainerStyles}>
+        <div className={styles.videoContainer} style={videoContainerStyles} ref={this.videoContainerRef} />
         {this._renderHoverButton()}
       </div>
     );
