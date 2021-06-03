@@ -1,0 +1,18 @@
+@import '~styles/variables';
+@import '~styles/styles';
+
+.secondaryPlayer {
+  position: relative;
+  margin: auto;
+  flex: 1;
+
+  .iconContainer {
+    padding: 2px;
+  }
+
+  .innerButtons {
+    z-index: 1;
+    padding: 16px;
+    flex-direction: row-reverse;
+  }
+}

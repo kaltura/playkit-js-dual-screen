@@ -1,0 +1,69 @@
+@import '~styles/variables';
+@import '~styles/styles';
+
+.childPlayer {
+  position: absolute;
+
+  .videoContainer {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  &.bottom {
+    bottom: 0;
+  }
+
+  &.right {
+    right: 0;
+  }
+  &.left {
+    left: 0;
+  }
+
+  .hideContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+
+    position: absolute;
+    width: 66px;
+    height: 32px;
+    right: 0px;
+    top: -37px;
+
+    color: #ffffff;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .iconContainer {
+      margin-right: 8px;
+      height: $smallBorderLessIconSize;
+      width: $smallBorderLessIconSize;
+    }
+  }
+
+  .innerButtons {
+    flex-direction: row-reverse;
+    border-radius: 8px;
+
+    .iconContainer {
+      margin-left: 8px;
+      display: inline-block;
+      padding: 2px;
+
+    }
+  }
+}

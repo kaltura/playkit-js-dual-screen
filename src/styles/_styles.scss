@@ -1,0 +1,27 @@
+@import '~styles/variables';
+
+.iconContainer {
+  height: $smallIconSize;
+  width: $smallIconSize;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.innerButtons {
+  display: flex;
+  position: absolute;
+  height: 60px;
+  left: 0px;
+  top: 0px;
+  padding: 8px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
+  width: 100%;
+
+  .iconContainer {
+    &:hover {
+      background: #444444;
+      border-radius: 4px;
+      opacity: 1;
+    }
+  }
+}
