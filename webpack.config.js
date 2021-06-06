@@ -14,7 +14,7 @@ const plugins = [
 module.exports = {
   context: __dirname + '/src',
   entry: {
-    'playkit-js-dual-screen': 'index.ts'
+    'playkit-dual-screen': 'index.ts'
   },
   output: {
     path: __dirname + '/dist',
