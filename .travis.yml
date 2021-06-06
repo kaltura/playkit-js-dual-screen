@@ -23,7 +23,7 @@ before_install:
 script: ./scripts/travis.sh
 
 stages:
-  - Tests
+#  - Tests
   - Release canary
   - Release
   - Deploy
@@ -80,15 +80,15 @@ jobs:
       after_deploy:
         - ./scripts/after_deploy.sh "$JENKINS_CANARY_TOKEN"
     # Required tests
-    - stage: Tests
-      if: (branch = master) OR (tag IS present) OR (type = pull_request)
-      name: 'Running lint'
-      env: TRAVIS_MODE=lint
-    - stage: Tests
-      if: (branch = master) OR (tag IS present) OR (type = pull_request)
-      name: 'Running Flow type check'
-      env: TRAVIS_MODE=flow
-    - stage: Tests
-      if: (branch = master) OR (tag IS present) OR (type = pull_request)
-      name: 'Running unit tests'
-      env: TRAVIS_MODE=unitTests
+#    - stage: Tests
+#      if: (branch = master) OR (tag IS present) OR (type = pull_request)
+#      name: 'Running lint'
+#      env: TRAVIS_MODE=lint
+#    - stage: Tests
+#      if: (branch = master) OR (tag IS present) OR (type = pull_request)
+#      name: 'Running Flow type check'
+#      env: TRAVIS_MODE=flow
+#    - stage: Tests
+#      if: (branch = master) OR (tag IS present) OR (type = pull_request)
+#      name: 'Running unit tests'
+#      env: TRAVIS_MODE=unitTests
