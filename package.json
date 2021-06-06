@@ -1,5 +1,5 @@
 {
-  "name": "playkit-js-dual-screen",
+  "name": "@playkit-js/playkit-js-dual-screen",
   "version": "1.1.0",
   "scripts": {
     "clean": "rm -rf ./dist",
@@ -61,6 +61,9 @@
   },
   "peerDependencies": {
     "kaltura-player-js": "https://github.com/kaltura/kaltura-player-js.git#v1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "dual screen",
