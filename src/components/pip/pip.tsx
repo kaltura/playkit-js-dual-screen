@@ -28,7 +28,7 @@ interface PIPComponentConnectProps {
   playerHover?: boolean;
 }
 interface PIPComponentState {
-  position: Position;
+  isDragging: boolean;
 }
 type PIPComponentProps = PIPComponentOwnProps & PIPComponentConnectProps;
 @connect(mapStateToProps, utils.bindActions(reducers.shell.actions))
@@ -38,7 +38,7 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
   constructor(props: PIPComponentProps) {
     super(props);
     this.state = {
-      position: props.position
+      isDragging: false
     };
   }
 
@@ -47,7 +47,8 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
     this.videoContainerRef?.current?.appendChild(childPlayer.getView());
     if (dragAndSnapManager && this.pipContainerRef.current) {
       dragAndSnapManager.setDraggableContainer(this.pipContainerRef.current);
-      dragAndSnapManager.onPositionChanged(this._onPositionChanged);
+      dragAndSnapManager.onStartDrag(this._onStartDrag);
+      dragAndSnapManager.onStopDrag(this._onStopDrag);
     }
   }
 
@@ -58,9 +59,15 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
     }
   }
 
+  private _handleHide = (e: MouseEvent | TouchEvent) => {
+    e.stopPropagation();
+    this.props.dragAndSnapManager?.destroy();
+    this.props.hide();
+  }
+
   private _renderHoverButton() {
-    const {hide, onSideBySideSwitch, onInversePIP, inverse, playerHover} = this.props;
-    if (!playerHover || inverse) {
+    const {onSideBySideSwitch, onInversePIP, inverse, playerHover} = this.props;
+    if (!playerHover || inverse || this.state.isDragging) {
       return null;
     }
     return (
@@ -73,7 +80,7 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
             <Icon id="dualscreen-pip-side-by-side" height={24} width={24} path={icons.SIDE_BY_SIDE_ICON_PATH} />
           </div>
         </div>
-        <div onMouseUp={hide} role="button" className={styles.hideContainer}>
+        <div onMouseUp={this._handleHide} role="button" className={styles.hideContainer}>
           <div className={styles.iconContainer}>
             <Icon id="dualscreen-pip-hide" height={16} width={16} path={icons.HIDE_ICON_PATH} />
           </div>
@@ -83,9 +90,15 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
     );
   }
 
-  private _onPositionChanged = (position: Position) => {
+  private _onStartDrag = () => {
     this.setState({
-      position
+      isDragging: true
+    });
+  };
+
+  private _onStopDrag = () => {
+    this.setState({
+      isDragging: false
     });
   };
 
@@ -93,13 +106,13 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
     let styleClass = props.inverse ? [] : [styles.childPlayer];
 
     if (props.playerHover) {
-      styleClass.push(styles.hover);
+      styleClass.push(styles.playerHover);
     }
 
     const pipContainerStyles: Record<string, number> = {};
 
     if (!props.inverse) {
-      switch (this.state.position) {
+      switch (props.position) {
         case Position.BottomRight:
           pipContainerStyles.bottom = 0;
           pipContainerStyles.right = 0;

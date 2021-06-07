@@ -15,3 +15,7 @@ export const getClientY = (e: MouseEvent | TouchEvent): number => {
   }
   return e.changedTouches && e.changedTouches[0] && e.changedTouches[0].clientY;
 };
+
+export const makeStyleString = (position: number): string => {
+  return `${position}px`;
+};

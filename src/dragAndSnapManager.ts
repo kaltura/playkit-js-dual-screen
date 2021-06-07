@@ -1,9 +1,6 @@
-// @ts-ignore
-import {core} from 'kaltura-player-js';
 import {Position} from './enums/positionEnum';
-import {getClientX, getClientY} from './utils';
+import {getClientX, getClientY, makeStyleString} from './utils';
 import {GuiClientRect} from './types';
-const {EventType, FakeEvent, Error, StateType} = core;
 
 type OnPositionChangedCallback = (newPosition: Position) => void;
 enum DragEvents {
@@ -21,20 +18,20 @@ export class DragAndSnapManager {
   _eventManager: KalturaPlayerTypes.EventManager;
   _logger: KalturaPlayerTypes.Logger;
   _draggableContainer: HTMLDivElement | null = null;
-  _onPositionChanged: OnPositionChangedCallback[] = [];
+  _onPositionChanged: OnPositionChangedCallback;
+  _onStartDrag: () => void = () => {};
+  _onStopDrag: () => void = () => {};
   _gueClientRec: GuiClientRect | null = null;
   _currMousePos: {x: number; y: number} = {x: 0, y: 0};
   _throttleWait: boolean = false;
 
-  constructor(eventManager: KalturaPlayerTypes.EventManager, logger: KalturaPlayerTypes.Logger) {
+  constructor(eventManager: KalturaPlayerTypes.EventManager, logger: KalturaPlayerTypes.Logger, fn: OnPositionChangedCallback) {
     this._eventManager = eventManager;
     this._logger = logger;
+    this._onPositionChanged = fn;
   }
 
-  public onPositionChanged = (cb: OnPositionChangedCallback) => {
-    this._onPositionChanged.push(cb);
-  };
-
+  // Drag and snap public API
   public setDraggableContainer = (draggableContainer: HTMLDivElement) => {
     this._draggableContainer = draggableContainer;
     this._addListeners();
@@ -43,6 +40,14 @@ export class DragAndSnapManager {
   public setGuiClientRect = (gueClientRec: GuiClientRect) => {
     this._gueClientRec = gueClientRec;
   };
+
+  public onStartDrag = (fn: () => void) => {
+    this._onStartDrag = fn;
+  }
+
+  public onStopDrag = (fn: () => void) => {
+    this._onStopDrag = fn;
+  }
 
   private _addListeners = () => {
     this._eventManager.listen(this._draggableContainer!, DragEvents.MouseDown, e => {
@@ -63,13 +68,14 @@ export class DragAndSnapManager {
     this._currMousePos.x = getClientX(e);
     this._currMousePos.y = getClientY(e);
 
-    this._eventManager.listen(document, moveEventName, e => {
-      this._moveDrag(e);
-    });
+    this._eventManager.listen(document, moveEventName, this._moveDrag);
+    this._eventManager.listenOnce(document, moveEventName, this._onStartDrag);
   }
 
-  private _moveDrag(e: MouseEvent | TouchEvent) {
-    if (this._throttleWait) return;
+  private _moveDrag = (e: MouseEvent | TouchEvent) => {
+    if (this._throttleWait) {
+      return;
+    };
     e = e || window.event;
     // calculate the new cursor position:
     const deltaMousePosX = this._currMousePos.x - getClientX(e);
@@ -78,37 +84,26 @@ export class DragAndSnapManager {
     this._currMousePos.y = getClientY(e);
     // set the element's new position
     if (this._draggableContainer && this._gueClientRec) {
-      const boundClientRect = this._draggableContainer.getBoundingClientRect();
-      const draggableContainerCenterX = boundClientRect.x + boundClientRect.width / 2;
-      const draggableContainerCenterY = boundClientRect.y + boundClientRect.height / 2;
+      let top = parseInt(this._draggableContainer.style.top, 10);
+      let bottom = parseInt(this._draggableContainer.style.bottom, 10);
+      let right = parseInt(this._draggableContainer.style.right, 10);
+      let left = parseInt(this._draggableContainer.style.left, 10);
 
-      // const guiClientCenterX = this._gueClientRec.x + this._gueClientRec.width / 2;
-      // const guiClientCenterY = this._gueClientRec.y + this._gueClientRec.height / 2;
-
-      const top = parseInt(this._draggableContainer.style.top, 10);
-      const bottom = parseInt(this._draggableContainer.style.bottom, 10);
-      const right = parseInt(this._draggableContainer.style.right, 10);
-      const left = parseInt(this._draggableContainer.style.left, 10);
-
-      // TODO: try calculate from center of _draggableContainer what sizes we should increase
-
-      const xShift = Math.max(Number.isInteger(left) ? this._gueClientRec.left : this._gueClientRec.right, Number.isInteger(left) ? left + deltaMousePosX : right + deltaMousePosX);
-      const yShift = Math.max(0, Number.isInteger(bottom) ? bottom + deltaMousePosY : top + deltaMousePosY);
-
-      if (Number.isInteger(left)) {
-        this._draggableContainer.style.left = `${xShift}px`;
-        this._draggableContainer.style.right = "";
+      if (Number.isInteger(right)) {
+        right = right + deltaMousePosX;
       } else {
-        this._draggableContainer.style.right = `${xShift}px`;
-        this._draggableContainer.style.left = "";
+        left = left - deltaMousePosX;
       }
-
       if (Number.isInteger(bottom)) {
-        this._draggableContainer.style.bottom = `${yShift}px`;
+        bottom = bottom + deltaMousePosY;
       } else {
-        this._draggableContainer.style.top = `${yShift}px`;
+        top = top - deltaMousePosY;
       }
 
+      this._draggableContainer.style.top = makeStyleString(top);
+      this._draggableContainer.style.right = makeStyleString(right);
+      this._draggableContainer.style.bottom = makeStyleString(bottom);
+      this._draggableContainer.style.left = makeStyleString(left);
     }
 
     // handle throttling to avoid performance issues on dragging
@@ -120,12 +115,56 @@ export class DragAndSnapManager {
 
   private _stopDrag = () => {
     // stop moving when mouse button is released:
+    this._onStopDrag();
     this._eventManager.unlisten(document, DragEvents.MouseMove);
     this._eventManager.unlisten(document, DragEvents.TouchMove);
+    if (this._draggableContainer && this._gueClientRec) {
+      const boundClientRect = this._draggableContainer.getBoundingClientRect();
+      const draggableContainerCenterX = boundClientRect.x + boundClientRect.width / 2;
+      const draggableContainerCenterY = boundClientRect.y + boundClientRect.height / 2;
+      const guiClientCenterX = this._gueClientRec.x + this._gueClientRec.width / 2;
+      const guiClientCenterY = this._gueClientRec.y + this._gueClientRec.height / 2;
+      let position: Position;
+      if (draggableContainerCenterX > guiClientCenterX) {
+        if (draggableContainerCenterY > guiClientCenterY) {
+          position = Position.BottomRight;
+          this._draggableContainer.style.top = '';
+          this._draggableContainer.style.right = '0px';
+          this._draggableContainer.style.bottom = '0px';
+          this._draggableContainer.style.left = '';
+        } else {
+          position = Position.TopRight;
+          this._draggableContainer.style.top = '0px';
+          this._draggableContainer.style.right = '0px';
+          this._draggableContainer.style.bottom = '';
+          this._draggableContainer.style.left = '';
+        }
+      } else {
+        if (draggableContainerCenterY > guiClientCenterY) {
+          position = Position.BottomLeft;
+          this._draggableContainer.style.top = '';
+          this._draggableContainer.style.right = '';
+          this._draggableContainer.style.bottom = '0px';
+          this._draggableContainer.style.left = '0px';
+        } else {
+          position = Position.TopLeft;
+          this._draggableContainer.style.top = '0px';
+          this._draggableContainer.style.right = '';
+          this._draggableContainer.style.bottom = '';
+          this._draggableContainer.style.left = '0px';
+        }
+      }
+      this._onPositionChanged(position);
+    }
   };
 
-  public reset = () => {
-    this._onPositionChanged = [];
+  public destroy = () => {
+    this._eventManager.unlisten(document, DragEvents.MouseMove);
+    this._eventManager.unlisten(document, DragEvents.TouchMove);
+    this._eventManager.unlisten(document, DragEvents.MouseUp);
+    this._eventManager.unlisten(document, DragEvents.TouchEnd);
+    this._eventManager.unlisten(this._draggableContainer!, DragEvents.MouseDown);
+    this._eventManager.unlisten(this._draggableContainer!, DragEvents.TouchStart);
     this._draggableContainer = null;
   };
 }
