@@ -59,7 +59,7 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
     }
   }
 
-  private _handleHide = (e: MouseEvent | TouchEvent) => {
+  private _handleHide = (e: Event) => {
     e.stopPropagation();
     this.props.dragAndSnapManager?.destroy();
     this.props.hide();
@@ -107,6 +107,10 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
 
     if (props.playerHover) {
       styleClass.push(styles.playerHover);
+    }
+
+    if (this.state.isDragging) {
+      styleClass.push(styles.dragging);
     }
 
     const pipContainerStyles: Record<string, number> = {};
