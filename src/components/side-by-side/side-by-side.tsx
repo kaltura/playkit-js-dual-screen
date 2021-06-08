@@ -7,6 +7,7 @@ const {connect} = KalturaPlayer.ui.redux;
 interface SideBySideComponentOwnProps {
   secondaryPlayer: KalturaPlayerTypes.Player;
   onPIPSwitch: () => void;
+  animated?: boolean;
 }
 interface SideBySideComponentConnectProps {
   guiClientRect?: {width: number; height: number};
@@ -41,12 +42,16 @@ export class SideBySide extends Component<SideBySideComponentProps> {
     );
   }
 
-  render({guiClientRect}: SideBySideComponentProps) {
+  render({guiClientRect, animated}: SideBySideComponentProps) {
     const playerContainerStyles = {
       height: (guiClientRect?.width! / 2 / 16) * 9
     };
+    const classNames = [styles.secondaryPlayer];
+    if (animated) {
+      classNames.push(styles.animated);
+    }
     return (
-      <div ref={this.ref} className={styles.secondaryPlayer} style={playerContainerStyles}>
+      <div ref={this.ref} className={classNames.join(' ')} style={playerContainerStyles}>
         {this._renderHoverButton()}
       </div>
     );

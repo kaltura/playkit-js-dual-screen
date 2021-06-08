@@ -277,7 +277,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-side-by-side',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <SideBySide secondaryPlayer={this._player} onPIPSwitch={this._switchToPIP}/>
+        get: () => <SideBySide secondaryPlayer={this._player} onPIPSwitch={this._switchToPIP} animated/>
       })
     );
     this._removeActivesArr.push(
