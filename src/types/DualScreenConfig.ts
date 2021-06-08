@@ -6,6 +6,4 @@ export interface DualScreenConfig {
   layout: Layout;
   childSizePercentage: number;
   position: Position;
- // TEMPORARY
-  secondaryEntryId: string;
 }
