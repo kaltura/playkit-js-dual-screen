@@ -59,28 +59,28 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
     }
   }
 
-  private _handleHide = (e: Event) => {
+  private _handleClick = (fn: Function) => (e: Event) => {
     e.stopPropagation();
     this.props.dragAndSnapManager?.destroy();
-    this.props.hide();
+    fn();
   }
 
   private _renderHoverButton() {
-    const {onSideBySideSwitch, onInversePIP, inverse, playerHover} = this.props;
+    const {onSideBySideSwitch, hide, onInversePIP, inverse, playerHover} = this.props;
     if (!playerHover || inverse || this.state.isDragging) {
       return null;
     }
     return (
       <div>
         <div className={styles.innerButtons}>
-          <div className={styles.iconContainer} onMouseUp={onInversePIP}>
+          <div className={styles.iconContainer} onMouseUp={this._handleClick(onInversePIP!)}>
             <Icon id="dualscreen-pip-swap" height={24} width={24} path={icons.SWAP_ICON_PATH} />
           </div>
-          <div className={styles.iconContainer} onMouseUp={onSideBySideSwitch}>
+          <div className={styles.iconContainer} onMouseUp={this._handleClick(onSideBySideSwitch!)}>
             <Icon id="dualscreen-pip-side-by-side" height={24} width={24} path={icons.SIDE_BY_SIDE_ICON_PATH} />
           </div>
         </div>
-        <div onMouseUp={this._handleHide} role="button" className={styles.hideContainer}>
+        <div onMouseUp={this._handleClick(hide)} role="button" className={styles.hideContainer}>
           <div className={styles.iconContainer}>
             <Icon id="dualscreen-pip-hide" height={16} width={16} path={icons.HIDE_ICON_PATH} />
           </div>
