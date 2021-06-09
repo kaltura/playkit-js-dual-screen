@@ -43,11 +43,11 @@ export class DragAndSnapManager {
 
   public onStartDrag = (fn: () => void) => {
     this._onStartDrag = fn;
-  }
+  };
 
   public onStopDrag = (fn: () => void) => {
     this._onStopDrag = fn;
-  }
+  };
 
   private _addListeners = () => {
     this._eventManager.listen(this._draggableContainer!, DragEvents.MouseDown, e => {
@@ -75,7 +75,7 @@ export class DragAndSnapManager {
   private _moveDrag = (e: MouseEvent | TouchEvent) => {
     if (this._throttleWait) {
       return;
-    };
+    }
     e = e || window.event;
     // calculate the new cursor position:
     const deltaMousePosX = this._currMousePos.x - getClientX(e);
@@ -90,20 +90,15 @@ export class DragAndSnapManager {
       let left = parseInt(this._draggableContainer.style.left, 10);
 
       if (Number.isInteger(right)) {
-        right = right + deltaMousePosX;
+        this._draggableContainer.style.right = makeStyleString(right + deltaMousePosX);
       } else {
-        left = left - deltaMousePosX;
+        this._draggableContainer.style.left = makeStyleString(left - deltaMousePosX);
       }
       if (Number.isInteger(bottom)) {
-        bottom = bottom + deltaMousePosY;
+        this._draggableContainer.style.bottom = makeStyleString(bottom + deltaMousePosY);
       } else {
-        top = top - deltaMousePosY;
+        this._draggableContainer.style.top = makeStyleString(top - deltaMousePosY);
       }
-
-      this._draggableContainer.style.top = makeStyleString(top);
-      this._draggableContainer.style.right = makeStyleString(right);
-      this._draggableContainer.style.bottom = makeStyleString(bottom);
-      this._draggableContainer.style.left = makeStyleString(left);
     }
 
     // handle throttling to avoid performance issues on dragging
@@ -111,7 +106,35 @@ export class DragAndSnapManager {
     setTimeout(() => {
       this._throttleWait = false;
     }, DRAG_THROTTLE_MS);
-  }
+  };
+
+  private _moveToBottomRight = () => {
+    this._draggableContainer!.style.top = '';
+    this._draggableContainer!.style.right = '0px';
+    this._draggableContainer!.style.bottom = '0px';
+    this._draggableContainer!.style.left = '';
+  };
+
+  private _moveToTopRight = () => {
+    this._draggableContainer!.style.top = '0px';
+    this._draggableContainer!.style.right = '0px';
+    this._draggableContainer!.style.bottom = '';
+    this._draggableContainer!.style.left = '';
+  };
+
+  private _moveToBottomLeft = () => {
+    this._draggableContainer!.style.top = '';
+    this._draggableContainer!.style.right = '';
+    this._draggableContainer!.style.bottom = '0px';
+    this._draggableContainer!.style.left = '0px';
+  };
+
+  private _moveToTopLeft = () => {
+    this._draggableContainer!.style.top = '0px';
+    this._draggableContainer!.style.right = '';
+    this._draggableContainer!.style.bottom = '';
+    this._draggableContainer!.style.left = '0px';
+  };
 
   private _stopDrag = () => {
     // stop moving when mouse button is released:
@@ -128,30 +151,18 @@ export class DragAndSnapManager {
       if (draggableContainerCenterX > guiClientCenterX) {
         if (draggableContainerCenterY > guiClientCenterY) {
           position = Position.BottomRight;
-          this._draggableContainer.style.top = '';
-          this._draggableContainer.style.right = '0px';
-          this._draggableContainer.style.bottom = '0px';
-          this._draggableContainer.style.left = '';
+          this._moveToBottomRight();
         } else {
           position = Position.TopRight;
-          this._draggableContainer.style.top = '0px';
-          this._draggableContainer.style.right = '0px';
-          this._draggableContainer.style.bottom = '';
-          this._draggableContainer.style.left = '';
+          this._moveToTopRight();
         }
       } else {
         if (draggableContainerCenterY > guiClientCenterY) {
           position = Position.BottomLeft;
-          this._draggableContainer.style.top = '';
-          this._draggableContainer.style.right = '';
-          this._draggableContainer.style.bottom = '0px';
-          this._draggableContainer.style.left = '0px';
+          this._moveToBottomLeft();
         } else {
           position = Position.TopLeft;
-          this._draggableContainer.style.top = '0px';
-          this._draggableContainer.style.right = '';
-          this._draggableContainer.style.bottom = '';
-          this._draggableContainer.style.left = '0px';
+          this._moveToTopLeft();
         }
       }
       this._onPositionChanged(position);
