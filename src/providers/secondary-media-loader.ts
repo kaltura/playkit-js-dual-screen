@@ -1,6 +1,6 @@
 import ILoader = KalturaPlayerTypes.ILoader;
 
-const {RequestBuilder, ResponseProfileType} = KalturaPlayer.providers;
+const {RequestBuilder, ENUMS} = KalturaPlayer.providers;
 
 export class SecondaryMediaLoader implements ILoader {
   _parentEntryId: string = '';
@@ -24,7 +24,7 @@ export class SecondaryMediaLoader implements ILoader {
     request.params = {
       filter: {objectType: 'KalturaBaseEntryFilter', parentEntryIdEqual: this._parentEntryId},
       responseProfile: {
-        type: ResponseProfileType.INCLUDE_FIELDS,
+        type: ENUMS.RESPONSE_PROFILE_TYPE.INCLUDE_FIELDS,
         fields: 'id'
       }
     };
