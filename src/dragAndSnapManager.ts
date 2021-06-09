@@ -21,7 +21,7 @@ export class DragAndSnapManager {
   _onPositionChanged: OnPositionChangedCallback;
   _onStartDrag: () => void = () => {};
   _onStopDrag: () => void = () => {};
-  _gueClientRec: GuiClientRect | null = null;
+  _gueClientRect: GuiClientRect | null = null;
   _currMousePos: {x: number; y: number} = {x: 0, y: 0};
   _throttleWait: boolean = false;
 
@@ -38,7 +38,7 @@ export class DragAndSnapManager {
   };
 
   public setGuiClientRect = (gueClientRec: GuiClientRect) => {
-    this._gueClientRec = gueClientRec;
+    this._gueClientRect = gueClientRec;
   };
 
   public onStartDrag = (fn: () => void) => {
@@ -83,7 +83,7 @@ export class DragAndSnapManager {
     this._currMousePos.x = getClientX(e);
     this._currMousePos.y = getClientY(e);
     // set the element's new position
-    if (this._draggableContainer && this._gueClientRec) {
+    if (this._draggableContainer && this._gueClientRect) {
       let top = parseInt(this._draggableContainer.style.top, 10);
       let bottom = parseInt(this._draggableContainer.style.bottom, 10);
       let right = parseInt(this._draggableContainer.style.right, 10);
@@ -118,12 +118,12 @@ export class DragAndSnapManager {
     this._onStopDrag();
     this._eventManager.unlisten(document, DragEvents.MouseMove);
     this._eventManager.unlisten(document, DragEvents.TouchMove);
-    if (this._draggableContainer && this._gueClientRec) {
+    if (this._draggableContainer && this._gueClientRect) {
       const boundClientRect = this._draggableContainer.getBoundingClientRect();
       const draggableContainerCenterX = boundClientRect.x + boundClientRect.width / 2;
       const draggableContainerCenterY = boundClientRect.y + boundClientRect.height / 2;
-      const guiClientCenterX = this._gueClientRec.x + this._gueClientRec.width / 2;
-      const guiClientCenterY = this._gueClientRec.y + this._gueClientRec.height / 2;
+      const guiClientCenterX = this._gueClientRect.x + this._gueClientRect.width / 2;
+      const guiClientCenterY = this._gueClientRect.y + this._gueClientRect.height / 2;
       let position: Position;
       if (draggableContainerCenterX > guiClientCenterX) {
         if (draggableContainerCenterY > guiClientCenterY) {
