@@ -101,8 +101,8 @@ export class VideoSyncManager {
     if (this._isSyncDelay || (this._mainPlayer.paused && !this._mainPlayer.seeking)) {
       return;
     }
-    const synchDelayThresholdPositive = 0.05;
-    const synchDelayThresholdNegative = -0.05;
+    const synchDelayThresholdPositive = 0.03;
+    const synchDelayThresholdNegative = -0.03;
     const maxGap = 4;
     const seekAhead = 0.25; // s
 

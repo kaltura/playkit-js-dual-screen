@@ -48,7 +48,9 @@ export class SideBySide extends Component<SideBySideComponentProps> {
     };
     const classNames = [styles.secondaryPlayer];
     if (animated) {
-      classNames.push(styles.animated);
+      classNames.push(styles.animatedScale);
+    } else {
+      classNames.push(styles.animatedFade);
     }
     return (
       <div ref={this.ref} className={classNames.join(' ')} style={playerContainerStyles}>

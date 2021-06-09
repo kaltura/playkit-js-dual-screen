@@ -1,6 +1,6 @@
 import {h, createRef, Component} from 'preact';
 import * as styles from './pip.scss';
-import {Position} from '../../enums/positionEnum';
+import {Position, Animaitons} from '../../enums';
 import {icons} from '../../icons';
 import {DragAndSnapManager} from '../../dragAndSnapManager';
 import {GuiClientRect} from '../../types';
@@ -8,9 +8,12 @@ const {connect} = KalturaPlayer.ui.redux;
 const {utils, reducers} = KalturaPlayer.ui;
 const {Icon} = KalturaPlayer.ui.components;
 
-const mapStateToProps = (state: any) => ({
+const INITIAL_POSITION = -150;
+
+const mapStateToProps = (state: Record<string, any>) => ({
   playerHover: state.shell.playerHover,
-  guiClientRect: state.shell.guiClientRect
+  guiClientRect: state.shell.guiClientRect,
+  prePlayback: state.engine.prePlayback
 });
 
 interface PIPComponentOwnProps {
@@ -22,10 +25,12 @@ interface PIPComponentOwnProps {
   onSideBySideSwitch?: () => void;
   onInversePIP?: () => void;
   dragAndSnapManager?: DragAndSnapManager;
+  animation: Animaitons;
 }
 interface PIPComponentConnectProps {
   guiClientRect?: GuiClientRect;
   playerHover?: boolean;
+  prePlayback?: boolean;
 }
 interface PIPComponentState {
   isDragging: boolean;
@@ -63,7 +68,7 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
     e.stopPropagation();
     this.props.dragAndSnapManager?.destroy();
     fn();
-  }
+  };
 
   private _renderHoverButton() {
     const {onSideBySideSwitch, hide, onInversePIP, inverse, playerHover} = this.props;
@@ -103,14 +108,32 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
   };
 
   render(props: PIPComponentProps) {
-    let styleClass = props.inverse ? [] : [styles.childPlayer];
+    const styleClass = [];
 
-    if (props.playerHover) {
-      styleClass.push(styles.playerHover);
+    if (!props.inverse) {
+      styleClass.push(styles.childPlayer);
+
+      if (props.playerHover) {
+        styleClass.push(styles.playerHover);
+      }
+
+      if (this.state.isDragging) {
+        styleClass.push(styles.dragging);
+      }
     }
 
-    if (this.state.isDragging) {
-      styleClass.push(styles.dragging);
+    if (!props.prePlayback && props.animation) {
+      switch (props.animation) {
+        case Animaitons.Fade:
+          styleClass.push(styles.animatedFade);
+          break;
+        case Animaitons.ScaleRight:
+          styleClass.push(styles.animatedScaleRight);
+          break;
+        case Animaitons.ScaleLeft:
+          styleClass.push(styles.animatedScaleLeft);
+          break;
+      }
     }
 
     const pipContainerStyles: Record<string, number> = {};
@@ -118,19 +141,19 @@ export class Pip extends Component<PIPComponentProps, PIPComponentState> {
     if (!props.inverse) {
       switch (props.position) {
         case Position.BottomRight:
-          pipContainerStyles.bottom = 0;
+          pipContainerStyles.bottom = props.prePlayback ? INITIAL_POSITION : 0;
           pipContainerStyles.right = 0;
           break;
         case Position.BottomLeft:
-          pipContainerStyles.bottom = 0;
+          pipContainerStyles.bottom = props.prePlayback ? INITIAL_POSITION : 0;
           pipContainerStyles.left = 0;
           break;
         case Position.TopRight:
-          pipContainerStyles.top = 0;
+          pipContainerStyles.top = props.prePlayback ? INITIAL_POSITION : 0;
           pipContainerStyles.right = 0;
           break;
         case Position.TopLeft:
-          pipContainerStyles.top = 0;
+          pipContainerStyles.top = props.prePlayback ? INITIAL_POSITION : 0;
           pipContainerStyles.left = 0;
       }
     }

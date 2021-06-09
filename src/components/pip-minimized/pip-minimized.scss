@@ -2,9 +2,9 @@
 
 .childPlayerContainer {
   position: absolute;
-  right: 16px;
   top: 0;
   transform: translateY(-100%);
+  animation: fading 0.5s linear;
   .childPlayer {
     width: 106px;
     height: 60px;
@@ -61,5 +61,14 @@
     .iconContainer:hover {
       background: transparent;
     }
+  }
+}
+
+@keyframes fading {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }

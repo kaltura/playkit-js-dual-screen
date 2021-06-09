@@ -1,17 +1,32 @@
 import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip-minimized.scss';
 import {icons} from '../../icons';
-const {Icon} = KalturaPlayer.ui.components;
-const SHOW_ICON_PATH =
-  'M4.293 10.707c0.36 0.361 0.928 0.388 1.32 0.083l0.094-0.083 2.293-2.292 2.293 2.292c0.361 0.361 0.928 0.388 1.32 0.083l0.094-0.083c0.361-0.361 0.388-0.928 0.083-1.32l-0.083-0.094-3-3c-0.36-0.36-0.928-0.388-1.32-0.083l-0.094 0.083-3 3c-0.391 0.391-0.391 1.024 0 1.414z';
+const {
+  redux: {connect},
+  components: {PLAYER_SIZE, Icon}
+} = KalturaPlayer.ui;
 
-interface PIPMinimizedProps {
+enum InteractiveAreaMargin {
+  DEFAULT = '16px',
+  SMALL = '8px'
+}
+
+interface PIPMinimizedOwnProps {
   childPlayer: KalturaPlayerTypes.Player;
   show: () => void;
   onInverse: () => void;
   hideButtons?: boolean;
 }
+interface PIPMinimizedConnectProps {
+  playerSize?: string;
+}
 
+type PIPMinimizedProps = PIPMinimizedOwnProps & PIPMinimizedConnectProps;
+
+const mapStateToProps = (state: Record<string, any>) => ({
+  playerSize: state.shell.playerSize
+});
+@connect(mapStateToProps)
 export class PipMinimized extends Component<PIPMinimizedProps> {
   ref = createRef();
 
@@ -42,7 +57,9 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
 
   render(props: PIPMinimizedProps) {
     return (
-      <div className={styles.childPlayerContainer}>
+      <div
+        className={styles.childPlayerContainer}
+        style={{right: props.playerSize === PLAYER_SIZE.SMALL ? InteractiveAreaMargin.SMALL : InteractiveAreaMargin.DEFAULT}}>
         <div ref={this.ref} className={[styles.childPlayer, props.hideButtons ? styles.tinyChildPlayer : ''].join(' ')} />
         {this._renderHoverButton()}
       </div>
