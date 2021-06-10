@@ -1,12 +1,12 @@
 import {DualScreenConfig} from './types/DualScreenConfig';
 import {h} from 'preact';
-import {Pip} from './components/pip';
+import {PipChild, PipParent} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
 import {SideBySide} from './components/side-by-side';
 import {Position, Animaitons, Layout, ReservedPresetAreas} from './enums';
 import {VideoSyncManager} from './videoSyncManager';
 import {ResponsiveManager} from './components/responsive-manager';
-import {DragAndSnapManager} from './dragAndSnapManager';
+import {DragAndSnapManager} from './components/drag-and-snap-manager';
 
 export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _player: KalturaPlayerTypes.Player;
@@ -16,7 +16,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _pipPosition: Position = Position.BottomRight;
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager: VideoSyncManager;
-  private _dragAndSnapManager: DragAndSnapManager;
 
   /**
    * The default configuration of the plugin.
@@ -41,7 +40,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._pipPosition = this.config.position;
     this._setMode();
     this._videoSyncManager = new VideoSyncManager(this.eventManager, player, this._secondaryKalturaPlayer, this.logger);
-    this._dragAndSnapManager = new DragAndSnapManager(this.eventManager, this.logger, this._setPipPosition);
   }
 
   private _addBindings() {
@@ -84,16 +82,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => (
-          <Pip
-            hide={() => this._switchToPIPMinimized(true, Animaitons.None)}
-            childSizePercentage={this.config.childSizePercentage}
-            animation={manualChange ? animation : Animaitons.None}
-            inverse
-            childPlayer={this._player}
-            position={this._pipPosition}
-          />
-        )
+        get: () => <PipParent animation={manualChange ? animation : Animaitons.None} player={this._player} />
       })
     );
     const origPlayerParent: HTMLElement = this._player.getView().parentElement!;
@@ -111,16 +100,20 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
               this._switchToPIPMinimized(false, Animaitons.None);
             }}
             onDefaultSize={this._setMode}>
-            <Pip
-              animation={Animaitons.Fade}
-              dragAndSnapManager={this._dragAndSnapManager}
-              childSizePercentage={this.config.childSizePercentage}
-              childPlayer={this._secondaryKalturaPlayer}
+            <DragAndSnapManager
+              eventManager={this.eventManager}
+              logger={this.logger}
               position={this._pipPosition}
-              hide={() => this._switchToPIPMinimized(true, Animaitons.None)}
-              onSideBySideSwitch={this._switchToSideBySide}
-              onInversePIP={() => this._switchToPIPInverse(true, Animaitons.Fade)}
-            />
+              onPositionChanged={this._setPipPosition}>
+              <PipChild
+                animation={Animaitons.Fade}
+                playerSizePercentage={this.config.childSizePercentage}
+                player={this._secondaryKalturaPlayer}
+                hide={() => this._switchToPIPMinimized(true, Animaitons.None)}
+                onSideBySideSwitch={this._switchToSideBySide}
+                onInversePIP={() => this._switchToPIPInverse(true, Animaitons.Fade)}
+              />
+            </DragAndSnapManager>
           </ResponsiveManager>
         )
       })
@@ -139,16 +132,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => (
-          <Pip
-            hide={() => this._switchToPIPMinimizedInverse(true, Animaitons.None)}
-            childSizePercentage={this.config.childSizePercentage}
-            animation={manualChange ? animation : Animaitons.None}
-            inverse
-            childPlayer={this._secondaryKalturaPlayer}
-            position={this._pipPosition}
-          />
-        )
+        get: () => <PipParent animation={manualChange ? animation : Animaitons.None} player={this._secondaryKalturaPlayer} />
       })
     );
     const origPlayerParent: HTMLElement = this._player.getView().parentElement!;
@@ -166,16 +150,20 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
               this._switchToPIPMinimizedInverse(false, Animaitons.None);
             }}
             onDefaultSize={this._setMode}>
-            <Pip
-              animation={Animaitons.Fade}
-              dragAndSnapManager={this._dragAndSnapManager}
-              childSizePercentage={this.config.childSizePercentage}
-              childPlayer={this._player}
+            <DragAndSnapManager
+              eventManager={this.eventManager}
+              logger={this.logger}
               position={this._pipPosition}
-              hide={() => this._switchToPIPMinimizedInverse(true, Animaitons.None)}
-              onSideBySideSwitch={this._switchToSideBySide}
-              onInversePIP={() => this._switchToPIP(true, Animaitons.Fade)}
-            />
+              onPositionChanged={this._setPipPosition}>
+              <PipChild
+                animation={Animaitons.Fade}
+                playerSizePercentage={this.config.childSizePercentage}
+                player={this._player}
+                hide={() => this._switchToPIPMinimizedInverse(true, Animaitons.None)}
+                onSideBySideSwitch={this._switchToSideBySide}
+                onInversePIP={() => this._switchToPIP(true, Animaitons.Fade)}
+              />
+            </DragAndSnapManager>
           </ResponsiveManager>
         )
       })
@@ -194,13 +182,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
         get: () => (
-          <Pip
+          <PipParent
             animation={animation}
-            hide={() => this._switchToPIPMinimized(true, Animaitons.None)}
-            childSizePercentage={this.config.childSizePercentage}
-            inverse
-            childPlayer={this._player}
-            position={this._pipPosition}
+            player={this._player}
           />
         )
       })
@@ -240,13 +224,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         presets: ['Playback', 'Live', 'Error', 'Ads', 'Idle'],
         container: ReservedPresetAreas.VideoContainer,
         get: () => (
-          <Pip
+          <PipParent
             animation={animation}
-            hide={() => this._switchToPIPMinimizedInverse(true, Animaitons.None)}
-            childSizePercentage={this.config.childSizePercentage}
-            inverse
-            childPlayer={this._secondaryKalturaPlayer}
-            position={this._pipPosition}
+            player={this._secondaryKalturaPlayer}
           />
         )
       })
@@ -342,6 +322,5 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   destroy(): void {
     this.eventManager.destroy();
     this._videoSyncManager.destroy();
-    this._dragAndSnapManager.destroy();
   }
 }

@@ -4,7 +4,7 @@
 $animation-duration: 0.3s;
 
 .childPlayer {
-  position: absolute;
+  position: relative;
 
   &:not(.dragging) {
     transition: all $animation-duration ease-in;
