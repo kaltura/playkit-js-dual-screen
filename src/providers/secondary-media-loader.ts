@@ -1,6 +1,6 @@
 import ILoader = KalturaPlayerTypes.ILoader;
 
-const {RequestBuilder, ENUMS} = KalturaPlayer.providers;
+const {RequestBuilder} = KalturaPlayer.providers;
 
 export class SecondaryMediaLoader implements ILoader {
   _parentEntryId: string = '';
@@ -19,12 +19,13 @@ export class SecondaryMediaLoader implements ILoader {
     this._parentEntryId = params.parentEntryId;
     const headers: Map<string, string> = new Map();
     const request = new RequestBuilder(headers);
+    const INCLUDE_FIELDS = 1;
     request.service = 'baseEntry';
     request.action = 'list';
     request.params = {
       filter: {objectType: 'KalturaBaseEntryFilter', parentEntryIdEqual: this._parentEntryId},
       responseProfile: {
-        type: ENUMS.RESPONSE_PROFILE_TYPE.INCLUDE_FIELDS,
+        type: INCLUDE_FIELDS,
         fields: 'id'
       }
     };
@@ -40,7 +41,7 @@ export class SecondaryMediaLoader implements ILoader {
   }
 
   set response(response: any) {
-    this._response = response;
+    this._response.entryId = response[0].data.objects[0].id;
   }
 
   get response(): any {

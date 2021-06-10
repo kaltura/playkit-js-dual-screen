@@ -5,7 +5,6 @@ declare global {
   const KalturaPlayer: {
     providers:{
       RequestBuilder: any
-      ENUMS: any
     };
     ui: {
       EventType: Record<string, string>;

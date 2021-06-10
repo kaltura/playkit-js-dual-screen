@@ -296,7 +296,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
           if (secondaryMediaLoader && secondaryMediaLoader.response) {
-            this._secondaryKalturaPlayer.loadMedia({entryId: secondaryMediaLoader.response[0].data.objects[0].id});
+            this._secondaryKalturaPlayer.loadMedia({entryId: secondaryMediaLoader.response.entryId});
             this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
             this.eventManager.listen(this._player, this.player.Event.FIRST_PLAYING, () => {
               this.logger.debug('secondary player first playing - show dual mode');
