@@ -1,6 +1,6 @@
 import {h, Component, cloneElement, VNode, createRef} from 'preact';
 import {Position} from '../../enums/positionEnum';
-import {getClientX, getClientY, makeStyleString} from '../../utils';
+import {getClientX, getClientY, dimensionStyleToString} from '../../utils';
 import * as styles from './drag-and-snap-manager.scss';
 
 const {
@@ -115,8 +115,8 @@ export class DragAndSnapManager extends Component<DragAndSnapManagerProps, DragA
     if (this._draggableItemRef.current && this._draggableAreaRef.current) {
       let top = parseInt(this._draggableItemRef.current!.style.top, 10);
       let right = parseInt(this._draggableItemRef.current!.style.right, 10);
-      this._draggableItemRef.current!.style.right = makeStyleString(right + deltaMousePosX);
-      this._draggableItemRef.current!.style.top = makeStyleString(top - deltaMousePosY);
+      this._draggableItemRef.current!.style.right = dimensionStyleToString(right + deltaMousePosX);
+      this._draggableItemRef.current!.style.top = dimensionStyleToString(top - deltaMousePosY);
     }
     // handle throttling to avoid performance issues on dragging
     this._throttleWait = true;
@@ -131,10 +131,10 @@ export class DragAndSnapManager extends Component<DragAndSnapManagerProps, DragA
 
   // relative styles: top, right, bottom, left
   private _applyRelativeStyles = (top: number | null, right: number | null, bottom: number | null, left: number | null) => {
-    this._draggableItemRef.current!.style.top = top !== null ? `${top}px` : '';
-    this._draggableItemRef.current!.style.right = right !== null ? `${right}px` : '';
-    this._draggableItemRef.current!.style.bottom = bottom !== null ? `${bottom}px` : '';
-    this._draggableItemRef.current!.style.left = left !== null ? `${left}px` : '';
+    this._draggableItemRef.current!.style.top = top !== null ? dimensionStyleToString(top) : '';
+    this._draggableItemRef.current!.style.right = right !== null ? dimensionStyleToString(right) : '';
+    this._draggableItemRef.current!.style.bottom = bottom !== null ? dimensionStyleToString(bottom) : '';
+    this._draggableItemRef.current!.style.left = left !== null ? dimensionStyleToString(left) : '';
   };
   private _setRelativeStyles = () => {
     switch (this.props.getPosition()) {
@@ -166,8 +166,8 @@ export class DragAndSnapManager extends Component<DragAndSnapManagerProps, DragA
 
   // absolute styles: top, right
   private _applyAbsoluteStyles = (top: number, right: number) => {
-    this._draggableItemRef.current!.style.top = `${top}px`;
-    this._draggableItemRef.current!.style.right = `${right}px`;
+    this._draggableItemRef.current!.style.top = dimensionStyleToString(top);
+    this._draggableItemRef.current!.style.right = dimensionStyleToString(right);
   };
   private _setAbsoluteStyles = (position: Position) => {
     switch (position) {

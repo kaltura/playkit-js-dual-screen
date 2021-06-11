@@ -1,8 +1,9 @@
-import {h, createRef, Component} from 'preact';
+import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip.scss';
 import {Animaitons} from '../../enums';
 import {icons} from '../../icons';
 import {GuiClientRect} from '../../types';
+import {Button} from './../button';
 const {connect} = KalturaPlayer.ui.redux;
 const {utils, reducers} = KalturaPlayer.ui;
 const {Icon} = KalturaPlayer.ui.components;
@@ -17,8 +18,8 @@ interface PIPChildComponentOwnProps {
   player: KalturaPlayerTypes.Player;
   playerSizePercentage: number;
   hide: () => void;
-  onSideBySideSwitch?: () => void;
-  onInversePIP?: () => void;
+  onSideBySideSwitch: () => void;
+  onInversePIP: () => void;
   animation: Animaitons;
   isDragging?: boolean;
 }
@@ -52,19 +53,21 @@ export class PipChild extends Component<PIPChildComponentProps> {
     return (
       <div>
         <div className={styles.innerButtons}>
-          <div className={styles.iconContainer} onMouseUp={this._handleClick(onInversePIP!)}>
+          <Button className={styles.iconContainer} onClick={onInversePIP}>
             <Icon id="dualscreen-pip-swap" height={24} width={24} path={icons.SWAP_ICON_PATH} />
-          </div>
-          <div className={styles.iconContainer} onMouseUp={this._handleClick(onSideBySideSwitch!)}>
+          </Button>
+          <Button className={styles.iconContainer} onClick={onSideBySideSwitch}>
             <Icon id="dualscreen-pip-side-by-side" height={24} width={24} path={icons.SIDE_BY_SIDE_ICON_PATH} />
-          </div>
+          </Button>
         </div>
-        <div onMouseUp={this._handleClick(hide)} role="button" className={styles.hideContainer}>
-          <div className={styles.iconContainer}>
-            <Icon id="dualscreen-pip-hide" height={16} width={16} path={icons.HIDE_ICON_PATH} />
-          </div>
-          Hide
-        </div>
+        <Button className={styles.hideContainer} onClick={hide}>
+          <Fragment>
+            <div className={styles.iconContainer}>
+              <Icon id="dualscreen-pip-hide" height={16} width={16} path={icons.HIDE_ICON_PATH} />
+            </div>
+            Hide
+          </Fragment>
+        </Button>
       </div>
     );
   }

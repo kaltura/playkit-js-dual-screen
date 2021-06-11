@@ -1,6 +1,7 @@
 import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip-minimized.scss';
 import {icons} from '../../icons';
+import {Button} from './../button';
 const {
   components: {Icon}
 } = KalturaPlayer.ui;
@@ -29,18 +30,20 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
     return (
       <Fragment>
         {!hideButtons && (
-          <div onMouseUp={show} role="button" className={styles.showContainer}>
-            <div className={styles.iconContainer}>
-              <Icon id="dualscreen-pip-minimized-show" height={16} width={16} path={icons.SHOW_ICON_PATH} />
-            </div>
-            Show
-          </div>
+          <Button onClick={show} className={styles.showContainer}>
+            <Fragment>
+              <div className={styles.iconContainer}>
+                <Icon id="dualscreen-pip-minimized-show" height={16} width={16} path={icons.SHOW_ICON_PATH} />
+              </div>
+              Show
+            </Fragment>
+          </Button>
         )}
-        <div onMouseUp={onInverse} className={[styles.innerButtons, hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
+        <Button onClick={onInverse} className={[styles.innerButtons, hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
           <div className={styles.iconContainer}>
             <Icon id="dualscreen-pip-minimized-swap" height={24} width={24} path={icons.SWAP_ICON_PATH} />
           </div>
-        </div>
+        </Button>
       </Fragment>
     );
   };
