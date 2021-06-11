@@ -72,9 +72,6 @@ export class PipChild extends Component<PIPChildComponentProps> {
   render(props: PIPChildComponentProps) {
     const styleClass = [styles.childPlayer];
 
-    if (props.playerHover) {
-      styleClass.push(styles.playerHover);
-    }
     if (props.isDragging) {
       styleClass.push(styles.dragging);
     }

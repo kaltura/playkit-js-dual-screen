@@ -71,6 +71,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._pipPosition = position;
   };
 
+  public getPipPosition = (): Position => {
+    return this._pipPosition;
+  }
+
   private _switchToPIP = (manualChange: boolean, animation: Animaitons) => {
     if (manualChange) {
       this._layout = Layout.PIP;
@@ -103,7 +107,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
             <DragAndSnapManager
               eventManager={this.eventManager}
               logger={this.logger}
-              position={this._pipPosition}
+              getPosition={this.getPipPosition}
               onPositionChanged={this._setPipPosition}>
               <PipChild
                 animation={Animaitons.Fade}
@@ -153,7 +157,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
             <DragAndSnapManager
               eventManager={this.eventManager}
               logger={this.logger}
-              position={this._pipPosition}
+              getPosition={this.getPipPosition}
               onPositionChanged={this._setPipPosition}>
               <PipChild
                 animation={Animaitons.Fade}

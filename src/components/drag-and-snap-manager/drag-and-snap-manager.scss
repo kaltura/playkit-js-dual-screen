@@ -1,3 +1,17 @@
-.draggableContainer {
+.draggableArea {
   position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.draggableItem {
+  position: absolute;
+  &.dragging {
+    cursor: move;
+  }
+  &:not(.dragging) {
+    transition: top .3s ease-in, right .3s ease-in, bottom .3s ease-in;
+  }
+  &.prePlayback {
+    bottom: -50px;
+  }
 }

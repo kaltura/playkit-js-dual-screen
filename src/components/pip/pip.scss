@@ -2,17 +2,10 @@
 @import '~styles/styles';
 
 $animation-duration: 0.3s;
+$hide-container-height: 32px;
 
 .childPlayer {
   position: relative;
-
-  &:not(.dragging) {
-    transition: all $animation-duration ease-in;
-  }
-
-  &.playerHover {
-    margin-top: 50px;
-  }
 
   .videoContainer {
     border-radius: 8px;
@@ -30,9 +23,9 @@ $animation-duration: 0.3s;
 
     position: absolute;
     width: 66px;
-    height: 32px;
+    height: $hide-container-height;
     right: 0px;
-    top: -37px;
+    top: calc((5px + #{$hide-container-height}) * -1);
 
     color: #ffffff;
     font-style: normal;

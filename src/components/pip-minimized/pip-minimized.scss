@@ -3,6 +3,7 @@
 .childPlayerContainer {
   position: absolute;
   top: 0;
+  right: 0;
   transform: translateY(-100%);
   animation: fading 0.5s linear;
   .childPlayer {
