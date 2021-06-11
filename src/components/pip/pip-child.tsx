@@ -1,6 +1,6 @@
 import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip.scss';
-import {Animaitons} from '../../enums';
+import {Animations} from '../../enums';
 import {icons} from '../../icons';
 import {GuiClientRect} from '../../types';
 import {Button} from './../button';
@@ -20,7 +20,7 @@ interface PIPChildComponentOwnProps {
   hide: () => void;
   onSideBySideSwitch: () => void;
   onInversePIP: () => void;
-  animation: Animaitons;
+  animation: Animations;
   isDragging?: boolean;
 }
 interface PIPChildComponentConnectProps {
@@ -81,13 +81,13 @@ export class PipChild extends Component<PIPChildComponentProps> {
 
     if (!props.prePlayback && props.animation) {
       switch (props.animation) {
-        case Animaitons.Fade:
+        case Animations.Fade:
           styleClass.push(styles.animatedFade);
           break;
-        case Animaitons.ScaleRight:
+        case Animations.ScaleRight:
           styleClass.push(styles.animatedScaleRight);
           break;
-        case Animaitons.ScaleLeft:
+        case Animations.ScaleLeft:
           styleClass.push(styles.animatedScaleLeft);
           break;
       }

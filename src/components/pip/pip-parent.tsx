@@ -1,6 +1,6 @@
 import {h, createRef, Component} from 'preact';
 import * as styles from './pip.scss';
-import {Animaitons} from '../../enums';
+import {Animations} from '../../enums';
 import {GuiClientRect} from '../../types';
 const {connect} = KalturaPlayer.ui.redux;
 
@@ -12,7 +12,7 @@ const mapStateToProps = (state: Record<string, any>) => ({
 
 interface PIPParentComponentOwnProps {
   player: KalturaPlayerTypes.Player;
-  animation: Animaitons;
+  animation: Animations;
 }
 interface PIPParentComponentConnectProps {
   guiClientRect?: GuiClientRect;
@@ -34,13 +34,13 @@ export class PipParent extends Component<PIPParentComponentProps> {
 
     if (!props.prePlayback && props.animation) {
       switch (props.animation) {
-        case Animaitons.Fade:
+        case Animations.Fade:
           styleClass = styles.animatedFade;
           break;
-        case Animaitons.ScaleRight:
+        case Animations.ScaleRight:
           styleClass = styles.animatedScaleRight;
           break;
-        case Animaitons.ScaleLeft:
+        case Animations.ScaleLeft:
           styleClass = styles.animatedScaleLeft;
           break;
       }

@@ -1,4 +1,4 @@
-export enum Animaitons {
+export enum Animations {
   None = 'None',
   Fade = 'Fade',
   ScaleRight = 'ScaleRight',
