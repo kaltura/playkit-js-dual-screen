@@ -34,7 +34,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._player = player;
     this._addBindings();
     this._secondaryKalturaPlayer = this._createDummyChildPlayer();
-    this._secondaryKalturaPlayer.loadMedia({entryId: '1_q31s7nkk'});
+    this._secondaryKalturaPlayer.loadMedia({entryId: '0_4rvdnj48'});
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
     this._pipPosition = this.config.position;
