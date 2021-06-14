@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.1.0...v1.2.0) (2021-06-14)
+
+
+### Build System
+
+* add release notes ([7521142](https://github.com/kaltura/playkit-js-dual-screen/commit/7521142))
+* fix entry name ([b3f5832](https://github.com/kaltura/playkit-js-dual-screen/commit/b3f5832))
+* update main and npmignore ([1af7a1b](https://github.com/kaltura/playkit-js-dual-screen/commit/1af7a1b))
+* update node js version ([ed55d64](https://github.com/kaltura/playkit-js-dual-screen/commit/ed55d64))
+* **FEC-10700:** add CI/CD ([#4](https://github.com/kaltura/playkit-js-dual-screen/issues/4)) ([87a1995](https://github.com/kaltura/playkit-js-dual-screen/commit/87a1995))
+
+
+### Features
+
+* **FEV-869:** providers refactor ([#6](https://github.com/kaltura/playkit-js-dual-screen/issues/6)) ([e11aeec](https://github.com/kaltura/playkit-js-dual-screen/commit/e11aeec))
+* **FEV-886:** Drag and Snap + Animation ([#8](https://github.com/kaltura/playkit-js-dual-screen/issues/8)) ([e297b72](https://github.com/kaltura/playkit-js-dual-screen/commit/e297b72))
+
+
+
 ## 1.1.0 (2021-06-03)
 
 
