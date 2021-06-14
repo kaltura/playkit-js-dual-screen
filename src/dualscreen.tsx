@@ -34,7 +34,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     super(name, player, config);
     this._player = player;
     this._addBindings();
-    this._secondaryKalturaPlayer = this._createChildPlayer();
+    this._secondaryKalturaPlayer = this._createSecondaryPlayer();
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
   }
@@ -296,26 +296,38 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
           if (secondaryMediaLoader && secondaryMediaLoader.response) {
-            this._secondaryKalturaPlayer.loadMedia({entryId: secondaryMediaLoader.response.entryId});
-            this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
-            this.eventManager.listen(this._player, this.player.Event.FIRST_PLAYING, () => {
-              this.logger.debug('secondary player first playing - show dual mode');
-              this._setMode();
-            });
+            if (secondaryMediaLoader.response.entryId === undefined) {
+              this.logger.error('Secondary entry id not found');
+            } else {
+              this._secondaryKalturaPlayer.loadMedia({entryId: secondaryMediaLoader.response.entryId});
+              this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
+              this.eventManager.listen(this._secondaryKalturaPlayer, this.player.Event.FIRST_PLAYING, () => {
+                this.logger.debug('secondary player first playing - show dual mode');
+                // TODO: uncomment in next release
+                // this._secondaryKalturaPlayer.muted = true;
+                this._setMode();
+              });
+            }
           }
         }
+      })
+      .catch((e: any) => {
+        this.logger.error(e);
       });
   }
 
-  private _createChildPlayer() {
-    let childPlaceholder = document.createElement('div');
-    childPlaceholder.setAttribute('id', 'childPlaceholder');
-    childPlaceholder.style.width = '240px';
-    childPlaceholder.style.height = '135px';
-    childPlaceholder.hidden = true;
-    document.body.appendChild(childPlaceholder);
-    const childPlayerConfig = {
-      targetId: 'childPlaceholder',
+  private _createSecondaryPlayer() {
+    let secondaryPlaceholder = document.createElement('div');
+    secondaryPlaceholder.setAttribute('id', 'secondaryPlaceholder');
+    secondaryPlaceholder.style.width = '240px';
+    secondaryPlaceholder.style.height = '135px';
+    secondaryPlaceholder.hidden = true;
+    document.body.appendChild(secondaryPlaceholder);
+    const secondaryPlayerConfig = {
+      targetId: 'secondaryPlaceholder',
+      playback: {
+        muted: true
+      },
       ui: {
         disable: true
       },
@@ -323,7 +335,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         partnerId: this._player.config.provider.partnerId
       }
     };
-    return KalturaPlayer.setup(childPlayerConfig);
+    return KalturaPlayer.setup(secondaryPlayerConfig);
   }
 
   /**

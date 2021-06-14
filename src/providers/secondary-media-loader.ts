@@ -1,6 +1,6 @@
 import ILoader = KalturaPlayerTypes.ILoader;
 
-const {RequestBuilder} = KalturaPlayer.providers;
+const {RequestBuilder, ResponseTypes} = KalturaPlayer.providers;
 
 export class SecondaryMediaLoader implements ILoader {
   _parentEntryId: string = '';
@@ -41,7 +41,10 @@ export class SecondaryMediaLoader implements ILoader {
   }
 
   set response(response: any) {
-    this._response.entryId = response[0].data.objects[0].id;
+    const mediaEntryListResponse = new ResponseTypes.KalturaBaseEntryListResponse(response[0]?.data);
+    if (mediaEntryListResponse.totalCount){
+      this._response.entryId = mediaEntryListResponse?.entries[0]?.id;
+    }
   }
 
   get response(): any {
