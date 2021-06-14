@@ -43,7 +43,7 @@ export class SecondaryMediaLoader implements ILoader {
   set response(response: any) {
     const mediaEntryListResponse = new ResponseTypes.KalturaBaseEntryListResponse(response[0]?.data);
     if (mediaEntryListResponse.totalCount){
-      this._response.entryId = mediaEntryListResponse?.entries[0]?.id;
+      this._response.entrys = mediaEntryListResponse?.entries;
     }
   }
 
