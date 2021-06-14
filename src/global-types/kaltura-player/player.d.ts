@@ -13,7 +13,9 @@ declare namespace KalturaPlayerTypes {
     dispatchEvent(event: FakeEvent): boolean;
     seekToLiveEdge(): void;
     destroy(): void;
+    reset(): void;
     getView: () => Node;
+    getMediaInfo: () => any;
     paused: boolean;
     seeking: boolean;
     isOnLiveEdge: () => boolean;
@@ -30,5 +32,6 @@ declare namespace KalturaPlayerTypes {
     configure: Function;
     ui: any;
     config: KalturaPlayerTypes.PlayerConfig & DeepPartial<KalturaPlayerContribTypes.ContribConfig>;
+    provider: any;
   }
 }

@@ -4,5 +4,6 @@ declare namespace KalturaPlayerTypes {
         eventManager: KalturaPlayerTypes.EventManager;
         config: any;
         logger: KalturaPlayerTypes.Logger;
+        getName(): string;
     }
 }
