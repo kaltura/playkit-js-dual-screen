@@ -1,12 +1,15 @@
 import {h, createRef, Component} from 'preact';
 import * as styles from './side-by-side.scss';
 import {icons} from '../../icons';
+import {Button} from './../button';
+import {Animations} from './../../enums';
 const {Icon} = KalturaPlayer.ui.components;
 const {connect} = KalturaPlayer.ui.redux;
 
 interface SideBySideComponentOwnProps {
   secondaryPlayer: KalturaPlayerTypes.Player;
   onPIPSwitch: () => void;
+  animation: Animations;
 }
 interface SideBySideComponentConnectProps {
   guiClientRect?: {width: number; height: number};
@@ -34,19 +37,25 @@ export class SideBySide extends Component<SideBySideComponentProps> {
     }
     return (
       <div className={styles.innerButtons}>
-        <div className={styles.iconContainer} onMouseUp={onPIPSwitch}>
-          <Icon id="dualscreen-side-by-side-pip" height={24} width={24} path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH} />
-        </div>
+        <Button className={styles.iconContainer} onClick={onPIPSwitch}>
+          <Icon id="dualscreen-side-by-side-pip" height={icons.MediumSize} width={icons.MediumSize} path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH} />
+        </Button>
       </div>
     );
   }
 
-  render({guiClientRect}: SideBySideComponentProps) {
+  render({guiClientRect, animation}: SideBySideComponentProps) {
     const playerContainerStyles = {
       height: (guiClientRect?.width! / 2 / 16) * 9
     };
+    const classNames = [styles.secondaryPlayer];
+    if (animation === Animations.ScaleLeft) {
+      classNames.push(styles.animatedScale);
+    } else {
+      classNames.push(styles.animatedFade);
+    }
     return (
-      <div ref={this.ref} className={styles.secondaryPlayer} style={playerContainerStyles}>
+      <div ref={this.ref} className={classNames.join(' ')} style={playerContainerStyles}>
         {this._renderHoverButton()}
       </div>
     );

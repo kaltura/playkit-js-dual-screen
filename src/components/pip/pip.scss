@@ -1,24 +1,16 @@
 @import '~styles/variables';
 @import '~styles/styles';
 
+$hide-container-height: 32px;
+$hideContainerGap: 5px;
+
 .childPlayer {
-  position: absolute;
+  position: relative;
 
   .videoContainer {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.3);
-  }
-
-  &.bottom {
-    bottom: 0;
-  }
-
-  &.right {
-    right: 0;
-  }
-  &.left {
-    left: 0;
   }
 
   .hideContainer {
@@ -31,9 +23,9 @@
 
     position: absolute;
     width: 66px;
-    height: 32px;
+    height: $hide-container-height;
     right: 0px;
-    top: -37px;
+    top: calc((#{$hideContainerGap + $hide-container-height}) * -1);
 
     color: #ffffff;
     font-style: normal;
@@ -63,7 +55,45 @@
       margin-left: 8px;
       display: inline-block;
       padding: 2px;
-
     }
+  }
+}
+
+.animatedFade {
+  animation: fading $animation-duration linear;
+}
+
+.animatedScaleRight {
+  animation: scalingRight $animation-duration linear;
+}
+
+.animatedScaleLeft {
+  animation: scalingLeft $animation-duration linear;
+}
+
+@keyframes scalingRight {
+  0% {
+    transform: scale(0.5) translate(-50%);
+  }
+  100% {
+    transform: scale(1) translate(0%);
+  }
+}
+
+@keyframes scalingLeft {
+  0% {
+    transform: scale(0.5) translate(50%);
+  }
+  100% {
+    transform: scale(1) translate(0%);
+  }
+}
+
+@keyframes fading {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }

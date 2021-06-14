@@ -1,6 +1,11 @@
+type Target = KalturaPlayerTypes.Player | HTMLElement | Document;
+type CallbackFunction = (...args: any) => void;
+
 declare namespace KalturaPlayerTypes {
   export interface EventManager {
-    listen: (player: KalturaPlayerTypes.Player, event: typeof EventType, cb: (...args: any) => void) => void;
+    listen: (target: Target, event: typeof EventType, cb: CallbackFunction) => void;
+    listenOnce: (target: Target, event: typeof EventType, cb: CallbackFunction) => void;
+    unlisten: (target: Target, event: typeof EventType) => void;
     destroy: () => void;
   }
 }

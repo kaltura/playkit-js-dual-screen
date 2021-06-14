@@ -14,5 +14,43 @@
     z-index: 1;
     padding: 16px;
     flex-direction: row-reverse;
+    animation: appears $animation-duration linear;
+  }
+}
+
+.animatedScale {
+  animation: scaling $animation-duration linear;
+}
+
+.animatedFade {
+  animation: fading $animation-duration linear;
+}
+
+@keyframes appears {
+  from {
+    visibility: hidden;
+  }
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes scaling {
+  0% {
+    transform: scale(2) translate(25%);
+    z-index: 100;
+  }
+  100% {
+    transform: scale(1) translate(0%);
+    z-index: 0;
+  }
+}
+
+@keyframes fading {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
