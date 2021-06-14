@@ -1,8 +1,8 @@
 @import '~styles/variables';
 @import '~styles/styles';
 
-$animation-duration: 0.3s;
 $hide-container-height: 32px;
+$hideContainerGap: 5px;
 
 .childPlayer {
   position: relative;
@@ -25,7 +25,7 @@ $hide-container-height: 32px;
     width: 66px;
     height: $hide-container-height;
     right: 0px;
-    top: calc((5px + #{$hide-container-height}) * -1);
+    top: calc((#{$hideContainerGap + $hide-container-height}) * -1);
 
     color: #ffffff;
     font-style: normal;

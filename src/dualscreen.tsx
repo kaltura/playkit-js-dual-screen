@@ -34,7 +34,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._player = player;
     this._addBindings();
     this._secondaryKalturaPlayer = this._createDummyChildPlayer();
-    this._secondaryKalturaPlayer.loadMedia({entryId: '0_4rvdnj48'});
+    this._secondaryKalturaPlayer.loadMedia({entryId: '1_q31s7nkk'});
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
     this._pipPosition = this.config.position;
@@ -50,14 +50,14 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
 
   private _setMode = () => {
     if (this._layout === Layout.PIP) {
-      this._inverse ? this._switchToPIPInverse(false, Animations.Fade) : this._switchToPIP(false, Animations.Fade);
+      this._inverse ? this._switchToPIPInverse(false) : this._switchToPIP(false);
       return;
     }
     if (this._layout === Layout.PIPMinimized) {
-      this._switchToPIPMinimized(false, Animations.None);
+      this._switchToPIPMinimized(false);
       return;
     }
-    this._switchToSideBySide();
+    this._switchToSideBySide(false);
   };
 
   private _removeActives() {
@@ -75,7 +75,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     return this._pipPosition;
   };
 
-  private _switchToPIP = (manualChange: boolean, animation: Animations) => {
+  private _switchToPIP = (manualChange: boolean, parentAnimation: Animations = Animations.None) => {
     if (manualChange) {
       this._layout = Layout.PIP;
       this._inverse = false;
@@ -86,7 +86,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Ads'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent animation={manualChange ? animation : Animations.None} player={this._player} />
+        get: () => <PipParent animation={parentAnimation} player={this._player} />
       })
     );
     const origPlayerParent: HTMLElement = this._player.getView().parentElement!;
@@ -101,7 +101,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         get: () => (
           <ResponsiveManager
             onMinSize={() => {
-              this._switchToPIPMinimized(false, Animations.None);
+              this._switchToPIPMinimized(false);
             }}
             onDefaultSize={this._setMode}>
             <DragAndSnapManager
@@ -113,8 +113,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this._secondaryKalturaPlayer}
-                hide={() => this._switchToPIPMinimized(true, Animations.None)}
-                onSideBySideSwitch={this._switchToSideBySide}
+                hide={() => this._switchToPIPMinimized(true)}
+                onSideBySideSwitch={() => this._switchToSideBySide(true)}
                 onInversePIP={() => this._switchToPIPInverse(true, Animations.Fade)}
               />
             </DragAndSnapManager>
@@ -124,7 +124,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     );
   };
 
-  private _switchToPIPInverse = (manualChange: boolean, animation: Animations) => {
+  private _switchToPIPInverse = (manualChange: boolean, parentAnimation: Animations = Animations.None) => {
     if (manualChange) {
       this._layout = Layout.PIP;
       this._inverse = true;
@@ -136,7 +136,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Ads'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent animation={manualChange ? animation : Animations.None} player={this._secondaryKalturaPlayer} />
+        get: () => <PipParent animation={parentAnimation} player={this._secondaryKalturaPlayer} />
       })
     );
     const origPlayerParent: HTMLElement = this._player.getView().parentElement!;
@@ -151,7 +151,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         get: () => (
           <ResponsiveManager
             onMinSize={() => {
-              this._switchToPIPMinimizedInverse(false, Animations.None);
+              this._switchToPIPMinimizedInverse(false);
             }}
             onDefaultSize={this._setMode}>
             <DragAndSnapManager
@@ -163,8 +163,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this._player}
-                hide={() => this._switchToPIPMinimizedInverse(true, Animations.None)}
-                onSideBySideSwitch={this._switchToSideBySide}
+                hide={() => this._switchToPIPMinimizedInverse(true)}
+                onSideBySideSwitch={() => this._switchToSideBySide(true)}
                 onInversePIP={() => this._switchToPIP(true, Animations.Fade)}
               />
             </DragAndSnapManager>
@@ -174,7 +174,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     );
   };
 
-  private _switchToPIPMinimized = (manualChange: boolean, animation: Animations) => {
+  private _switchToPIPMinimized = (manualChange: boolean, parentAnimation: Animations = Animations.None) => {
     if (manualChange) {
       this._layout = Layout.PIPMinimized;
       this._inverse = false;
@@ -185,7 +185,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Ads'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent animation={animation} player={this._player} />
+        get: () => <PipParent animation={parentAnimation} player={this._player} />
       })
     );
     this._removeActivesArr.push(
@@ -196,11 +196,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         get: () => (
           <ResponsiveManager
             onMinSize={() => {
-              this._switchToPIPMinimized(false, Animations.None);
+              this._switchToPIPMinimized(false);
             }}
             onDefaultSize={this._setMode}>
             <PipMinimized
-              show={() => this._switchToPIP(true, Animations.None)}
+              show={() => this._switchToPIP(true)}
               childPlayer={this._secondaryKalturaPlayer}
               onInverse={() => this._switchToPIPMinimizedInverse(true, Animations.Fade)}
             />
@@ -210,7 +210,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     );
   };
 
-  private _switchToPIPMinimizedInverse = (manualChange: boolean, animation: Animations) => {
+  private _switchToPIPMinimizedInverse = (manualChange: boolean, parentAnimation: Animations = Animations.None) => {
     if (manualChange) {
       this._layout = Layout.PIPMinimized;
       this._inverse = true;
@@ -222,7 +222,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: ['Playback', 'Live', 'Ads'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent animation={animation} player={this._secondaryKalturaPlayer} />
+        get: () => <PipParent animation={parentAnimation} player={this._secondaryKalturaPlayer} />
       })
     );
     this._removeActivesArr.push(
@@ -233,11 +233,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         get: () => (
           <ResponsiveManager
             onMinSize={() => {
-              this._switchToPIPMinimizedInverse(false, Animations.None);
+              this._switchToPIPMinimizedInverse(false);
             }}
             onDefaultSize={this._setMode}>
             <PipMinimized
-              show={() => this._switchToPIPInverse(true, Animations.None)}
+              show={() => this._switchToPIPInverse(true)}
               childPlayer={this._player}
               onInverse={() => this._switchToPIPMinimized(true, Animations.Fade)}
             />
@@ -247,7 +247,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     );
   };
 
-  private _switchToSideBySide = (manualChange: boolean = true) => {
+  private _switchToSideBySide = (manualChange: boolean) => {
     if (manualChange) {
       this._layout = Layout.SideBySide;
     }
@@ -263,7 +263,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-side-by-side',
         presets: ['Playback', 'Live', 'Ads'],
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <SideBySide secondaryPlayer={this._player} onPIPSwitch={() => this._switchToPIP(true, Animations.ScaleRight)} animated />
+        get: () => (
+          <SideBySide
+            secondaryPlayer={this._player}
+            onPIPSwitch={() => this._switchToPIP(true, Animations.ScaleRight)}
+            animation={Animations.ScaleLeft}
+          />
+        )
       })
     );
     this._removeActivesArr.push(
@@ -274,10 +280,14 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         get: () => (
           <ResponsiveManager
             onMinSize={() => {
-              this._switchToPIPMinimized(false, Animations.None);
+              this._switchToPIPMinimized(false);
             }}
             onDefaultSize={this._setMode}>
-            <SideBySide secondaryPlayer={this._secondaryKalturaPlayer} onPIPSwitch={() => this._switchToPIPInverse(true, Animations.ScaleLeft)} />
+            <SideBySide
+              secondaryPlayer={this._secondaryKalturaPlayer}
+              onPIPSwitch={() => this._switchToPIPInverse(true, Animations.ScaleLeft)}
+              animation={Animations.Fade}
+            />
           </ResponsiveManager>
         )
       })
