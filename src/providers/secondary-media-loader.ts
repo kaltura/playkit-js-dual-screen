@@ -5,7 +5,9 @@ const {RequestBuilder, ResponseTypes} = KalturaPlayer.providers;
 export class SecondaryMediaLoader implements ILoader {
   _parentEntryId: string = '';
   _requests: any[] = [];
-  _response: any = {};
+  _response: any = {
+    entries: []
+  };
 
   static get id(): string {
     return 'dualscreen';
@@ -43,7 +45,7 @@ export class SecondaryMediaLoader implements ILoader {
   set response(response: any) {
     const mediaEntryListResponse = new ResponseTypes.KalturaBaseEntryListResponse(response[0]?.data);
     if (mediaEntryListResponse.totalCount){
-      this._response.entrys = mediaEntryListResponse?.entries;
+      this._response.entries = mediaEntryListResponse?.entries;
     }
   }
 

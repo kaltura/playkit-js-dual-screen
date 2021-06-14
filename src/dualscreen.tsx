@@ -295,19 +295,18 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
       .then((data: Map<string, any>) => {
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
-          if (secondaryMediaLoader && secondaryMediaLoader.response) {
-            if (secondaryMediaLoader.response.entryId === undefined) {
-              this.logger.error('Secondary entry id not found');
-            } else {
-              this._secondaryKalturaPlayer.loadMedia({entryId: secondaryMediaLoader.response?.entries[0]?.id});
-              this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
-              this.eventManager.listen(this._secondaryKalturaPlayer, this.player.Event.FIRST_PLAYING, () => {
-                this.logger.debug('secondary player first playing - show dual mode');
-                // TODO: uncomment in next release
-                // this._secondaryKalturaPlayer.muted = true;
-                this._setMode();
-              });
-            }
+          const entryId = secondaryMediaLoader?.response?.entries[0]?.id;
+          if (entryId === undefined) {
+            this.logger.error('Secondary entry id not found');
+          } else {
+            this._secondaryKalturaPlayer.loadMedia({entryId: secondaryMediaLoader.response?.entries[0]?.id});
+            this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
+            this.eventManager.listen(this._secondaryKalturaPlayer, this.player.Event.FIRST_PLAYING, () => {
+              this.logger.debug('secondary player first playing - show dual mode');
+              // TODO: uncomment in next release
+              // this._secondaryKalturaPlayer.muted = true;
+              this._setMode();
+            });
           }
         }
       })
@@ -325,6 +324,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     document.body.appendChild(secondaryPlaceholder);
     const secondaryPlayerConfig = {
       targetId: 'secondaryPlaceholder',
+      disableUserCache: true,
       playback: {
         muted: true
       },
