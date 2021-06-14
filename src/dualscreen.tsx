@@ -297,7 +297,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
           if (secondaryMediaLoader && secondaryMediaLoader.response) {
             if (secondaryMediaLoader.response.entryId === undefined) {
-              this.logger.error('Secondary entry id not found');
+              this.logger.warn('Secondary entry id not found');
             } else {
               this._secondaryKalturaPlayer.loadMedia({entryId: secondaryMediaLoader.response?.entries[0]?.id});
               this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
