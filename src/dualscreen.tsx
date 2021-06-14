@@ -38,8 +38,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
     this._pipPosition = this.config.position;
-    this._setMode();
-    this._videoSyncManager = new VideoSyncManager(this.eventManager, player, this._secondaryKalturaPlayer, this.logger);
   }
 
   loadMedia(): void {
@@ -305,10 +303,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
           const entryId = secondaryMediaLoader?.response?.entries[0]?.id;
-          if (entryId === undefined) {
+          if (!entryId) {
             this.logger.warn('Secondary entry id not found');
           } else {
-            this._secondaryKalturaPlayer.loadMedia({entryId: secondaryMediaLoader.response?.entries[0]?.id});
+            this._secondaryKalturaPlayer.loadMedia({entryId});
             this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
             this.eventManager.listen(this._secondaryKalturaPlayer, this.player.Event.FIRST_PLAYING, () => {
               this.logger.debug('secondary player first playing - show dual mode');
