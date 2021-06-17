@@ -40,43 +40,38 @@ export class PipChild extends Component<PIPChildComponentProps> {
     this.videoContainerRef?.current?.appendChild(player.getView());
   }
 
-  private _handleClick = (fn: Function) => (e: Event) => {
-    e.stopPropagation();
-    fn();
-  };
-
-  private _renderHoverButton() {
-    const {onSideBySideSwitch, hide, onInversePIP, playerHover, isDragging} = this.props;
-    if (!playerHover || isDragging) {
-      return null;
-    }
+  private _renderInnerButtons() {
+    const {onSideBySideSwitch, onInversePIP} = this.props;
     return (
-      <div>
-        <div className={styles.innerButtons}>
-          <Button className={styles.iconContainer} onClick={onInversePIP}>
-            <Icon id="dualscreen-pip-swap" height={icons.MediumSize} width={icons.MediumSize} path={icons.SWAP_ICON_PATH} />
-          </Button>
-          <Button className={styles.iconContainer} onClick={onSideBySideSwitch}>
-            <Icon id="dualscreen-pip-side-by-side" height={icons.MediumSize} width={icons.MediumSize} path={icons.SIDE_BY_SIDE_ICON_PATH} />
-          </Button>
-        </div>
-        <Button className={styles.hideContainer} onClick={hide}>
-          <Fragment>
-            <div className={styles.iconContainer}>
-              <Icon id="dualscreen-pip-hide" height={icons.SmallSize} width={icons.SmallSize} path={icons.HIDE_ICON_PATH} />
-            </div>
-            Hide
-          </Fragment>
+      <div className={styles.innerButtons}>
+        <Button className={styles.iconContainer} onClick={onInversePIP}>
+          <Icon id="dualscreen-pip-swap" height={icons.MediumSize} width={icons.MediumSize} path={icons.SWAP_ICON_PATH} />
+        </Button>
+        <Button className={styles.iconContainer} onClick={onSideBySideSwitch}>
+          <Icon id="dualscreen-pip-side-by-side" height={icons.MediumSize} width={icons.MediumSize} path={icons.SIDE_BY_SIDE_ICON_PATH} />
         </Button>
       </div>
+    );
+  }
+
+  private _renderHideButton() {
+    return (
+      <Button className={styles.hideContainer} onClick={this.props.hide}>
+        <Fragment>
+          <div className={styles.iconContainer}>
+            <Icon id="dualscreen-pip-hide" height={icons.SmallSize} width={icons.SmallSize} path={icons.HIDE_ICON_PATH} />
+          </div>
+          Hide
+        </Fragment>
+      </Button>
     );
   }
 
   render(props: PIPChildComponentProps) {
     const styleClass = [styles.childPlayer];
 
-    if (props.isDragging) {
-      styleClass.push(styles.dragging);
+    if (props.isDragging || !props.playerHover) {
+      styleClass.push(styles.hideControlButtons);
     }
 
     if (!props.prePlayback && props.animation) {
@@ -102,8 +97,10 @@ export class PipChild extends Component<PIPChildComponentProps> {
 
     return (
       <div className={styleClass.join(' ')} ref={this.pipContainerRef}>
-        <div className={styles.videoContainer} style={videoContainerStyles} ref={this.videoContainerRef} />
-        {this._renderHoverButton()}
+        {this._renderHideButton()}
+        <div className={styles.videoContainer} style={videoContainerStyles} ref={this.videoContainerRef}>
+          {this._renderInnerButtons()}
+        </div>
       </div>
     );
   }
