@@ -37,7 +37,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
     }
     return (
       <div className={styles.innerButtons}>
-        <Button className={styles.iconContainer} onClick={onPIPSwitch}>
+        <Button className={styles.iconContainer} onClick={onPIPSwitch} tooltip={{label: 'Expand Screen', type: 'bottom-left'}}>
           <Icon id="dualscreen-side-by-side-pip" height={icons.MediumSize} width={icons.MediumSize} path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH} />
         </Button>
       </div>
