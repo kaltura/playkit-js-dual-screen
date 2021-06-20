@@ -22,7 +22,7 @@ export const Button = ({onClick, className, children, tooltip}: ButtonProps) => 
   );
   if (tooltip) {
     return (
-      <div className={className} onMouseUp={_handleClick} role="button">
+      <div className={className} aria-label={tooltip.label} onMouseUp={_handleClick} role="button">
         <Tooltip label={tooltip.label} type={tooltip.type}>
           {children}
         </Tooltip>
