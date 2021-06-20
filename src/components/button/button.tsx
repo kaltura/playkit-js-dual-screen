@@ -7,8 +7,8 @@ interface ButtonProps {
   className: string;
   children: VNode;
   tooltip?: {
-    label: string,
-    type: string
+    label: string;
+    type: string;
   };
 }
 
@@ -20,18 +20,23 @@ export const Button = ({onClick, className, children, tooltip}: ButtonProps) => 
     },
     [onClick]
   );
+  const buttonProps: Record<string, any> = {
+    className,
+    onMouseUp: _handleClick,
+    role: 'button'
+  };
   if (tooltip) {
-    return (
-      <div className={className} aria-label={tooltip.label} onMouseUp={_handleClick} role="button">
+    buttonProps['aria-label'] = tooltip.label;
+  }
+  return (
+    <div {...buttonProps}>
+      {tooltip ? (
         <Tooltip label={tooltip.label} type={tooltip.type}>
           {children}
         </Tooltip>
-      </div>
-    );
-  }
-  return (
-    <div className={className} onMouseUp={_handleClick} role="button">
-      {children}
+      ) : (
+        children
+      )}
     </div>
   );
 };
