@@ -1,5 +1,8 @@
 @import '~styles/styles';
 
+$show-container-height: 32px;
+$show-container-gap: 5px;
+
 .childPlayerContainer {
   position: absolute;
   top: 0;
@@ -28,10 +31,9 @@
 
     position: absolute;
     width: 66px;
-    height: 32px;
+    height: $show-container-height;
     right: 0px;
-    top: 0px;
-    transform: translateY(calc(-100% - 5px));
+    top: calc((#{$show-container-height} + #{$show-container-gap}) * -1);
 
     color: #ffffff;
     font-style: normal;
