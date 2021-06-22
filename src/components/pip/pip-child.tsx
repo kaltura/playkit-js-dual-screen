@@ -1,6 +1,6 @@
 import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip.scss';
-import {Animations} from '../../enums';
+import {Animations, Labels} from '../../enums';
 import {icons} from '../../icons';
 import {GuiClientRect} from '../../types';
 import {Button} from './../button';
@@ -53,10 +53,10 @@ export class PipChild extends Component<PIPChildComponentProps> {
     return (
       <div>
         <div className={styles.innerButtons}>
-          <Button className={styles.iconContainer} onClick={onInversePIP}>
+          <Button className={styles.iconContainer} onClick={onInversePIP} tooltip={{label: Labels.SwitchScreen, type: 'bottom-left'}}>
             <Icon id="dualscreen-pip-swap" height={icons.MediumSize} width={icons.MediumSize} path={icons.SWAP_ICON_PATH} />
           </Button>
-          <Button className={styles.iconContainer} onClick={onSideBySideSwitch}>
+          <Button className={styles.iconContainer} onClick={onSideBySideSwitch} tooltip={{label: Labels.SideBySide, type: 'bottom'}}>
             <Icon id="dualscreen-pip-side-by-side" height={icons.MediumSize} width={icons.MediumSize} path={icons.SIDE_BY_SIDE_ICON_PATH} />
           </Button>
         </div>
@@ -65,7 +65,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
             <div className={styles.iconContainer}>
               <Icon id="dualscreen-pip-hide" height={icons.SmallSize} width={icons.SmallSize} path={icons.HIDE_ICON_PATH} />
             </div>
-            Hide
+            {Labels.Hide}
           </Fragment>
         </Button>
       </div>

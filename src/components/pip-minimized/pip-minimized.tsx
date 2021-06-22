@@ -2,6 +2,7 @@ import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip-minimized.scss';
 import {icons} from '../../icons';
 import {Button} from './../button';
+import {Labels} from '../../enums';
 const {
   components: {Icon}
 } = KalturaPlayer.ui;
@@ -35,7 +36,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
               <div className={styles.iconContainer}>
                 <Icon id="dualscreen-pip-minimized-show" height={icons.SmallSize} width={icons.SmallSize} path={icons.SHOW_ICON_PATH} />
               </div>
-              Show
+              {Labels.Show}
             </Fragment>
           </Button>
         )}
