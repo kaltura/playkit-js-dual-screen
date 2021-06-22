@@ -2,7 +2,7 @@ import {h, createRef, Component} from 'preact';
 import * as styles from './side-by-side.scss';
 import {icons} from '../../icons';
 import {Button} from './../button';
-import {Animations} from './../../enums';
+import {Animations, Labels} from './../../enums';
 const {Icon} = KalturaPlayer.ui.components;
 const {connect} = KalturaPlayer.ui.redux;
 
@@ -37,7 +37,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
     }
     return (
       <div className={styles.innerButtons}>
-        <Button className={styles.iconContainer} onClick={onPIPSwitch}>
+        <Button className={styles.iconContainer} onClick={onPIPSwitch} tooltip={{label: Labels.ExpandScreen, type: 'bottom-left'}}>
           <Icon id="dualscreen-side-by-side-pip" height={icons.MediumSize} width={icons.MediumSize} path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH} />
         </Button>
       </div>
