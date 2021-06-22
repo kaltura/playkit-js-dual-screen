@@ -93,7 +93,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
 
     const height: number = (props.guiClientRect!.height * props.playerSizePercentage) / 100;
     const width: number = (height * 16) / 9;
-    const videoContainerStyles = {
+    const playerContainerStyles = {
       height: `${height + 'px'}`,
       width: `${width + 'px'}`
     };
@@ -101,7 +101,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
     return (
       <div className={styleClass.join(' ')} ref={this.pipContainerRef}>
         {this._renderHideButton()}
-        <div className={styles.playerContainer} style={videoContainerStyles} ref={this.playerContainerRef}>
+        <div className={styles.playerContainer} style={playerContainerStyles} ref={this.playerContainerRef}>
           {this._renderInnerButtons()}
         </div>
       </div>
