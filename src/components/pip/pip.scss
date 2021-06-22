@@ -7,13 +7,17 @@ $hideContainerGap: 5px;
 .childPlayer {
   position: relative;
 
-  &.hideControlButtons {
-    .hideContainer {
-      display: none;
-    }
+  &.hovering,
+  &.dragging {
     .innerButtons {
       display: none;
     }
+  }
+  &.hovering .hideContainer {
+    display: none;
+  }
+  &.dragging .hideContainer {
+    visibility: hidden;
   }
 
   .hideContainer {
@@ -49,7 +53,7 @@ $hideContainerGap: 5px;
     }
   }
 
-  .videoContainer {
+  .playerContainer {
     position: relative;
     border-radius: 8px;
     overflow: hidden;

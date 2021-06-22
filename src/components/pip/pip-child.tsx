@@ -32,12 +32,12 @@ interface PIPChildComponentConnectProps {
 type PIPChildComponentProps = PIPChildComponentOwnProps & PIPChildComponentConnectProps;
 @connect(mapStateToProps, utils.bindActions(reducers.shell.actions))
 export class PipChild extends Component<PIPChildComponentProps> {
-  videoContainerRef = createRef<HTMLDivElement>();
+  playerContainerRef = createRef<HTMLDivElement>();
   pipContainerRef = createRef<HTMLDivElement>();
 
   componentDidMount() {
     const {player} = this.props;
-    this.videoContainerRef?.current?.appendChild(player.getView());
+    this.playerContainerRef?.current?.appendChild(player.getView());
   }
 
   private _renderInnerButtons() {
@@ -70,8 +70,11 @@ export class PipChild extends Component<PIPChildComponentProps> {
   render(props: PIPChildComponentProps) {
     const styleClass = [styles.childPlayer];
 
-    if (props.isDragging || !props.playerHover) {
-      styleClass.push(styles.hideControlButtons);
+    if (props.isDragging) {
+      styleClass.push(styles.dragging);
+    }
+    if (!props.playerHover) {
+      styleClass.push(styles.hovering);
     }
 
     if (!props.prePlayback && props.animation) {
@@ -98,7 +101,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
     return (
       <div className={styleClass.join(' ')} ref={this.pipContainerRef}>
         {this._renderHideButton()}
-        <div className={styles.videoContainer} style={videoContainerStyles} ref={this.videoContainerRef}>
+        <div className={styles.playerContainer} style={videoContainerStyles} ref={this.playerContainerRef}>
           {this._renderInnerButtons()}
         </div>
       </div>
