@@ -17,6 +17,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _pipPosition: Position = Position.BottomRight;
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager?: VideoSyncManager;
+  private _playbackEnded = false;
 
   /**
    * The default configuration of the plugin.
@@ -48,6 +49,17 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this.eventManager.listen(this.player, this.player.Event.RESIZE, (e: any) => {
       this.logger.debug(e);
     });
+    this.eventManager.listen(this.player, this.player.Event.PLAYBACK_ENDED, () => {
+      this._playbackEnded = true;
+    });
+    this.eventManager.listen(this.player, this.player.Event.PLAY, () => {
+      if (this._playbackEnded) {
+        // reset mode and pip-position on replay
+        this._playbackEnded = false;
+        this._resetMode();
+        this._setMode();
+      }
+    });
   }
 
   private _setMode = () => {
@@ -60,6 +72,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
       return;
     }
     this._switchToSideBySide(false);
+  };
+
+  private _resetMode = () => {
+    this._layout = this.config.layout;
+    this._inverse = this.config.inverse;
+    this._pipPosition = this.config.position;
   };
 
   private _removeActives() {
