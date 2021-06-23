@@ -39,6 +39,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
     this._pipPosition = this.config.position;
+      this._player.ui.removeComponent({
+          presets: ['Playback', 'Live', 'Ads'],
+          container: ReservedPresetAreas.BottomBarRightControls,
+          removeComponent: 'Settings'
+      })
   }
 
   loadMedia(): void {
