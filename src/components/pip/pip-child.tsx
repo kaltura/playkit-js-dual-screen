@@ -54,16 +54,16 @@ export class PipChild extends Component<PIPChildComponentProps> {
       <div>
         <div className={styles.innerButtons}>
           <Button className={styles.iconContainer} onClick={onInversePIP} tooltip={{label: Labels.SwitchScreen, type: 'bottom-left'}}>
-            <Icon id="dualscreen-pip-swap" height={icons.MediumSize} width={icons.MediumSize} path={icons.SWAP_ICON_PATH} />
+            <Icon id="dualscreen-pip-swap" height={icons.MediumSize} width={icons.MediumSize} viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`} path={icons.SWAP_ICON_PATH} />
           </Button>
           <Button className={styles.iconContainer} onClick={onSideBySideSwitch} tooltip={{label: Labels.SideBySide, type: 'bottom'}}>
-            <Icon id="dualscreen-pip-side-by-side" height={icons.MediumSize} width={icons.MediumSize} path={icons.SIDE_BY_SIDE_ICON_PATH} />
+            <Icon id="dualscreen-pip-side-by-side" height={icons.MediumSize} width={icons.MediumSize} viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`} path={icons.SIDE_BY_SIDE_ICON_PATH} />
           </Button>
         </div>
         <Button className={styles.hideContainer} onClick={hide}>
           <Fragment>
             <div className={styles.iconContainer}>
-              <Icon id="dualscreen-pip-hide" height={icons.SmallSize} width={icons.SmallSize} path={icons.HIDE_ICON_PATH} />
+              <Icon id="dualscreen-pip-hide" height={icons.SmallSize} width={icons.SmallSize} viewBox={`0 0 ${icons.SmallSize} ${icons.SmallSize}`} path={icons.HIDE_ICON_PATH} />
             </div>
             {Labels.Hide}
           </Fragment>

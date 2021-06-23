@@ -34,7 +34,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
           <Button onClick={show} className={styles.showContainer}>
             <Fragment>
               <div className={styles.iconContainer}>
-                <Icon id="dualscreen-pip-minimized-show" height={icons.SmallSize} width={icons.SmallSize} path={icons.SHOW_ICON_PATH} />
+                <Icon id="dualscreen-pip-minimized-show" height={icons.SmallSize} width={icons.SmallSize} viewBox={`0 0 ${icons.SmallSize} ${icons.SmallSize}`} path={icons.SHOW_ICON_PATH} />
               </div>
               {Labels.Show}
             </Fragment>
@@ -42,7 +42,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
         )}
         <Button onClick={onInverse} className={[styles.innerButtons, hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
           <div className={styles.iconContainer}>
-            <Icon id="dualscreen-pip-minimized-swap" height={icons.MediumSize} width={icons.MediumSize} path={icons.SWAP_ICON_PATH} />
+            <Icon id="dualscreen-pip-minimized-swap" height={icons.MediumSize} width={icons.MediumSize} viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}path={icons.SWAP_ICON_PATH} />
           </div>
         </Button>
       </Fragment>
