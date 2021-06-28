@@ -9,6 +9,7 @@ import {ResponsiveManager} from './components/responsive-manager';
 import {SecondaryMediaLoader} from './providers/secondary-media-loader';
 import {DragAndSnapManager} from './components/drag-and-snap-manager';
 
+const PRESETS = ['Playback', 'Live', 'Ads'];
 export class DualScreen extends KalturaPlayer.core.BasePlugin {
   private _player: KalturaPlayerTypes.Player;
   private _secondaryKalturaPlayer: KalturaPlayerTypes.Player;
@@ -41,6 +42,16 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._pipPosition = this.config.position;
   }
 
+  getUIComponents() {
+    return [
+      {
+        presets: PRESETS,
+        container: ReservedPresetAreas.BottomBarRightControls,
+        get: KalturaPlayer.ui.components.Remove,
+        replaceComponent: KalturaPlayer.ui.components.Settings.displayName
+      }
+    ];
+  }
   loadMedia(): void {
     this._getSecondaryMedia();
   }
@@ -104,7 +115,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
-        presets: ['Playback', 'Live', 'Ads'],
+        presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
         get: () => <PipParent animation={parentAnimation} player={this._player} />
       })
@@ -116,7 +127,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
-        presets: ['Playback', 'Live', 'Ads'],
+        presets: PRESETS,
         container: ReservedPresetAreas.InteractiveArea,
         get: () => (
           <ResponsiveManager
@@ -154,7 +165,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
-        presets: ['Playback', 'Live', 'Ads'],
+        presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
         get: () => <PipParent animation={parentAnimation} player={this._secondaryKalturaPlayer} />
       })
@@ -166,7 +177,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
-        presets: ['Playback', 'Live', 'Ads'],
+        presets: PRESETS,
         container: ReservedPresetAreas.InteractiveArea,
         get: () => (
           <ResponsiveManager
@@ -203,7 +214,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
-        presets: ['Playback', 'Live', 'Ads'],
+        presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
         get: () => <PipParent animation={parentAnimation} player={this._player} />
       })
@@ -211,7 +222,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip-minimized',
-        presets: ['Playback', 'Live', 'Ads'],
+        presets: PRESETS,
         container: ReservedPresetAreas.BottomBar,
         get: () => (
           <ResponsiveManager
@@ -240,7 +251,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
-        presets: ['Playback', 'Live', 'Ads'],
+        presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
         get: () => <PipParent animation={parentAnimation} player={this._secondaryKalturaPlayer} />
       })
@@ -248,7 +259,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip-minimized',
-        presets: ['Playback', 'Live', 'Ads'],
+        presets: PRESETS,
         container: ReservedPresetAreas.BottomBar,
         get: () => (
           <ResponsiveManager
@@ -281,7 +292,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-side-by-side',
-        presets: ['Playback', 'Live', 'Ads'],
+        presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
         get: () => (
           <SideBySide
@@ -295,7 +306,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-side-by-side',
-        presets: ['Playback', 'Live', 'Ads'],
+        presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
         get: () => (
           <ResponsiveManager

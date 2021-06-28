@@ -24,6 +24,10 @@ declare global {
         Icon: any;
         IconType: any;
         PLAYER_SIZE: Record<string, string>;
+        Remove: string,
+        Settings: {
+          displayName: string
+        }
       };
       preactHooks: any;
       preacti18n: any;
