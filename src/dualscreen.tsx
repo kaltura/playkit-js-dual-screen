@@ -359,10 +359,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
     const secondaryPlayerConfig = {
       targetId: 'secondaryPlaceholder',
       disableUserCache: true,
-      // TODO: uncomment in next release
-      //   playback: {
-      //   muted: true
-      // },
+      playback: {
+        muted: true
+      },
       ui: {
         disable: true
       },
