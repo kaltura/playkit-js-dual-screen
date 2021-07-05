@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.2.0...v1.3.0) (2021-07-05)
+
+
+### Bug Fixes
+
+* **FEC-10835:** update icon component in ui ([#13](https://github.com/kaltura/playkit-js-dual-screen/issues/13)) ([21c6f9b](https://github.com/kaltura/playkit-js-dual-screen/commit/21c6f9b))
+* **FEC-922:** mute secondary media ([#15](https://github.com/kaltura/playkit-js-dual-screen/issues/15)) ([477f746](https://github.com/kaltura/playkit-js-dual-screen/commit/477f746))
+* **FEV-923:** add tooltips ([#11](https://github.com/kaltura/playkit-js-dual-screen/issues/11)) ([8c6ec14](https://github.com/kaltura/playkit-js-dual-screen/commit/8c6ec14))
+* **FEV-926:** reset layout on replay ([#12](https://github.com/kaltura/playkit-js-dual-screen/issues/12)) ([0bf6515](https://github.com/kaltura/playkit-js-dual-screen/commit/0bf6515))
+* **FEV-933:** fix "Hide button" location ([#10](https://github.com/kaltura/playkit-js-dual-screen/issues/10)) ([1ef8c0b](https://github.com/kaltura/playkit-js-dual-screen/commit/1ef8c0b))
+* **FEV-958:** prevent handle of pointer events for draggable area ([#9](https://github.com/kaltura/playkit-js-dual-screen/issues/9)) ([0c931df](https://github.com/kaltura/playkit-js-dual-screen/commit/0c931df))
+
+
+### Features
+
+* **FEC-885:** remove settings button from ui ([#14](https://github.com/kaltura/playkit-js-dual-screen/issues/14)) ([9bbb180](https://github.com/kaltura/playkit-js-dual-screen/commit/9bbb180))
+
+
+
 ## [1.2.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.1.0...v1.2.0) (2021-06-14)
 
 
