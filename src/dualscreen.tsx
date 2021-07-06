@@ -332,7 +332,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
           const entryId = secondaryMediaLoader?.response?.entries[0]?.id;
-          const ks : string = this._player.config.session.ks;
+          const ks: string = this._player.config.session.ks;
           if (!entryId) {
             this.logger.warn('Secondary entry id not found');
           } else {
@@ -368,6 +368,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
       },
       provider: {
         partnerId: this._player.config.provider.partnerId
+      },
+      plugins: {
+        dualscreen: {
+          disable: true
+        }
       }
     };
     return KalturaPlayer.setup(secondaryPlayerConfig);
