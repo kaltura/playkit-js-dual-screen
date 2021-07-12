@@ -9,8 +9,7 @@ $hide-container-gap: 5px;
 
   &.hovering,
   &.dragging {
-    .innerButtons,
-    .buttonsWrapper {
+    .innerButtons {
       display: none;
     }
   }
@@ -64,19 +63,19 @@ $hide-container-gap: 5px;
     }
   
     .innerButtons {
+      flex-direction: row-reverse;
       border-radius: 8px;
-    }
-  }
+      pointer-events: none;
+      * {
+        pointer-events: auto;
+      }
 
-  .buttonsWrapper {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    .iconContainer {
-      display: inline-block;
-      padding: 2px;
-      &:last-child {
-        margin-left: 8px;
+      .iconContainer {
+        display: inline-block;
+        padding: 2px;
+        &:first-child {
+          margin-left: 8px;
+        }
       }
     }
   }
