@@ -45,7 +45,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
   private _renderInnerButtons() {
     const {onSideBySideSwitch, onInversePIP} = this.props;
     return (
-      <Fragment>
+      <div className={styles.innerButtons}>
         <Button className={styles.iconContainer} onClick={onInversePIP} tooltip={{label: Labels.SwitchScreen, type: 'bottom-left'}}>
           <Icon
             id="dualscreen-pip-swap"
@@ -64,7 +64,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
             path={icons.SIDE_BY_SIDE_ICON_PATH}
           />
         </Button>
-      </Fragment>
+      </div>
     );
   }
 
@@ -123,7 +123,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
         {this._renderHideButton()}
         <div className={styles.playerWrapper}>
           <div className={styles.playerContainer} style={playerContainerStyles} ref={this.playerContainerRef} />
-          <div className={styles.innerButtons}>{this._renderInnerButtons()}</div>
+          {this._renderInnerButtons()}
         </div>
       </div>
     );
