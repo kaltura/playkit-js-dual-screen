@@ -22,6 +22,7 @@ interface PIPChildComponentOwnProps {
   onInversePIP: () => void;
   animation: Animations;
   isDragging?: boolean;
+  setDraggableTarget?: (targetEl: HTMLDivElement) => void;
 }
 interface PIPChildComponentConnectProps {
   guiClientRect?: GuiClientRect;
@@ -37,13 +38,14 @@ export class PipChild extends Component<PIPChildComponentProps> {
 
   componentDidMount() {
     const {player} = this.props;
-    this.playerContainerRef?.current?.prepend(player.getView());
+    this.playerContainerRef.current!.prepend(player.getView());
+    this.props.setDraggableTarget!(this.playerContainerRef.current!);
   }
 
   private _renderInnerButtons() {
     const {onSideBySideSwitch, onInversePIP} = this.props;
     return (
-      <div className={styles.innerButtons}>
+      <div className={styles.buttonsWrapper}>
         <Button className={styles.iconContainer} onClick={onInversePIP} tooltip={{label: Labels.SwitchScreen, type: 'bottom-left'}}>
           <Icon
             id="dualscreen-pip-swap"
@@ -119,7 +121,10 @@ export class PipChild extends Component<PIPChildComponentProps> {
     return (
       <div className={styleClass.join(' ')} ref={this.pipContainerRef}>
         {this._renderHideButton()}
-        <div className={styles.playerContainer} style={playerContainerStyles} ref={this.playerContainerRef}>
+        <div className={styles.playerWrapper}>
+          <div className={styles.playerContainer} style={playerContainerStyles} ref={this.playerContainerRef}>
+            <div className={styles.innerButtons} />
+          </div>
           {this._renderInnerButtons()}
         </div>
       </div>

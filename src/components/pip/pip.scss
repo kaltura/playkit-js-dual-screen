@@ -53,21 +53,30 @@ $hide-container-gap: 5px;
     }
   }
 
-  .playerContainer {
+  .playerWrapper {
     position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.3);
+
+    .playerContainer {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.3);
+    }
+  
+    .innerButtons {
+      border-radius: 8px;
+    }
   }
 
-  .innerButtons {
-    flex-direction: row-reverse;
-    border-radius: 8px;
-
+  .buttonsWrapper {
+    position: absolute;
+    top: 8px;
+    right: 8px;
     .iconContainer {
-      margin-left: 8px;
       display: inline-block;
       padding: 2px;
+      &:last-child {
+        margin-left: 8px;
+      }
     }
   }
 }
