@@ -40,6 +40,7 @@ const mapStateToProps = (state: Record<string, any>) => ({
 });
 @connect(mapStateToProps)
 export class DragAndSnapManager extends Component<DragAndSnapManagerProps, DragAndSnapManagerState> {
+  private _draggableTargetRef = createRef<HTMLDivElement>();
   private _draggableItemRef = createRef<HTMLDivElement>();
   private _draggableAreaRef = createRef<HTMLDivElement>();
   private _currMousePos: {x: number; y: number} = {x: 0, y: 0};
@@ -49,7 +50,6 @@ export class DragAndSnapManager extends Component<DragAndSnapManagerProps, DragA
   };
 
   componentDidMount() {
-    this._addListeners();
     this._setRelativeStyles();
   }
 
@@ -59,13 +59,18 @@ export class DragAndSnapManager extends Component<DragAndSnapManagerProps, DragA
     eventManager.unlisten(document, DragEvents.TouchMove);
     eventManager.unlisten(document, DragEvents.MouseUp);
     eventManager.unlisten(document, DragEvents.TouchEnd);
-    eventManager.unlisten(this._draggableItemRef.current!, DragEvents.MouseDown);
-    eventManager.unlisten(this._draggableItemRef.current!, DragEvents.TouchStart);
+    eventManager.unlisten(this._draggableTargetRef.current!, DragEvents.MouseDown);
+    eventManager.unlisten(this._draggableTargetRef.current!, DragEvents.TouchStart);
   }
 
   private _renderChildComponent = (): VNode => {
     const {children} = this.props;
-    return cloneElement(children, {isDragging: this.state.isDragging});
+    return cloneElement(children, {isDragging: this.state.isDragging, setDraggableTarget: this._setDraggableTarget});
+  };
+
+  private _setDraggableTarget = (targetEl: HTMLDivElement) => {
+    this._draggableTargetRef.current = targetEl;
+    this._addListeners();
   };
 
   private _handleChangePosition = (position: Position) => {
@@ -81,11 +86,11 @@ export class DragAndSnapManager extends Component<DragAndSnapManagerProps, DragA
   };
 
   private _addListeners = () => {
-    this.props.eventManager.listen(this._draggableItemRef.current!, DragEvents.MouseDown, e => {
+    this.props.eventManager.listen(this._draggableTargetRef.current!, DragEvents.MouseDown, e => {
       this._startDrag(e, DragEvents.MouseMove, DragEvents.MouseUp);
     });
-    this.props.eventManager.listen(this._draggableItemRef.current!, DragEvents.TouchStart, e => {
-      this.props.eventManager.unlisten(this._draggableItemRef.current!, DragEvents.MouseDown);
+    this.props.eventManager.listen(this._draggableTargetRef.current!, DragEvents.TouchStart, e => {
+      this.props.eventManager.unlisten(this._draggableTargetRef.current!, DragEvents.MouseDown);
       this._startDrag(e, DragEvents.TouchMove, DragEvents.TouchEnd);
     });
   };

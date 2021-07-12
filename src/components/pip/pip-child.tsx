@@ -22,6 +22,7 @@ interface PIPChildComponentOwnProps {
   onInversePIP: () => void;
   animation: Animations;
   isDragging?: boolean;
+  setDraggableTarget?: (targetEl: HTMLDivElement) => void;
 }
 interface PIPChildComponentConnectProps {
   guiClientRect?: GuiClientRect;
@@ -37,7 +38,8 @@ export class PipChild extends Component<PIPChildComponentProps> {
 
   componentDidMount() {
     const {player} = this.props;
-    this.playerContainerRef?.current?.prepend(player.getView());
+    this.playerContainerRef.current!.prepend(player.getView());
+    this.props.setDraggableTarget!(this.playerContainerRef.current!);
   }
 
   private _renderInnerButtons() {
@@ -119,7 +121,8 @@ export class PipChild extends Component<PIPChildComponentProps> {
     return (
       <div className={styleClass.join(' ')} ref={this.pipContainerRef}>
         {this._renderHideButton()}
-        <div className={styles.playerContainer} style={playerContainerStyles} ref={this.playerContainerRef}>
+        <div className={styles.playerWrapper}>
+          <div className={styles.playerContainer} style={playerContainerStyles} ref={this.playerContainerRef} />
           {this._renderInnerButtons()}
         </div>
       </div>
