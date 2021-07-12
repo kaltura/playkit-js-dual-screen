@@ -9,7 +9,8 @@ $hide-container-gap: 5px;
 
   &.hovering,
   &.dragging {
-    .innerButtons {
+    .innerButtons,
+    .buttonsWrapper {
       display: none;
     }
   }
