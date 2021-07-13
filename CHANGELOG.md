@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.3.1...v1.3.2) (2021-07-13)
+
+
+### Bug Fixes
+
+* **FEV-921:** video sync on pause ([#19](https://github.com/kaltura/playkit-js-dual-screen/issues/19)) ([17a2b69](https://github.com/kaltura/playkit-js-dual-screen/commit/17a2b69))
+* **FEV-974:** use draggable target to define draggable area ([#18](https://github.com/kaltura/playkit-js-dual-screen/issues/18)) ([63fb546](https://github.com/kaltura/playkit-js-dual-screen/commit/63fb546))
+
+
+
 ### [1.3.1](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.3.0...v1.3.1) (2021-07-06)
 
 
