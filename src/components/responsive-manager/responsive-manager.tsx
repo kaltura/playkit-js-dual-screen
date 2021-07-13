@@ -23,6 +23,15 @@ const mapStateToProps = (state: Record<string, any>) => ({
 });
 @connect(mapStateToProps)
 export class ResponsiveManager extends Component<ResponsiveManagerProps> {
+  static defaultProps = {
+    onMinSize: () => {}
+  };
+  componentDidMount() {
+    const {playerSize, onMinSize} = this.props;
+    if (MIN_SIZES.includes(playerSize!)) {
+      onMinSize();
+    }
+  }
   componentDidUpdate(prevProps: ResponsiveManagerProps) {
     const {playerSize, onMinSize, onDefaultSize} = this.props;
     if (playerSize === PLAYER_SIZE.TINY) {
