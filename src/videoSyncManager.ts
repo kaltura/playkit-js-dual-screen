@@ -67,15 +67,11 @@ export class VideoSyncManager {
     });
     this._eventManager.listen(this._mainPlayer, EventType.SEEKING, () => {
       this._logger.debug(`syncEvents :: seeking main player to to ${this._mainPlayer}`);
-      this._secondaryPlayer!.pause();
+      this._secondaryPlayer.pause();
     });
     this._eventManager.listen(this._mainPlayer, EventType.SEEKED, () => {
       this._logger.debug(`syncEvents :: seeked main player to ${this._mainPlayer.currentTime}`);
-      if (this._mainPlayer.paused) {
-        this._secondaryPlayer.pause();
-      } else {
-        this._secondaryPlayer.play();
-      }
+      this._seekSecondaryPlayer(0);
     });
     this._eventManager.listen(this._mainPlayer, EventType.ENDED, () => {
       this._logger.debug('syncEvents :: secondary player pause + seek to 0.01');
