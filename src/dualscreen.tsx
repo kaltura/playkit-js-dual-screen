@@ -226,9 +226,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         container: ReservedPresetAreas.BottomBar,
         get: () => (
           <ResponsiveManager
-            onMinSize={() => {
-              this._switchToPIPMinimized(false);
-            }}
             onDefaultSize={this._setMode}>
             <PipMinimized
               show={() => this._switchToPIP(true)}
@@ -263,9 +260,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         container: ReservedPresetAreas.BottomBar,
         get: () => (
           <ResponsiveManager
-            onMinSize={() => {
-              this._switchToPIPMinimizedInverse(false);
-            }}
             onDefaultSize={this._setMode}>
             <PipMinimized
               show={() => this._switchToPIPInverse(true)}
