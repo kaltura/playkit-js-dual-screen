@@ -4,8 +4,14 @@
 $hide-container-height: 32px;
 $hide-container-gap: 5px;
 
+.parentPlayer {
+  position: absolute;
+}
 .childPlayer {
   position: relative;
+  video {
+    position: relative;
+  }
 
   &.hovering,
   &.dragging {
@@ -61,7 +67,7 @@ $hide-container-gap: 5px;
       overflow: hidden;
       box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.3);
     }
-  
+
     .innerButtons {
       flex-direction: row-reverse;
       border-radius: 8px;
@@ -117,5 +123,11 @@ $hide-container-gap: 5px;
   }
   100% {
     opacity: 1;
+  }
+}
+
+:global {
+  .playkit-subtitles.moveToTop {
+    z-index: 1;
   }
 }

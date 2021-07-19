@@ -23,7 +23,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
   ref = createRef();
 
   componentDidMount() {
-    this.ref.current.appendChild(this.props.childPlayer.getView());
+    this.ref.current.appendChild(this.props.childPlayer.getVideoElement());
   }
 
   private _renderHoverButton = () => {
