@@ -81,7 +81,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
       return;
     }
     if (this._layout === Layout.SingleMedia) {
-      this._switchToPIPMinimized(false);
+        this._inverse ? this._switchToPIPMinimizedInverse(false) : this._switchToPIPMinimized(false);
       return;
     }
     this._switchToSideBySide(false);
