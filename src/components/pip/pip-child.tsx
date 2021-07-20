@@ -38,7 +38,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
 
   componentDidMount() {
     const {player} = this.props;
-    this.playerContainerRef.current!.prepend(player.getView());
+    this.playerContainerRef.current!.prepend(player.getVideoElement());
     this.props.setDraggableTarget!(this.playerContainerRef.current!);
   }
 
@@ -128,4 +128,5 @@ export class PipChild extends Component<PIPChildComponentProps> {
       </div>
     );
   }
+
 }
