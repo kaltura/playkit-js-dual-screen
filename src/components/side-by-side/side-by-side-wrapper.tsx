@@ -1,4 +1,4 @@
-import {h, createRef, Component} from 'preact';
+import {h, Component} from 'preact';
 import {SideBySide} from './side-by-side';
 import {Animations} from '../../enums';
 import {ResponsiveManager} from '../responsive-manager';
@@ -11,20 +11,31 @@ interface SideBySideWrapperComponentProps {
   switchToPIPMinimized: Function;
   switchToPIPInverse: Function;
   setMode: () => void;
+  inverse: boolean;
 }
 export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps> {
-  render({primaryPlayer, secondaryPlayer, switchToPIP, switchToPIPMinimized, setMode, switchToPIPInverse}: SideBySideWrapperComponentProps) {
+  render({primaryPlayer, secondaryPlayer, switchToPIP, switchToPIPMinimized, setMode, switchToPIPInverse, inverse}: SideBySideWrapperComponentProps) {
+    const leftSideProps = {
+      player: inverse ? secondaryPlayer : primaryPlayer,
+      onExpand: inverse ? () => switchToPIPInverse(true, Animations.ScaleRight) : () => switchToPIP(true, Animations.ScaleRight),
+      animation: Animations.ScaleLeft
+    };
+    const rightSideProps = {
+      player: inverse ? primaryPlayer : secondaryPlayer,
+      onExpand: inverse ? () => switchToPIP(true, Animations.ScaleLeft) : () => switchToPIPInverse(true, Animations.ScaleLeft),
+      animation: Animations.Fade
+    };
     return (
-      <div className={styles.sideBySideWrapper}>
-        <SideBySide player={primaryPlayer} onExpand={() => switchToPIP(true, Animations.ScaleRight)} animation={Animations.ScaleLeft} />
-        <ResponsiveManager
-          onMinSize={() => {
-            switchToPIPMinimized(false);
-          }}
-          onDefaultSize={setMode}>
-          <SideBySide player={secondaryPlayer} onExpand={() => switchToPIPInverse(true, Animations.ScaleLeft)} animation={Animations.Fade} />
-        </ResponsiveManager>
-      </div>
+      <ResponsiveManager
+        onMinSize={() => {
+          switchToPIPMinimized(false);
+        }}
+        onDefaultSize={setMode}>
+        <div className={styles.sideBySideWrapper}>
+          <SideBySide {...leftSideProps} />
+          <SideBySide {...rightSideProps} />
+        </div>
+      </ResponsiveManager>
     );
   }
 }

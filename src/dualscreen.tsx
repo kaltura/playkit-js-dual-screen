@@ -308,6 +308,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
             switchToPIP={this._switchToPIP}
             switchToPIPMinimized={this._switchToPIPMinimized}
             switchToPIPInverse={this._switchToPIPInverse}
+            inverse={this._inverse}
           />
         )
       })
