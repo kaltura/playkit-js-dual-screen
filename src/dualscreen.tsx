@@ -2,7 +2,6 @@ import {DualScreenConfig} from './types/DualScreenConfig';
 import {h} from 'preact';
 import {PipChild, PipParent} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
-import {SideBySide} from './components/side-by-side';
 import {Position, Animations, Layout, ReservedPresetAreas} from './enums';
 import {VideoSyncManager} from './videoSyncManager';
 import {ResponsiveManager} from './components/responsive-manager';
@@ -10,17 +9,23 @@ import {SecondaryMediaLoader} from './providers/secondary-media-loader';
 import {DragAndSnapManager} from './components/drag-and-snap-manager';
 import {SideBySideWrapper} from './components/side-by-side/side-by-side-wrapper';
 import {setSubtitlesOnTop} from './utils';
+import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
+// @ts-ignore
+import {core} from 'kaltura-player-js';
+const {EventType} = core;
 
 const PRESETS = ['Playback', 'Live', 'Ads'];
-export class DualScreen extends KalturaPlayer.core.BasePlugin {
+// @ts-ignore
+export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngineDecoratorProvider {
+  public secondaryKalturaPlayer: KalturaPlayerTypes.Player;
   private _player: KalturaPlayerTypes.Player;
-  private _secondaryKalturaPlayer: KalturaPlayerTypes.Player;
   private _layout: Layout = Layout.PIP;
   private _inverse = false;
   private _pipPosition: Position = Position.BottomRight;
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager?: VideoSyncManager;
   private _playbackEnded = false;
+  private _readyPromise?: Promise<void>;
 
   /**
    * The default configuration of the plugin.
@@ -37,11 +42,19 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
   constructor(name: string, player: any, config: DualScreenConfig) {
     super(name, player, config);
     this._player = player;
+    this.secondaryKalturaPlayer = this._createSecondaryPlayer();
     this._addBindings();
-    this._secondaryKalturaPlayer = this._createSecondaryPlayer();
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
     this._pipPosition = this.config.position;
+  }
+
+  getEngineDecorator(engine: any, dispatcher: Function) {
+    return new DualScreenEngineDecorator(engine, this, dispatcher);
+  }
+
+  get ready() {
+    return this._readyPromise;
   }
 
   getUIComponents() {
@@ -72,6 +85,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         this._resetMode();
         this._setMode();
       }
+    });
+    this._readyPromise = new Promise<void>(res => {
+      this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
+        res();
+      });
     });
   }
 
@@ -147,7 +165,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
               <PipChild
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
-                player={this._secondaryKalturaPlayer}
+                player={this.secondaryKalturaPlayer}
                 hide={() => this._switchToPIPMinimized(true)}
                 onSideBySideSwitch={() => this._switchToSideBySide(true)}
                 onInversePIP={() => this._switchToPIPInverse(true, Animations.Fade)}
@@ -173,7 +191,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent animation={parentAnimation} player={this._secondaryKalturaPlayer} />
+        get: () => <PipParent animation={parentAnimation} player={this.secondaryKalturaPlayer} />
       })
     );
     const origPlayerParent: HTMLElement = this._player.getVideoElement().parentElement!;
@@ -236,7 +254,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
           <ResponsiveManager onDefaultSize={this._setMode}>
             <PipMinimized
               show={() => this._switchToPIP(true)}
-              childPlayer={this._secondaryKalturaPlayer}
+              childPlayer={this.secondaryKalturaPlayer}
               onInverse={() => this._switchToPIPMinimizedInverse(true, Animations.Fade)}
             />
           </ResponsiveManager>
@@ -259,7 +277,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent animation={parentAnimation} player={this._secondaryKalturaPlayer} />
+        get: () => <PipParent animation={parentAnimation} player={this.secondaryKalturaPlayer} />
       })
     );
     this._removeActivesArr.push(
@@ -301,7 +319,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
         get: () => (
           <SideBySideWrapper
             primaryPlayer={this._player}
-            secondaryPlayer={this._secondaryKalturaPlayer}
+            secondaryPlayer={this.secondaryKalturaPlayer}
             setMode={() => {
               this._setMode();
             }}
@@ -326,9 +344,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
           if (!entryId) {
             this.logger.warn('Secondary entry id not found');
           } else {
-            this._secondaryKalturaPlayer.loadMedia({entryId, ks});
-            this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this._secondaryKalturaPlayer, this.logger);
-            this.eventManager.listen(this._secondaryKalturaPlayer, this.player.Event.FIRST_PLAYING, () => {
+            this.secondaryKalturaPlayer.loadMedia({entryId, ks});
+            this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this.secondaryKalturaPlayer, this.logger);
+            this.eventManager.listen(this.secondaryKalturaPlayer, this.player.Event.FIRST_PLAYING, () => {
               this.logger.debug('secondary player first playing - show dual mode');
               this._setMode();
             });
@@ -379,8 +397,5 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin {
 
   destroy(): void {
     this.eventManager.destroy();
-    if (this._videoSyncManager) {
-      this._videoSyncManager.destroy();
-    }
   }
 }

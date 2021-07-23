@@ -1,4 +1,6 @@
-interface FakeEvent {}
+interface FakeEvent {
+    type: string;
+}
 declare namespace KalturaPlayerTypes {
     export interface IEngineDecorator {
         dispatchEvent(event: FakeEvent): boolean;
