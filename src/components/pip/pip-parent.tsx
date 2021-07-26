@@ -26,22 +26,22 @@ export class PipParent extends Component<PIPParentComponentProps> {
 
   componentDidMount() {
     const {player} = this.props;
-    this.videoContainerRef?.current?.appendChild(player.getView());
+    this.videoContainerRef?.current?.appendChild(player.getVideoElement());
   }
 
   render(props: PIPParentComponentProps) {
-    let styleClass = '';
+    let styleClass = [styles.videoContainer, styles.parentPlayer];
 
     if (!props.prePlayback && props.animation) {
       switch (props.animation) {
         case Animations.Fade:
-          styleClass = styles.animatedFade;
+          styleClass.push(styles.animatedFade);
           break;
         case Animations.ScaleRight:
-          styleClass = styles.animatedScaleRight;
+          styleClass.push(styles.animatedScaleRight);
           break;
         case Animations.ScaleLeft:
-          styleClass = styles.animatedScaleLeft;
+          styleClass.push(styles.animatedScaleLeft);
           break;
       }
     }
@@ -51,10 +51,6 @@ export class PipParent extends Component<PIPParentComponentProps> {
       width: `${props.guiClientRect!.width + 'px'}`
     };
 
-    return (
-      <div className={styleClass}>
-        <div className={styles.videoContainer} style={videoContainerStyles} ref={this.videoContainerRef} />
-      </div>
-    );
+    return <div className={styleClass.join(' ')} style={videoContainerStyles} ref={this.videoContainerRef} />;
   }
 }

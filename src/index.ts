@@ -1,7 +1,6 @@
 /// <reference path="./global.d.ts" />
 
-
-import { DualScreen } from "./dualscreen";
+import {DualScreen} from './dualscreen';
 
 declare var __VERSION__: string;
 declare var __NAME__: string;

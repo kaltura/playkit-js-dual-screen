@@ -7,8 +7,8 @@ const {Icon} = KalturaPlayer.ui.components;
 const {connect} = KalturaPlayer.ui.redux;
 
 interface SideBySideComponentOwnProps {
-  secondaryPlayer: KalturaPlayerTypes.Player;
-  onPIPSwitch: () => void;
+  player: KalturaPlayerTypes.Player;
+  onExpand: () => void;
   animation: Animations;
 }
 interface SideBySideComponentConnectProps {
@@ -27,17 +27,17 @@ export class SideBySide extends Component<SideBySideComponentProps> {
   ref = createRef();
 
   componentDidMount() {
-    this.ref.current.appendChild(this.props.secondaryPlayer.getView());
+    this.ref.current.appendChild(this.props.player.getVideoElement());
   }
 
   private _renderHoverButton() {
-    const {onPIPSwitch, playerHover} = this.props;
+    const {onExpand, playerHover} = this.props;
     if (!playerHover) {
       return null;
     }
     return (
       <div className={styles.innerButtons}>
-        <Button className={styles.iconContainer} onClick={onPIPSwitch} tooltip={{label: Labels.ExpandScreen, type: 'bottom-left'}}>
+        <Button className={styles.iconContainer} onClick={onExpand} tooltip={{label: Labels.ExpandScreen, type: 'bottom-left'}}>
           <Icon
             id="dualscreen-side-by-side-pip"
             height={icons.MediumSize}
@@ -54,7 +54,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
     const playerContainerStyles = {
       height: (guiClientRect?.width! / 2 / 16) * 9
     };
-    const classNames = [styles.secondaryPlayer];
+    const classNames = [styles.player];
     if (animation === Animations.ScaleLeft) {
       classNames.push(styles.animatedScale);
     } else {

@@ -4,6 +4,9 @@ $show-container-height: 32px;
 $show-container-gap: 5px;
 
 .childPlayerContainer {
+  video {
+    position: relative;
+  }
   position: absolute;
   top: 0;
   right: 0;

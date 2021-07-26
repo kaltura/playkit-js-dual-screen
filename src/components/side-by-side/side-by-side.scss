@@ -1,7 +1,14 @@
 @import '~styles/variables';
 @import '~styles/styles';
 
-.secondaryPlayer {
+.sideBySideWrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+}
+
+.player {
   position: relative;
   margin: auto;
   flex: 1;
