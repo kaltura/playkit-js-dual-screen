@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.3.2...v1.4.0) (2021-07-27)
+
+
+### Bug Fixes
+
+* **FEC-1007:** configuring the default layout to be a single layout of the secondary doesn't work ([#21](https://github.com/kaltura/playkit-js-dual-screen/issues/21)) ([adba57d](https://github.com/kaltura/playkit-js-dual-screen/commit/adba57d))
+* **FEV-1005:** side by side inverse ([#23](https://github.com/kaltura/playkit-js-dual-screen/issues/23)) ([ab6e36e](https://github.com/kaltura/playkit-js-dual-screen/commit/ab6e36e))
+* **FEV-1006:** primary player wait for secondary player ([#24](https://github.com/kaltura/playkit-js-dual-screen/issues/24)) ([3623547](https://github.com/kaltura/playkit-js-dual-screen/commit/3623547))
+* **FEV-962:** responsiveness - handle small size of player ([#20](https://github.com/kaltura/playkit-js-dual-screen/issues/20)) ([726aeb9](https://github.com/kaltura/playkit-js-dual-screen/commit/726aeb9))
+
+
+### Features
+
+* **FEV-826:** I as a user want to enable captions function in dual-screen plugin ([#22](https://github.com/kaltura/playkit-js-dual-screen/issues/22)) ([7995475](https://github.com/kaltura/playkit-js-dual-screen/commit/7995475))
+
+
+
 ### [1.3.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.3.1...v1.3.2) (2021-07-13)
 
 
