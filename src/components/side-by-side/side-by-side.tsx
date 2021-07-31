@@ -7,7 +7,7 @@ const {Icon} = KalturaPlayer.ui.components;
 const {connect} = KalturaPlayer.ui.redux;
 
 interface SideBySideComponentOwnProps {
-  player: KalturaPlayerTypes.Player;
+  player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   onExpand: () => void;
   animation: Animations;
 }

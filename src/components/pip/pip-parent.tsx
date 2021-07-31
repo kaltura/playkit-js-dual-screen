@@ -11,7 +11,7 @@ const mapStateToProps = (state: Record<string, any>) => ({
 });
 
 interface PIPParentComponentOwnProps {
-  player: KalturaPlayerTypes.Player;
+  player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   animation: Animations;
 }
 interface PIPParentComponentConnectProps {

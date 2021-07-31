@@ -2,7 +2,7 @@ import {DualScreenConfig} from './types/DualScreenConfig';
 import {h} from 'preact';
 import {PipChild, PipParent} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
-import {Position, Animations, Layout, ReservedPresetAreas} from './enums';
+import {Position, Animations, Layout, ReservedPresetAreas, PlayerType} from './enums';
 import {VideoSyncManager} from './videoSyncManager';
 import {ResponsiveManager} from './components/responsive-manager';
 import {SecondaryMediaLoader} from './providers/secondary-media-loader';
@@ -10,6 +10,7 @@ import {DragAndSnapManager} from './components/drag-and-snap-manager';
 import {SideBySideWrapper} from './components/side-by-side/side-by-side-wrapper';
 import {setSubtitlesOnTop} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
+import {ImagePlayer} from './image-player';
 // @ts-ignore
 import {core} from 'kaltura-player-js';
 const {EventType} = core;
@@ -26,6 +27,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   private _videoSyncManager?: VideoSyncManager;
   private _playbackEnded = false;
   private _readyPromise?: Promise<void>;
+  private _imagePlayer: ImagePlayer;
+  private _secondaryPlayerType: PlayerType = PlayerType.Video;
 
   /**
    * The default configuration of the plugin.
@@ -43,6 +46,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     super(name, player, config);
     this._player = player;
     this.secondaryKalturaPlayer = this._createSecondaryPlayer();
+    this._imagePlayer = new ImagePlayer(this._setMode);
+    this._secondaryPlayerType = PlayerType.Image; // TODO how handle delay for primary if type of secondary player comes from BE?
     this._addBindings();
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
@@ -86,12 +91,20 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         this._setMode();
       }
     });
-    this._readyPromise = new Promise<void>(res => {
-      this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
-        res();
+    if (this._secondaryPlayerType === PlayerType.Video) {
+      this._readyPromise = new Promise<void>(res => {
+        this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
+          res();
+        });
       });
-    });
+    } else {
+      this._readyPromise = Promise.resolve();
+    }
   }
+
+  private _getSecondaryPlayer = () => {
+    return this._secondaryPlayerType === PlayerType.Image ? this._imagePlayer : this.secondaryKalturaPlayer;
+  };
 
   private _setMode = () => {
     if (this._layout === Layout.PIP) {
@@ -128,7 +141,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   private _switchToPIP = (manualChange: boolean, parentAnimation: Animations = Animations.None) => {
     setSubtitlesOnTop(true);
-
     if (manualChange) {
       this._layout = Layout.PIP;
       this._inverse = false;
@@ -165,7 +177,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
               <PipChild
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
-                player={this.secondaryKalturaPlayer}
+                player={this._getSecondaryPlayer()}
                 hide={() => this._switchToPIPMinimized(true)}
                 onSideBySideSwitch={() => this._switchToSideBySide(true)}
                 onInversePIP={() => this._switchToPIPInverse(true, Animations.Fade)}
@@ -191,7 +203,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent animation={parentAnimation} player={this.secondaryKalturaPlayer} />
+        get: () => <PipParent animation={parentAnimation} player={this._getSecondaryPlayer()} />
       })
     );
     const origPlayerParent: HTMLElement = this._player.getVideoElement().parentElement!;
@@ -254,7 +266,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           <ResponsiveManager onDefaultSize={this._setMode}>
             <PipMinimized
               show={() => this._switchToPIP(true)}
-              childPlayer={this.secondaryKalturaPlayer}
+              player={this._getSecondaryPlayer()}
               onInverse={() => this._switchToPIPMinimizedInverse(true, Animations.Fade)}
             />
           </ResponsiveManager>
@@ -277,7 +289,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent animation={parentAnimation} player={this.secondaryKalturaPlayer} />
+        get: () => <PipParent animation={parentAnimation} player={this._getSecondaryPlayer()} />
       })
     );
     this._removeActivesArr.push(
@@ -289,7 +301,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           <ResponsiveManager onDefaultSize={this._setMode}>
             <PipMinimized
               show={() => this._switchToPIPInverse(true)}
-              childPlayer={this._player}
+              player={this._player}
               onInverse={() => this._switchToPIPMinimized(true, Animations.Fade)}
             />
           </ResponsiveManager>
@@ -319,7 +331,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         get: () => (
           <SideBySideWrapper
             primaryPlayer={this._player}
-            secondaryPlayer={this.secondaryKalturaPlayer}
+            secondaryPlayer={this._getSecondaryPlayer()}
             setMode={() => {
               this._setMode();
             }}

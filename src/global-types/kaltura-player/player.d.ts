@@ -34,4 +34,7 @@ declare namespace KalturaPlayerTypes {
     config: KalturaPlayerTypes.PlayerConfig & DeepPartial<KalturaPlayerContribTypes.ContribConfig>;
     provider: any;
   }
+  export interface ImagePlayer {
+    getVideoElement(): HTMLDivElement;
+  }
 }

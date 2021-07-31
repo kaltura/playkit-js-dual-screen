@@ -5,8 +5,8 @@ import {ResponsiveManager} from '../responsive-manager';
 import * as styles from './side-by-side.scss';
 
 interface SideBySideWrapperComponentProps {
-  primaryPlayer: KalturaPlayerTypes.Player;
-  secondaryPlayer: KalturaPlayerTypes.Player;
+  primaryPlayer: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
+  secondaryPlayer: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   switchToPIP: Function;
   switchToPIPMinimized: Function;
   switchToPIPInverse: Function;
