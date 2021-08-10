@@ -6,31 +6,37 @@ interface ImageItem {
 export class ImagePlayer {
   private _images: Array<ImageItem> = [];
   private _imagePlayer: any;
-  private _active = false;
+  private _activeImage: ImageItem | null = null;
   private _setMode = () => {};
   constructor(setMode: () => void) {
     this._imagePlayer = this._createImagePlayer();
     this._setMode = setMode;
   }
 
-  public addImages = (items: ImageItem[]) => {
+  public addImage = (item: ImageItem) => {
     // TODO: check duplicates
-    this._images = [...this._images, ...items];
-    // TODO: load only next image
-    items.forEach(item => {
+    if (!this._images.length || (this._activeImage && this._images[this._images.length - 1].id === this._activeImage.id)) {
+      // preload first slide
       this._loadImage(item.text);
-    });
+    }
+    this._images.push(item);
   };
 
   public setActive = (activeId: string) => {
-    const activeItem = this._images.find(({id}) => activeId === id);
-    if (activeItem) {
-      this._imagePlayer.style.backgroundImage = `url('${activeItem.text}')`;
-      if (!this._active) {
-        this._setMode();
-        this._active = true;
+    this._images.find((item, index) => {
+      if (activeId === item.id) {
+        this._imagePlayer.style.backgroundImage = `url('${item.text}')`;
+        if (!this._activeImage) {
+          this._setMode();
+        }
+        this._activeImage = item;
+        if (this._images[index + 1]) {
+          // preload next image
+          this._loadImage(this._images[index + 1].text);
+        }
+        return true;
       }
-    }
+    });
   };
 
   public getVideoElement = () => {

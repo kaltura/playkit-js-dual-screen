@@ -115,12 +115,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   private _onMetadataAdded = ({payload}: {payload: {cues: Array<{id: string; text: string}>}}) => {
     payload.cues.forEach(({id, text}) => {
-      this._imagePlayer.addImages([
-        {
-          id,
-          text
-        }
-      ]);
+      this._imagePlayer.addImage({
+        id,
+        text
+      });
     });
   };
 
