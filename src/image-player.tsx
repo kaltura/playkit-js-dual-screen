@@ -1,6 +1,6 @@
 interface ImageItem {
   id: string;
-  src: string;
+  text: string;
 }
 
 export class ImagePlayer {
@@ -18,14 +18,14 @@ export class ImagePlayer {
     this._images = [...this._images, ...items];
     // TODO: load only next image
     items.forEach(item => {
-      this._loadImage(item.src);
+      this._loadImage(item.text);
     });
   };
 
   public setActive = (activeId: string) => {
     const activeItem = this._images.find(({id}) => activeId === id);
     if (activeItem) {
-      this._imagePlayer.style.backgroundImage = `url('${activeItem.src}')`;
+      this._imagePlayer.style.backgroundImage = `url('${activeItem.text}')`;
       if (!this._active) {
         this._setMode();
         this._active = true;

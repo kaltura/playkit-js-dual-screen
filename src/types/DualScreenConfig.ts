@@ -1,9 +1,9 @@
-import {Layout} from "../enums/layoutEnum";
-import {Position} from "../enums/positionEnum";
+import {Layout, Position, PlayerType} from "../enums";
 
 export interface DualScreenConfig {
   inverse: boolean;
   layout: Layout;
   childSizePercentage: number;
   position: Position;
+  secondaryPlayerType: PlayerType;
 }

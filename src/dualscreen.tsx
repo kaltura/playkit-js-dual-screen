@@ -28,7 +28,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   private _playbackEnded = false;
   private _readyPromise?: Promise<void>;
   private _imagePlayer: ImagePlayer;
-  private _secondaryPlayerType: PlayerType = PlayerType.Video;
+  private _secondaryPlayerType: PlayerType;
 
   /**
    * The default configuration of the plugin.
@@ -39,7 +39,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     inverse: false,
     layout: Layout.PIP,
     childSizePercentage: 30,
-    position: Position.BottomRight
+    position: Position.BottomRight,
+    secondaryPlayerType: PlayerType.Image
   };
 
   constructor(name: string, player: any, config: DualScreenConfig) {
@@ -47,7 +48,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._player = player;
     this.secondaryKalturaPlayer = this._createSecondaryPlayer();
     this._imagePlayer = new ImagePlayer(this._setMode);
-    this._secondaryPlayerType = PlayerType.Image; // TODO how handle delay for primary if type of secondary player comes from BE?
+    this._secondaryPlayerType = this.config.secondaryPlayerType;
     this._addBindings();
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
@@ -73,7 +74,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     ];
   }
   loadMedia(): void {
-    this._getSecondaryMedia();
+    if (!this._isSecondaryPlayerHasImageType()) {
+      this._getSecondaryMedia();
+    }
   }
 
   private _addBindings() {
@@ -91,19 +94,42 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         this._setMode();
       }
     });
-    if (this._secondaryPlayerType === PlayerType.Video) {
+    if (this._isSecondaryPlayerHasImageType()) {
+      this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA, this._onTimedMetadataLoaded);
+      this.eventManager.listen(this.player, 'metadata_added', this._onMetadataAdded); // TODO: use enum
+      this._readyPromise = Promise.resolve();
+    } else {
       this._readyPromise = new Promise<void>(res => {
         this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
           res();
         });
       });
-    } else {
-      this._readyPromise = Promise.resolve();
     }
   }
 
+  private _onTimedMetadataLoaded = ({payload}: {payload: {cues: Array<{id: string}>}}) => {
+    if (payload.cues && payload.cues[0]) {
+      this._imagePlayer.setActive(payload.cues[0].id);
+    }
+  };
+
+  private _onMetadataAdded = ({payload}: {payload: {cues: Array<{id: string; text: string}>}}) => {
+    payload.cues.forEach(({id, text}) => {
+      this._imagePlayer.addImages([
+        {
+          id,
+          text
+        }
+      ]);
+    });
+  };
+
+  private _isSecondaryPlayerHasImageType = () => {
+    return this._secondaryPlayerType === PlayerType.Image;
+  };
+
   private _getSecondaryPlayer = () => {
-    return this._secondaryPlayerType === PlayerType.Image ? this._imagePlayer : this.secondaryKalturaPlayer;
+    return this._isSecondaryPlayerHasImageType() ? this._imagePlayer : this.secondaryKalturaPlayer;
   };
 
   private _setMode = () => {
