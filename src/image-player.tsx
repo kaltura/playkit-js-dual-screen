@@ -1,6 +1,6 @@
 interface ImageItem {
   id: string;
-  text: string;
+  url: string;
 }
 
 export class ImagePlayer {
@@ -17,7 +17,7 @@ export class ImagePlayer {
     // TODO: check duplicates
     if (!this._images.length || (this._activeImage && this._images[this._images.length - 1].id === this._activeImage.id)) {
       // preload first slide
-      this._loadImage(item.text);
+      this._loadImage(item.url);
     }
     this._images.push(item);
   };
@@ -25,14 +25,14 @@ export class ImagePlayer {
   public setActive = (activeId: string) => {
     this._images.find((item, index) => {
       if (activeId === item.id) {
-        this._imagePlayer.style.backgroundImage = `url('${item.text}')`;
+        this._imagePlayer.style.backgroundImage = `url('${item.url}')`;
         if (!this._activeImage) {
           this._setMode();
         }
         this._activeImage = item;
         if (this._images[index + 1]) {
           // preload next image
-          this._loadImage(this._images[index + 1].text);
+          this._loadImage(this._images[index + 1].url);
         }
         return true;
       }

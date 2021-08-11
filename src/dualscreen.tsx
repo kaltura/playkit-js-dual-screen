@@ -96,7 +96,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     });
     if (this._isSecondaryPlayerHasImageType()) {
       this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA, this._onTimedMetadataLoaded);
-      this.eventManager.listen(this.player, 'metadata_added', this._onMetadataAdded); // TODO: use enum
+      this.eventManager.listen(this.player, 'metadata_added', this._onTimedMetadataAdded); // TODO: use enum
       this._readyPromise = Promise.resolve();
     } else {
       this._readyPromise = new Promise<void>(res => {
@@ -107,18 +107,21 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
   }
 
-  private _onTimedMetadataLoaded = ({payload}: {payload: {cues: Array<{id: string}>}}) => {
-    if (payload.cues && payload.cues[0]) {
-      this._imagePlayer.setActive(payload.cues[0].id);
+  private _onTimedMetadataLoaded = ({payload}: {payload: {cues: Array<{track: {label: string; language: string}; value: {data: {id: string}}}>}}) => {
+    // TODO: discuss label value
+    if (payload.cues[0]?.track?.label === 'KalturaCuePoints' && payload.cues[0]?.track?.language === 'slides') {
+      this._imagePlayer.setActive(payload.cues[0].value.data.id);
     }
   };
 
-  private _onMetadataAdded = ({payload}: {payload: {cues: Array<{id: string; text: string}>}}) => {
-    payload.cues.forEach(({id, text}) => {
-      this._imagePlayer.addImage({
-        id,
-        text
-      });
+  private _onTimedMetadataAdded = ({payload}: {payload: {cues: Array<{value: {key: string; data: Record<string, string>}}>}}) => {
+    payload.cues.forEach(cue => {
+      if (cue?.value && cue?.value?.key === 'KalturaCuePoint')
+        // TODO: discuss key value
+        this._imagePlayer.addImage({
+          id: cue.value.data.id,
+          url: cue.value.data.url
+        });
     });
   };
 
@@ -435,3 +438,30 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this.eventManager.destroy();
   }
 }
+
+// TEMP - for QA drop only
+// @ts-ignore
+window.addSlide = (url, startTime = Math.round(kalturaPlayer.currentTime), endTime = kalturaPlayer.currentTime + 10) => {
+  let slideTrack;
+  // @ts-ignore
+  for (let track of kalturaPlayer.getVideoElement().textTracks) {
+    if (track.kind === 'metadata' && track.label === 'KalturaCuePoints' && track.language === 'slides') {
+      slideTrack = track;
+    }
+  }
+  if (!slideTrack) {
+    // @ts-ignore
+    slideTrack = kalturaPlayer.getVideoElement().addTextTrack('metadata', 'KalturaCuePoints', 'slides');
+  }
+  const cue = new VTTCue(startTime, endTime, '');
+  // @ts-ignore
+  const cueValue = {key: 'KalturaCuePoint', data: {id: `${Date.now()}`, url}};
+  // @ts-ignore
+  cue.value = cueValue;
+  slideTrack.addCue(cue);
+  // @ts-ignore
+  kalturaPlayer._pluginManager._plugins.dualscreen._player.dispatchEvent(
+    new KalturaPlayer.core.FakeEvent('metadata_added', {cues: [{value: cueValue}]})
+  );
+  return 'ok';
+};
