@@ -25,7 +25,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager?: VideoSyncManager;
   private _playbackEnded = false;
-  private _readyPromise?: Promise<void>;
+  private _readyPromise: Promise<void>;
+  private _resolveReadyPromise = () => {};
 
   /**
    * The default configuration of the plugin.
@@ -47,6 +48,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
     this._pipPosition = this.config.position;
+    this._readyPromise = new Promise<void>(res => {
+      this._resolveReadyPromise = res;
+    });
   }
 
   getEngineDecorator(engine: any, dispatcher: Function) {
@@ -85,11 +89,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         this._resetMode();
         this._setMode();
       }
-    });
-    this._readyPromise = new Promise<void>(res => {
-      this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
-        res();
-      });
     });
   }
 
@@ -343,7 +342,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           const ks: string = this._player.config.session.ks;
           if (!entryId) {
             this.logger.warn('Secondary entry id not found');
+            this._resolveReadyPromise();
           } else {
+            this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
+              this._resolveReadyPromise();
+            });
             this.secondaryKalturaPlayer.loadMedia({entryId, ks});
             this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this.secondaryKalturaPlayer, this.logger);
             this.eventManager.listen(this.secondaryKalturaPlayer, this.player.Event.FIRST_PLAYING, () => {
