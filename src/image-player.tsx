@@ -3,7 +3,6 @@ interface ImageItem {
   url: string;
   loaded?: boolean;
   errored?: boolean;
-  vertical?: boolean;
 }
 
 export class ImagePlayer {
@@ -17,7 +16,6 @@ export class ImagePlayer {
   }
 
   public addImage = (item: ImageItem) => {
-    // TODO: check duplicates
     if (!this._images.length || (this._activeImage && this._images[this._images.length - 1].id === this._activeImage.id)) {
       // preload first or new image
       this._loadImage(item);
@@ -28,7 +26,6 @@ export class ImagePlayer {
   public setActive = (activeId: string) => {
     this._images.find((item, index) => {
       if (activeId === item.id) {
-        // TODO: change container orientation (item.vertical)
         // TODO: check if pre-loading failed (item.errored)
         this._imagePlayer.style.backgroundImage = `url('${item.url}')`;
         if (!this._activeImage) {
@@ -64,11 +61,6 @@ export class ImagePlayer {
     const img = new Image();
     img.onload = () => {
       item.loaded = true;
-      if (img.width > img.height) {
-        item.vertical = false;
-      } else {
-        item.vertical = true;
-      }
     };
     img.onerror = () => {
       item.errored = true;
