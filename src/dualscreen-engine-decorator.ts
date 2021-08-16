@@ -2,7 +2,7 @@
 import {core} from 'kaltura-player-js';
 import {DualScreen} from './dualscreen';
 
-const {FakeEvent, EventType} = core;
+const {EventType} = core;
 
 // @ts-ignore
 export class DualScreenEngineDecorator implements IEngineDecorator {

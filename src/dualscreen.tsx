@@ -26,9 +26,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager?: VideoSyncManager;
   private _playbackEnded = false;
-  private _readyPromise?: Promise<void>;
+  private _resolveReadyPromise = () => {};
+  private _readyPromise = new Promise<void>(res => {
+    this._resolveReadyPromise = res;
+  });
   private _imagePlayer: ImagePlayer;
-  private _secondaryPlayerType: PlayerType;
+  private _secondaryPlayerType = PlayerType.Video;
 
   /**
    * The default configuration of the plugin.
@@ -48,7 +51,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._player = player;
     this.secondaryKalturaPlayer = this._createSecondaryPlayer();
     this._imagePlayer = new ImagePlayer(this._setMode);
-    this._secondaryPlayerType = this.config.secondaryPlayerType;
     this._addBindings();
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
@@ -74,9 +76,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     ];
   }
   loadMedia(): void {
-    if (!this._isSecondaryPlayerHasImageType()) {
-      this._getSecondaryMedia();
-    }
+    this._getSecondaryMedia();
   }
 
   private _addBindings() {
@@ -94,17 +94,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         this._setMode();
       }
     });
-    if (this._isSecondaryPlayerHasImageType()) {
-      this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA, this._onTimedMetadataLoaded);
-      this.eventManager.listen(this.player, 'metadata_added', this._onTimedMetadataAdded); // TODO: use enum
-      this._readyPromise = Promise.resolve();
-    } else {
-      this._readyPromise = new Promise<void>(res => {
-        this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
-          res();
-        });
-      });
-    }
   }
 
   private _onTimedMetadataLoaded = ({payload}: {payload: {cues: Array<{track: {label: string; language: string}; value: {data: {id: string}}}>}}) => {
@@ -125,12 +114,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     });
   };
 
-  private _isSecondaryPlayerHasImageType = () => {
-    return this._secondaryPlayerType === PlayerType.Image;
-  };
-
   private _getSecondaryPlayer = () => {
-    return this._isSecondaryPlayerHasImageType() ? this._imagePlayer : this.secondaryKalturaPlayer;
+    return this._secondaryPlayerType === PlayerType.Image ? this._imagePlayer : this.secondaryKalturaPlayer;
   };
 
   private _setMode = () => {
@@ -139,7 +124,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       return;
     }
     if (this._layout === Layout.SingleMedia) {
-        this._inverse ? this._switchToPIPMinimizedInverse(false) : this._switchToPIPMinimized(false);
+      this._inverse ? this._switchToPIPMinimizedInverse(false) : this._switchToPIPMinimized(false);
       return;
     }
     this._switchToSideBySide(false);
@@ -382,13 +367,23 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           const ks: string = this._player.config.session.ks;
           if (!entryId) {
             this.logger.warn('Secondary entry id not found');
+            // subscribe on timed metadata events for image player
+            this._secondaryPlayerType = PlayerType.Image;
+            this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA, this._onTimedMetadataLoaded);
+            this.eventManager.listen(this.player, 'metadata_added', this._onTimedMetadataAdded); // TODO: use enum
+            this._resolveReadyPromise();
           } else {
-            this.secondaryKalturaPlayer.loadMedia({entryId, ks});
+            // subscribe onf secondary player readiness
+            this._secondaryPlayerType = PlayerType.Video;
+            this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
+              this._resolveReadyPromise();
+            });
             this._videoSyncManager = new VideoSyncManager(this.eventManager, this.player, this.secondaryKalturaPlayer, this.logger);
             this.eventManager.listen(this.secondaryKalturaPlayer, this.player.Event.FIRST_PLAYING, () => {
               this.logger.debug('secondary player first playing - show dual mode');
               this._setMode();
             });
+            this.secondaryKalturaPlayer.loadMedia({entryId, ks});
           }
         }
       })
