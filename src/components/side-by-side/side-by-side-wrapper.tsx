@@ -5,8 +5,8 @@ import {ResponsiveManager} from '../responsive-manager';
 import * as styles from './side-by-side.scss';
 
 interface SideBySideWrapperComponentProps {
-  primaryPlayer: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
-  secondaryPlayer: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
+  leftPlayer: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
+  rightPlayer: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   switchToPIP: Function;
   switchToPIPMinimized: Function;
   switchToPIPInverse: Function;
@@ -14,14 +14,14 @@ interface SideBySideWrapperComponentProps {
   inverse: boolean;
 }
 export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps> {
-  render({primaryPlayer, secondaryPlayer, switchToPIP, switchToPIPMinimized, setMode, switchToPIPInverse, inverse}: SideBySideWrapperComponentProps) {
+  render({leftPlayer, rightPlayer, switchToPIP, switchToPIPMinimized, setMode, switchToPIPInverse, inverse}: SideBySideWrapperComponentProps) {
     const leftSideProps = {
-      player: inverse ? secondaryPlayer : primaryPlayer,
+      player: inverse ? rightPlayer : leftPlayer,
       onExpand: inverse ? () => switchToPIPInverse(true, Animations.ScaleRight) : () => switchToPIP(true, Animations.ScaleRight),
       animation: Animations.ScaleLeft
     };
     const rightSideProps = {
-      player: inverse ? primaryPlayer : secondaryPlayer,
+      player: inverse ? leftPlayer : rightPlayer,
       onExpand: inverse ? () => switchToPIP(true, Animations.ScaleLeft) : () => switchToPIPInverse(true, Animations.ScaleLeft),
       animation: Animations.Fade
     };

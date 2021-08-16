@@ -342,8 +342,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         container: ReservedPresetAreas.VideoContainer,
         get: () => (
           <SideBySideWrapper
-            primaryPlayer={this._player}
-            secondaryPlayer={this._getSecondaryPlayer()}
+            leftPlayer={this._player}
+            rightPlayer={this._getSecondaryPlayer()}
             setMode={() => {
               this._setMode();
             }}
