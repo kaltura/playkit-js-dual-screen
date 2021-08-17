@@ -378,13 +378,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         disable: true
       },
       provider: {
-        partnerId: this._player.config.provider.partnerId
+        ...this._player.config.provider,
+        ignoreServerConfig: true
       },
-      plugins: {
-        dualscreen: {
-          disable: true
-        }
-      }
     };
     return KalturaPlayer.setup(secondaryPlayerConfig);
   }
