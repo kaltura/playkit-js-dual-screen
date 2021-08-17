@@ -13,7 +13,7 @@ import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
 import {ImagePlayer} from './image-player';
 // @ts-ignore
 import {core} from 'kaltura-player-js';
-const {EventType} = core;
+const {EventType, Cue} = core;
 
 const PRESETS = ['Playback', 'Live', 'Ads'];
 // @ts-ignore
@@ -31,7 +31,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._resolveReadyPromise = res;
   });
   private _imagePlayer: ImagePlayer;
-  private _secondaryPlayerType = PlayerType.Video;
+  private _secondaryPlayerType = PlayerType.VIDEO;
 
   /**
    * The default configuration of the plugin.
@@ -43,7 +43,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     layout: Layout.PIP,
     childSizePercentage: 30,
     position: Position.BottomRight,
-    secondaryPlayerType: PlayerType.Image
+    secondaryPlayerType: PlayerType.VIDEO
   };
 
   constructor(name: string, player: any, config: DualScreenConfig) {
@@ -96,9 +96,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     });
   }
 
-  private _onTimedMetadataLoaded = ({payload}: {payload: {cues: Array<{track: {label: string; language: string}; value: {data: {id: string}}}>}}) => {
-    // TODO: discuss label value
+  private _onTimedMetadata = ({payload}: {payload: {cues: Array<{track: {label: string; language: string}; value: {data: {id: string}}}>}}) => {
     if (payload.cues[0]?.track?.label === 'KalturaCuePoints' && payload.cues[0]?.track?.language === 'slides') {
+      // TODO: 'slides' should be enum from cue-point plugin
       this._imagePlayer.setActive(payload.cues[0].value.data.id);
     }
   };
@@ -106,7 +106,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   private _onTimedMetadataAdded = ({payload}: {payload: {cues: Array<{value: {key: string; data: Record<string, string>}}>}}) => {
     payload.cues.forEach(cue => {
       if (cue?.value && cue?.value?.key === 'KalturaCuePoint')
-        // TODO: discuss key value
         this._imagePlayer.addImage({
           id: cue.value.data.id,
           url: cue.value.data.url
@@ -115,7 +114,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   };
 
   private _getSecondaryPlayer = () => {
-    return this._secondaryPlayerType === PlayerType.Image ? this._imagePlayer : this.secondaryKalturaPlayer;
+    return this._secondaryPlayerType === PlayerType.IMAGE ? this._imagePlayer : this.secondaryKalturaPlayer;
   };
 
   private _setMode = () => {
@@ -368,13 +367,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           if (!entryId) {
             this.logger.warn('Secondary entry id not found');
             // subscribe on timed metadata events for image player
-            this._secondaryPlayerType = PlayerType.Image;
-            this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA, this._onTimedMetadataLoaded);
-            this.eventManager.listen(this.player, 'metadata_added', this._onTimedMetadataAdded); // TODO: use enum
+            this._secondaryPlayerType = PlayerType.IMAGE;
+            this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA, this._onTimedMetadata);
+            this.eventManager.listen(this.player, 'timed_metadata_added', this._onTimedMetadataAdded); // TODO: should be enum from cuePointManager
             this._resolveReadyPromise();
           } else {
             // subscribe onf secondary player readiness
-            this._secondaryPlayerType = PlayerType.Video;
+            this._secondaryPlayerType = PlayerType.VIDEO;
             this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
               this._resolveReadyPromise();
             });
@@ -448,7 +447,12 @@ window.addSlide = (url, startTime = Math.round(kalturaPlayer.currentTime), endTi
     // @ts-ignore
     slideTrack = kalturaPlayer.getVideoElement().addTextTrack('metadata', 'KalturaCuePoints', 'slides');
   }
-  const cue = new VTTCue(startTime, endTime, '');
+  let cue;
+  if (window.VTTCue) {
+    cue = new VTTCue(startTime, endTime, '');
+  } else if (window.TextTrackCue) {
+    cue = new Cue(startTime, endTime, '');
+  }
   // @ts-ignore
   const cueValue = {key: 'KalturaCuePoint', data: {id: `${Date.now()}`, url}};
   // @ts-ignore
@@ -456,7 +460,7 @@ window.addSlide = (url, startTime = Math.round(kalturaPlayer.currentTime), endTi
   slideTrack.addCue(cue);
   // @ts-ignore
   kalturaPlayer._pluginManager._plugins.dualscreen._player.dispatchEvent(
-    new KalturaPlayer.core.FakeEvent('metadata_added', {cues: [{value: cueValue}]})
+    new KalturaPlayer.core.FakeEvent('timed_metadata_added', {cues: [{value: cueValue}]})
   );
   return 'ok';
 };

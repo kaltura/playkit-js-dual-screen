@@ -1,8 +1,9 @@
+import './image-player.scss';
+
 interface ImageItem {
   id: string;
   url: string;
   loaded?: boolean;
-  errored?: boolean;
 }
 
 export class ImagePlayer {
@@ -26,7 +27,6 @@ export class ImagePlayer {
   public setActive = (activeId: string) => {
     this._images.find((item, index) => {
       if (activeId === item.id) {
-        // TODO: check if pre-loading failed (item.errored)
         this._imagePlayer.style.backgroundImage = `url('${item.url}')`;
         if (!this._activeImage) {
           this._setMode();
@@ -48,12 +48,7 @@ export class ImagePlayer {
 
   private _createImagePlayer = () => {
     const imagePlayer = document.createElement('div');
-    imagePlayer.setAttribute('id', 'imagePlayer');
-    imagePlayer.style.height = '100%';
-    imagePlayer.style.width = '100%';
-    imagePlayer.style.backgroundPosition = 'center';
-    imagePlayer.style.backgroundRepeat = 'no-repeat';
-    imagePlayer.style.backgroundSize = 'cover';
+    imagePlayer.classList.add('playkit-image-player');
     return imagePlayer;
   };
 
@@ -61,9 +56,6 @@ export class ImagePlayer {
     const img = new Image();
     img.onload = () => {
       item.loaded = true;
-    };
-    img.onerror = () => {
-      item.errored = true;
     };
     img.src = item.url;
   };
