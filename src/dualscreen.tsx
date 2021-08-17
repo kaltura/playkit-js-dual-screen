@@ -42,8 +42,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     inverse: false,
     layout: Layout.PIP,
     childSizePercentage: 30,
-    position: Position.BottomRight,
-    secondaryPlayerType: PlayerType.VIDEO
+    position: Position.BottomRight
   };
 
   constructor(name: string, player: any, config: DualScreenConfig) {
