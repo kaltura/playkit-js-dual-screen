@@ -15,7 +15,7 @@ const mapStateToProps = (state: Record<string, any>) => ({
 });
 
 interface PIPChildComponentOwnProps {
-  player: KalturaPlayerTypes.Player;
+  player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   playerSizePercentage: number;
   hide: () => void;
   onSideBySideSwitch: () => void;

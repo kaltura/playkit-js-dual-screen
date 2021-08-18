@@ -8,7 +8,7 @@ const {
 } = KalturaPlayer.ui;
 
 interface PIPMinimizedOwnProps {
-  childPlayer: KalturaPlayerTypes.Player;
+  player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   show: () => void;
   onInverse: () => void;
   hideButtons?: boolean;
@@ -23,7 +23,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
   ref = createRef();
 
   componentDidMount() {
-    this.ref.current.appendChild(this.props.childPlayer.getVideoElement());
+    this.ref.current.appendChild(this.props.player.getVideoElement());
   }
 
   private _renderHoverButton = () => {
