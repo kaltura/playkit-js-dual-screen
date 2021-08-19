@@ -1,4 +1,4 @@
 export enum PlayerType {
-  Image = 'Image',
-  Video = 'Video'
+  IMAGE = 'image',
+  VIDEO = 'video'
 }

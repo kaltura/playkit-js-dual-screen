@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.4.0...v1.5.0) (2021-08-18)
+
+
+### Bug Fixes
+
+* **FEV-1046:** IE11 - Dual-screen plugin's layouts are broken ([#25](https://github.com/kaltura/playkit-js-dual-screen/issues/25)) ([03b4550](https://github.com/kaltura/playkit-js-dual-screen/commit/03b4550))
+* **FEV-1065:** resolve ready promise for non-dual medias ([#28](https://github.com/kaltura/playkit-js-dual-screen/issues/28)) ([116e6c1](https://github.com/kaltura/playkit-js-dual-screen/commit/116e6c1))
+
+
+### Features
+
+* **FEC-11399:** allow ignoring server config ([#29](https://github.com/kaltura/playkit-js-dual-screen/issues/29)) ([f405cb3](https://github.com/kaltura/playkit-js-dual-screen/commit/f405cb3)), closes [kaltura-player-js#480](https://github.com/kaltura/playkit-js-dual-screen/issues/480) [playkit-js-providers#153](https://github.com/kaltura/playkit-js-dual-screen/issues/153)
+* **FEV-1020:** [P2] Image player - Create image player component ([#26](https://github.com/kaltura/playkit-js-dual-screen/issues/26)) ([e4572a0](https://github.com/kaltura/playkit-js-dual-screen/commit/e4572a0))
+
+
+
 ## [1.4.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.3.2...v1.4.0) (2021-07-27)
 
 

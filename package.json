@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/playkit-js-dual-screen",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "main": "dist/playkit-dual-screen.js",
   "scripts": {
     "clean": "rm -rf ./dist",
