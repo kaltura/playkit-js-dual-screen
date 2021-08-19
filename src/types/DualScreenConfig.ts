@@ -5,5 +5,8 @@ export interface DualScreenConfig {
   layout: Layout;
   childSizePercentage: number;
   position: Position;
-  secondaryPlayerType: PlayerType;
+  childAspectRatio: {
+    width: number;
+    height: number;
+  }
 }

@@ -3,14 +3,15 @@ import {h} from 'preact';
 import {PipChild, PipParent} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
 import {Position, Animations, Layout, ReservedPresetAreas, PlayerType} from './enums';
-import {VideoSyncManager} from './videoSyncManager';
+import {VideoSyncManager} from './video-sync-manager';
+import {ImageSyncManager} from './image-sync-manager';
 import {ResponsiveManager} from './components/responsive-manager';
 import {SecondaryMediaLoader} from './providers/secondary-media-loader';
 import {DragAndSnapManager} from './components/drag-and-snap-manager';
 import {SideBySideWrapper} from './components/side-by-side/side-by-side-wrapper';
 import {setSubtitlesOnTop} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
-import {ImagePlayer} from './image-player';
+import {ImagePlayer, ImageItem} from './image-player';
 // @ts-ignore
 import {core} from 'kaltura-player-js';
 const {EventType, Cue} = core;
@@ -25,6 +26,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   private _pipPosition: Position = Position.BottomRight;
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager?: VideoSyncManager;
+  private _imageSyncManager?: ImageSyncManager;
   private _playbackEnded = false;
   private _resolveReadyPromise = () => {};
   private _readyPromise = new Promise<void>(res => {
@@ -32,6 +34,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   });
   private _imagePlayer: ImagePlayer;
   private _secondaryPlayerType = PlayerType.VIDEO;
+  private _singleLayout = true;
+  private _pipPortraitMode = false;
 
   /**
    * The default configuration of the plugin.
@@ -42,15 +46,18 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     inverse: false,
     layout: Layout.PIP,
     childSizePercentage: 30,
-    position: Position.BottomRight,
-    secondaryPlayerType: PlayerType.Image
+    childAspectRatio: {
+      width: 16,
+      height: 9,
+    },
+    position: Position.BottomRight
   };
 
   constructor(name: string, player: any, config: DualScreenConfig) {
     super(name, player, config);
     this._player = player;
     this.secondaryKalturaPlayer = this._createSecondaryPlayer();
-    this._imagePlayer = new ImagePlayer(this._setMode);
+    this._imagePlayer = new ImagePlayer(this._onActiveSlideChanged);
     this._addBindings();
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
@@ -96,28 +103,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     });
   }
 
-  private _onTimedMetadata = ({payload}: {payload: {cues: Array<{track: {label: string; language: string}; value: {data: {id: string}}}>}}) => {
-    if (payload.cues[0]?.track?.label === 'KalturaCuePoints' && payload.cues[0]?.track?.language === 'slides') {
-      // TODO: 'slides' should be enum from cue-point plugin
-      this._imagePlayer.setActive(payload.cues[0].value.data.id);
-    }
-  };
-
-  private _onTimedMetadataAdded = ({payload}: {payload: {cues: Array<{value: {key: string; data: Record<string, string>}}>}}) => {
-    payload.cues.forEach(cue => {
-      if (cue?.value && cue?.value?.key === 'KalturaCuePoint')
-        this._imagePlayer.addImage({
-          id: cue.value.data.id,
-          url: cue.value.data.url
-        });
-    });
-  };
-
   private _getSecondaryPlayer = () => {
     return this._secondaryPlayerType === PlayerType.IMAGE ? this._imagePlayer : this.secondaryKalturaPlayer;
   };
 
   private _setMode = () => {
+    this._singleLayout = false;
     if (this._layout === Layout.PIP) {
       this._inverse ? this._switchToPIPInverse(false) : this._switchToPIP(false);
       return;
@@ -136,6 +127,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   };
 
   private _removeActives() {
+    this._singleLayout = true;
     this._removeActivesArr.forEach(value => {
       value();
     });
@@ -192,6 +184,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
                 hide={() => this._switchToPIPMinimized(true)}
                 onSideBySideSwitch={() => this._switchToSideBySide(true)}
                 onInversePIP={() => this._switchToPIPInverse(true, Animations.Fade)}
+                portrait={this._pipPortraitMode}
+                aspectRatio={this.config.childAspectRatio}
               />
             </DragAndSnapManager>
           </ResponsiveManager>
@@ -244,6 +238,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
                 hide={() => this._switchToPIPMinimizedInverse(true)}
                 onSideBySideSwitch={() => this._switchToSideBySide(true)}
                 onInversePIP={() => this._switchToPIP(true, Animations.Fade)}
+                portrait={this._pipPortraitMode}
+                aspectRatio={this.config.childAspectRatio}
               />
             </DragAndSnapManager>
           </ResponsiveManager>
@@ -356,6 +352,17 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
+  private _onActiveSlideChanged = (slideItem: ImageItem) => {
+    if (slideItem.errored) {
+      this._removeActives();
+      return;
+    }
+    if (slideItem.portrait !== this._pipPortraitMode || this._singleLayout) {
+      this._pipPortraitMode = Boolean(slideItem.portrait);
+      this._setMode();
+    }
+  };
+
   private _getSecondaryMedia() {
     this._player.provider
       .doRequest([{loader: SecondaryMediaLoader, params: {parentEntryId: this._player.getMediaInfo().entryId}}])
@@ -368,8 +375,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
             this.logger.warn('Secondary entry id not found');
             // subscribe on timed metadata events for image player
             this._secondaryPlayerType = PlayerType.IMAGE;
-            this.eventManager.listen(this.player, this.player.Event.TIMED_METADATA, this._onTimedMetadata);
-            this.eventManager.listen(this.player, 'timed_metadata_added', this._onTimedMetadataAdded); // TODO: should be enum from cuePointManager
+            this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger);
             this._resolveReadyPromise();
           } else {
             // subscribe onf secondary player readiness
@@ -410,7 +416,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       provider: {
         ...this._player.config.provider,
         ignoreServerConfig: true
-      },
+      }
     };
     return KalturaPlayer.setup(secondaryPlayerConfig);
   }

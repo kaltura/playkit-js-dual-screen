@@ -1,19 +1,26 @@
 import './image-player.scss';
 
-interface ImageItem {
+const MAX_RETRY_ATTEMPTS = 3;
+const RETRY_DELAY = 2000;
+
+export interface ImageItem {
   id: string;
   url: string;
   loaded?: boolean;
+  errored?: boolean;
+  portrait?: boolean;
 }
 
 export class ImagePlayer {
   private _images: Array<ImageItem> = [];
-  private _imagePlayer: any;
+  private _imagePlayer: HTMLDivElement;
   private _activeImage: ImageItem | null = null;
-  private _setMode = () => {};
-  constructor(setMode: () => void) {
+  private _onActiveChange: (imageItem: ImageItem) => void;
+  private _retryInterval: any;
+
+  constructor(onActiveChanged: (imageItem: ImageItem) => void) {
     this._imagePlayer = this._createImagePlayer();
-    this._setMode = setMode;
+    this._onActiveChange = onActiveChanged;
   }
 
   public addImage = (item: ImageItem) => {
@@ -25,12 +32,11 @@ export class ImagePlayer {
   };
 
   public setActive = (activeId: string) => {
+    clearTimeout(this._retryInterval);
     this._images.find((item, index) => {
       if (activeId === item.id) {
+        this._onActiveChange(item);
         this._imagePlayer.style.backgroundImage = `url('${item.url}')`;
-        if (!this._activeImage) {
-          this._setMode();
-        }
         this._activeImage = item;
         if (this._images[index + 1] && !this._images[index + 1].loaded) {
           // preload next image
@@ -52,10 +58,23 @@ export class ImagePlayer {
     return imagePlayer;
   };
 
-  private _loadImage = (item: ImageItem) => {
+  private _loadImage = (item: ImageItem, attempt = 0) => {
     const img = new Image();
     img.onload = () => {
       item.loaded = true;
+      if (img.width > img.height) {
+        item.portrait = false;
+      } else {
+        item.portrait = true;
+      }
+    };
+    img.onerror = () => {
+      item.errored = true;
+      if (attempt < MAX_RETRY_ATTEMPTS) {
+        this._retryInterval = setTimeout(() => {
+          this._loadImage(item, attempt + 1);
+        }, RETRY_DELAY);
+      }
     };
     img.src = item.url;
   };
