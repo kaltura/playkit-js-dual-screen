@@ -11,7 +11,7 @@ import {DragAndSnapManager} from './components/drag-and-snap-manager';
 import {SideBySideWrapper} from './components/side-by-side/side-by-side-wrapper';
 import {setSubtitlesOnTop} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
-import {ImagePlayer, ImageItem} from './image-player';
+import {ImagePlayer, SlideItem} from './image-player';
 // @ts-ignore
 import {core} from 'kaltura-player-js';
 const {EventType, Cue} = core;
@@ -83,6 +83,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     ];
   }
   loadMedia(): void {
+    this._resetMode();
     this._getSecondaryMedia();
   }
 
@@ -124,6 +125,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._layout = this.config.layout;
     this._inverse = this.config.inverse;
     this._pipPosition = this.config.position;
+    this._singleLayout = true;
+    this._pipPortraitMode = false;
   };
 
   private _removeActives() {
@@ -352,7 +355,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _onActiveSlideChanged = (slideItem: ImageItem) => {
+  private _onActiveSlideChanged = (slideItem: SlideItem) => {
     if (slideItem.errored) {
       this._removeActives();
       return;

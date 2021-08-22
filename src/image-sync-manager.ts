@@ -10,7 +10,7 @@ export class ImageSyncManager {
     eventManager: KalturaPlayerTypes.EventManager,
     mainPlayer: KalturaPlayerTypes.Player,
     imagePlayer: ImagePlayer,
-    logger: KalturaPlayerTypes.Logger,
+    logger: KalturaPlayerTypes.Logger
   ) {
     this._eventManager = eventManager;
     this._mainPlayer = mainPlayer;
@@ -36,7 +36,10 @@ export class ImageSyncManager {
       if (cue?.value && cue?.value?.key === 'KalturaCuePoint')
         this._imagePlayer.addImage({
           id: cue.value.data.id,
-          url: cue.value.data.url
+          url: cue.value.data.url,
+          errored: false,
+          portrait: false,
+          loaded: false
         });
     });
   };

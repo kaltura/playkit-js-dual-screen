@@ -3,27 +3,27 @@ import './image-player.scss';
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 2000;
 
-export interface ImageItem {
+export interface SlideItem {
   id: string;
   url: string;
-  loaded?: boolean;
-  errored?: boolean;
-  portrait?: boolean;
+  loaded: boolean;
+  errored: boolean;
+  portrait: boolean;
 }
 
 export class ImagePlayer {
-  private _images: Array<ImageItem> = [];
+  private _images: Array<SlideItem> = [];
   private _imagePlayer: HTMLDivElement;
-  private _activeImage: ImageItem | null = null;
-  private _onActiveChange: (imageItem: ImageItem) => void;
+  private _activeImage: SlideItem | null = null;
+  private _onActiveChange: (imageItem: SlideItem) => void;
   private _retryInterval: any;
 
-  constructor(onActiveChanged: (imageItem: ImageItem) => void) {
+  constructor(onActiveChanged: (imageItem: SlideItem) => void) {
     this._imagePlayer = this._createImagePlayer();
     this._onActiveChange = onActiveChanged;
   }
 
-  public addImage = (item: ImageItem) => {
+  public addImage = (item: SlideItem) => {
     if (!this._images.length || (this._activeImage && this._images[this._images.length - 1].id === this._activeImage.id)) {
       // preload first or new image
       this._loadImage(item);
@@ -58,15 +58,11 @@ export class ImagePlayer {
     return imagePlayer;
   };
 
-  private _loadImage = (item: ImageItem, attempt = 0) => {
+  private _loadImage = (item: SlideItem, attempt = 0) => {
     const img = new Image();
     img.onload = () => {
       item.loaded = true;
-      if (img.width > img.height) {
-        item.portrait = false;
-      } else {
-        item.portrait = true;
-      }
+      item.portrait = img.width < img.height;
     };
     img.onerror = () => {
       item.errored = true;
