@@ -23,6 +23,11 @@ interface PIPChildComponentOwnProps {
   animation: Animations;
   isDragging?: boolean;
   setDraggableTarget?: (targetEl: HTMLDivElement) => void;
+  portrait?: boolean;
+  aspectRatio: {
+    width: number;
+    height: number;
+  };
 }
 interface PIPChildComponentConnectProps {
   guiClientRect?: GuiClientRect;
@@ -112,10 +117,10 @@ export class PipChild extends Component<PIPChildComponentProps> {
     }
 
     const height: number = (props.guiClientRect!.height * props.playerSizePercentage) / 100;
-    const width: number = (height * 16) / 9;
+    const width: number = (height * props.aspectRatio.width) / props.aspectRatio.height;
     const playerContainerStyles = {
-      height: `${height + 'px'}`,
-      width: `${width + 'px'}`
+      height: `${props.portrait ? width : height}px`,
+      width: `${props.portrait ? height : width}px`
     };
 
     return (
@@ -128,5 +133,4 @@ export class PipChild extends Component<PIPChildComponentProps> {
       </div>
     );
   }
-
 }
