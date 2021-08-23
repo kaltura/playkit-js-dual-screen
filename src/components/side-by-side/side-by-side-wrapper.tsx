@@ -10,11 +10,11 @@ interface SideBySideWrapperComponentProps {
   switchToPIP: Function;
   switchToPIPMinimized: Function;
   switchToPIPInverse: Function;
-  setMode: () => void;
+  onSizeChange: () => void;
   inverse: boolean;
 }
 export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps> {
-  render({leftPlayer, rightPlayer, switchToPIP, switchToPIPMinimized, setMode, switchToPIPInverse, inverse}: SideBySideWrapperComponentProps) {
+  render({leftPlayer, rightPlayer, switchToPIP, switchToPIPMinimized, onSizeChange, switchToPIPInverse, inverse}: SideBySideWrapperComponentProps) {
     const leftSideProps = {
       player: inverse ? rightPlayer : leftPlayer,
       onExpand: inverse ? () => switchToPIPInverse(true, Animations.ScaleRight) : () => switchToPIP(true, Animations.ScaleRight),
@@ -30,7 +30,7 @@ export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps
         onMinSize={() => {
           switchToPIPMinimized(false);
         }}
-        onDefaultSize={setMode}>
+        onDefaultSize={onSizeChange}>
         <div className={styles.sideBySideWrapper}>
           <SideBySide {...leftSideProps} />
           <SideBySide {...rightSideProps} />

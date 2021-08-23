@@ -23,7 +23,7 @@ interface PIPChildComponentOwnProps {
   animation: Animations;
   isDragging?: boolean;
   setDraggableTarget?: (targetEl: HTMLDivElement) => void;
-  portrait: boolean;
+  portrait?: boolean;
   aspectRatio: {
     width: number;
     height: number;

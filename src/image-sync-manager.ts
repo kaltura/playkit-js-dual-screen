@@ -21,7 +21,7 @@ export class ImageSyncManager {
 
   private _syncEvents = () => {
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA, this._onTimedMetadata);
-    this._eventManager.listen(this._mainPlayer, 'timed_metadata_added', this._onTimedMetadataAdded); // TODO: should be enum from cuePointManager
+    this._eventManager.listen(this._mainPlayer, 'timedmetadataadded', this._onTimedMetadataAdded); // TODO: should be enum from cuePointManager
   };
 
   private _onTimedMetadata = ({payload}: {payload: {cues: Array<{track: {label: string; language: string}; value: {data: {id: string}}}>}}) => {

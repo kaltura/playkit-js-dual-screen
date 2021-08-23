@@ -62,6 +62,7 @@ export class ImagePlayer {
     const img = new Image();
     img.onload = () => {
       item.loaded = true;
+      item.errored = false;
       item.portrait = img.width < img.height;
     };
     img.onerror = () => {
@@ -74,4 +75,9 @@ export class ImagePlayer {
     };
     img.src = item.url;
   };
+
+  public reset = () => {
+    this._activeImage = null;
+    this._images = [];
+  }
 }
