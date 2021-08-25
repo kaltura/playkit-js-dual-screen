@@ -41,5 +41,7 @@
       element[i].parentNode.removeChild(element[i]);
     }
   }
+
+  const noop = () => {};
   
-  export {removeVideoElementsFromTestPage, createElement, removeElement};
+  export {removeVideoElementsFromTestPage, createElement, removeElement, noop};
