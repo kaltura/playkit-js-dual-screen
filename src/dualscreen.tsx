@@ -4,7 +4,7 @@ import {PipChild, PipParent} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
 import {Position, Animations, Layout, ReservedPresetAreas, PlayerType} from './enums';
 import {VideoSyncManager} from './video-sync-manager';
-import {ImageSyncManager} from './image-sync-manager';
+import {ImageSyncManager, TIMED_METADATA_ADDED, SLIDE_CUE_POINT_TYPE} from './image-sync-manager';
 import {ResponsiveManager} from './components/responsive-manager';
 import {SecondaryMediaLoader} from './providers/secondary-media-loader';
 import {DragAndSnapManager} from './components/drag-and-snap-manager';
@@ -468,13 +468,13 @@ window.addSlide = function (url, startTime, endTime) {
   let slideTrack;
   // @ts-ignore
   for (let track of kalturaPlayer.getVideoElement().textTracks) {
-    if (track.kind === 'metadata' && track.label === 'KalturaCuePoints' && track.language === 'slides') {
+    if (track.kind === 'metadata' && track.label === 'KalturaCuePoints' && track.language === SLIDE_CUE_POINT_TYPE) {
       slideTrack = track;
     }
   }
   if (!slideTrack) {
     // @ts-ignore
-    slideTrack = kalturaPlayer.getVideoElement().addTextTrack('metadata', 'KalturaCuePoints', 'slides');
+    slideTrack = kalturaPlayer.getVideoElement().addTextTrack('metadata', 'KalturaCuePoints', SLIDE_CUE_POINT_TYPE);
   }
   let cue;
   if (window.VTTCue) {
@@ -483,13 +483,13 @@ window.addSlide = function (url, startTime, endTime) {
     cue = new Cue(startTime, endTime, '');
   }
   // @ts-ignore
-  const cueValue = {key: 'KalturaCuePoint', data: {id: `${Date.now()}-${Math.random()}`, url}};
+  const cueValue = {key: 'KalturaCuePoint', type: SLIDE_CUE_POINT_TYPE, data: {id: `${Date.now()}-${Math.random()}`, url}};
   // @ts-ignore
   cue.value = cueValue;
   slideTrack.addCue(cue);
   // @ts-ignore
   kalturaPlayer._pluginManager._plugins.dualscreen._player.dispatchEvent(
-    new KalturaPlayer.core.FakeEvent('timedmetadataadded', {cues: [{value: cueValue}]})
+    new KalturaPlayer.core.FakeEvent(TIMED_METADATA_ADDED, {cues: [{value: cueValue}]})
   );
   return 'ok';
 };

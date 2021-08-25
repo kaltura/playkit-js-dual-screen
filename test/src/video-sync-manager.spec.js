@@ -1,7 +1,7 @@
 import {setup} from 'kaltura-player-js';
 import {EventManager} from '@playkit-js/playkit-js';
 import * as TestUtils from './utils/test-utils';
-import {VideoSyncManager} from '../../src/videoSyncManager';
+import {VideoSyncManager} from '../../src/video-sync-manager';
 import {core} from 'kaltura-player-js';
 const {EventType, FakeEvent, Error, StateType} = core;
 
@@ -28,7 +28,6 @@ describe('KDualscreenPlugin', function () {
     },
     plugins: {}
   };
-  const noop = () => {};
 
   before(() => {
     targets.forEach(target => {
@@ -63,7 +62,7 @@ describe('KDualscreenPlugin', function () {
     });
 
     it('should sync play & pause events', done => {
-      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: noop});
+      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: TestUtils.noop});
       playerSecondary.addEventListener(EventType.PLAY, () => {
         playerSecondary.addEventListener(EventType.PAUSE, () => {
           done();
@@ -74,7 +73,7 @@ describe('KDualscreenPlugin', function () {
     });
 
     it('should sync seek event', done => {
-      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: noop});
+      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: TestUtils.noop});
       playerMain.addEventListener(EventType.PLAY, () => {
         playerSecondary.addEventListener(EventType.SEEKED, () => {
           done();
@@ -85,7 +84,7 @@ describe('KDualscreenPlugin', function () {
     });
 
     it('should sync ended event', done => {
-      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: noop});
+      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: TestUtils.noop});
       playerMain.addEventListener(EventType.ENDED, () => {
         try {
           expect(playerSecondary.paused).to.be.true;
@@ -101,7 +100,7 @@ describe('KDualscreenPlugin', function () {
     });
 
     it('should handle error', done => {
-      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: noop});
+      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: TestUtils.noop});
       playerMain.addEventListener(EventType.ERROR, () => {
         done();
       });
@@ -113,22 +112,13 @@ describe('KDualscreenPlugin', function () {
       playerMain.play();
     });
 
-    it('should handle buffering', done => {
-      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: noop});
-      playerMain.addEventListener(EventType.PLAYER_STATE_CHANGED, ({payload}) => {
-        if (payload.newState.type === StateType.BUFFERING) {
-          playerSecondary.addEventListener(EventType.PAUSE, () => {
-            playerMain.addEventListener(EventType.PLAYER_STATE_CHANGED, ({payload}) => {
-              if (payload.newState.type === StateType.PLAYING && payload.oldState.type === StateType.BUFFERING) {
-                playerSecondary.addEventListener(EventType.PLAY, () => {
-                  done();
-                });
-              }
-            });
-          });
-        }
+    it('should handle buffering and time sync', done => {
+      new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: TestUtils.noop});
+      playerMain.addEventListener(EventType.SEEKED, () => {
+        expect(playerSecondary.currentTime).to.eql(5);
+        done();
       });
-      playerSecondary.addEventListener(EventType.PLAYING, () => {
+      playerSecondary.addEventListener(EventType.FIRST_PLAYING, () => {
         playerMain.currentTime = 5;
       });
       playerMain.play();
