@@ -1,5 +1,5 @@
-import {DualScreenConfig} from './types/DualScreenConfig';
 import {h} from 'preact';
+import {DualScreenConfig} from './types/DualScreenConfig';
 import {PipChild, PipParent} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
 import {Position, Animations, Layout, ReservedPresetAreas, PlayerType} from './enums';
@@ -393,15 +393,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
           const entryId = secondaryMediaLoader?.response?.entries[0]?.id;
-          const ks: string = this._player.config.session.ks;
-          if (!entryId) {
-            this.logger.warn('Secondary entry id not found');
-            // subscribe on timed metadata events for image player
-            this._secondaryPlayerType = PlayerType.IMAGE;
-            this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger);
-            this._resolveReadyPromise();
-          } else {
-            // subscribe onf secondary player readiness
+          if (entryId) {
+            // subscribe on secondary player readiness
             this._secondaryPlayerType = PlayerType.VIDEO;
             this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
               this._resolveReadyPromise();
@@ -411,7 +404,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
               this.logger.debug('secondary player first playing - show dual mode');
               this._setMode();
             });
-            this.secondaryKalturaPlayer.loadMedia({entryId, ks});
+            this.secondaryKalturaPlayer.loadMedia({entryId, ks: this._player.config.session.ks});
+          } else {
+            this.logger.warn('Secondary entry id not found');
+            // subscribe on timed metadata events for image player
+            this._secondaryPlayerType = PlayerType.IMAGE;
+            this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger);
+            this._resolveReadyPromise();
           }
         }
       })

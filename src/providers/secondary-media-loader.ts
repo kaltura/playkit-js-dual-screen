@@ -25,7 +25,11 @@ export class SecondaryMediaLoader implements ILoader {
     request.service = 'baseEntry';
     request.action = 'list';
     request.params = {
-      filter: {objectType: 'KalturaBaseEntryFilter', parentEntryIdEqual: this._parentEntryId},
+      filter: {
+        objectType: 'KalturaBaseEntryFilter',
+        parentEntryIdEqual: this._parentEntryId,
+        typeEqual: ResponseTypes.KalturaMediaEntry.MediaType.VIDEO.value
+      },
       responseProfile: {
         type: INCLUDE_FIELDS,
         fields: 'id'
@@ -44,7 +48,7 @@ export class SecondaryMediaLoader implements ILoader {
 
   set response(response: any) {
     const mediaEntryListResponse = new ResponseTypes.KalturaBaseEntryListResponse(response[0]?.data);
-    if (mediaEntryListResponse.totalCount){
+    if (mediaEntryListResponse.totalCount) {
       this._response.entries = mediaEntryListResponse?.entries;
     }
   }
