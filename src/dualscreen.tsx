@@ -393,7 +393,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
           const mediaEntry = secondaryMediaLoader?.response?.entries?.find((entry: any) => {
-            return entry.type === 1; // TODO: use enum
+            // find only video type of media
+            return entry.type === KalturaPlayer.providers.ResponseTypes.KalturaMediaEntry.MediaType.VIDEO.value;
           });
           if (mediaEntry && mediaEntry.id) {
             // subscribe on secondary player readiness
