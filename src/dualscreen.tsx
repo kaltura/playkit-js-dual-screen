@@ -392,11 +392,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       .then((data: Map<string, any>) => {
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
-          const mediaEntry = secondaryMediaLoader?.response?.entries?.find((entry: any) => {
-            // find only video type of media
-            return entry.type === KalturaPlayer.providers.ResponseTypes.KalturaMediaEntry.MediaType.VIDEO.value;
-          });
-          if (mediaEntry && mediaEntry.id) {
+          const entryId = secondaryMediaLoader?.response?.entries[0]?.id;
+          if (entryId) {
             // subscribe on secondary player readiness
             this._secondaryPlayerType = PlayerType.VIDEO;
             this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
@@ -407,7 +404,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
               this.logger.debug('secondary player first playing - show dual mode');
               this._setMode();
             });
-            this.secondaryKalturaPlayer.loadMedia({entryId: mediaEntry.id, ks: this._player.config.session.ks});
+            this.secondaryKalturaPlayer.loadMedia({entryId, ks: this._player.config.session.ks});
           } else {
             this.logger.warn('Secondary entry id not found');
             // subscribe on timed metadata events for image player
