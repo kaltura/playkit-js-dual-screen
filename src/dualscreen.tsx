@@ -4,7 +4,7 @@ import {PipChild, PipParent} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
 import {Position, Animations, Layout, ReservedPresetAreas, PlayerType} from './enums';
 import {VideoSyncManager} from './video-sync-manager';
-import {ImageSyncManager, TIMED_METADATA_ADDED, SLIDE_CUE_POINT_TYPE} from './image-sync-manager';
+import {ImageSyncManager} from './image-sync-manager';
 import {ResponsiveManager} from './components/responsive-manager';
 import {SecondaryMediaLoader} from './providers/secondary-media-loader';
 import {DragAndSnapManager} from './components/drag-and-snap-manager';
@@ -14,7 +14,7 @@ import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
 import {ImagePlayer, SlideItem} from './image-player';
 // @ts-ignore
 import {core} from 'kaltura-player-js';
-const {EventType, Cue} = core;
+const {EventType} = core;
 
 const PRESETS = ['Playback', 'Live', 'Ads'];
 // @ts-ignore
@@ -456,39 +456,3 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this.eventManager.destroy();
   }
 }
-
-// TEMP - for QA drop only
-// @ts-ignore
-window.addSlide = function (url, startTime, endTime) {
-  // @ts-ignore
-  startTime = startTime || Math.round(kalturaPlayer.currentTime);
-  // @ts-ignore
-  endTime = endTime || kalturaPlayer.currentTime + 10;
-  let slideTrack;
-  // @ts-ignore
-  for (let track of kalturaPlayer.getVideoElement().textTracks) {
-    if (track.kind === 'metadata' && track.label === 'KalturaCuePoints' && track.language === SLIDE_CUE_POINT_TYPE) {
-      slideTrack = track;
-    }
-  }
-  if (!slideTrack) {
-    // @ts-ignore
-    slideTrack = kalturaPlayer.getVideoElement().addTextTrack('metadata', 'KalturaCuePoints', SLIDE_CUE_POINT_TYPE);
-  }
-  let cue;
-  if (window.VTTCue) {
-    cue = new VTTCue(startTime, endTime, '');
-  } else if (window.TextTrackCue) {
-    cue = new Cue(startTime, endTime, '');
-  }
-  // @ts-ignore
-  const cueValue = {key: 'KalturaCuePoint', type: SLIDE_CUE_POINT_TYPE, data: {id: `${Date.now()}-${Math.random()}`, url}};
-  // @ts-ignore
-  cue.value = cueValue;
-  slideTrack.addCue(cue);
-  // @ts-ignore
-  kalturaPlayer._pluginManager._plugins.dualscreen._player.dispatchEvent(
-    new KalturaPlayer.core.FakeEvent(TIMED_METADATA_ADDED, {cues: [{value: cueValue}]})
-  );
-  return 'ok';
-};

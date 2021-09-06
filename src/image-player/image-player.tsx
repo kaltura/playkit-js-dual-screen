@@ -5,7 +5,7 @@ const RETRY_DELAY = 2000;
 
 export interface SlideItem {
   id: string;
-  url: string;
+  imageUrl: string;
   loaded: boolean;
   errored: boolean;
   portrait: boolean;
@@ -36,7 +36,7 @@ export class ImagePlayer {
     this._images.find((item, index) => {
       if (activeId === item.id) {
         this._onActiveChange(item);
-        this._imagePlayer.style.backgroundImage = `url('${item.url}')`;
+        this._imagePlayer.style.backgroundImage = `url('${item.imageUrl}')`;
         this._activeImage = item;
         if (this._images[index + 1] && !this._images[index + 1].loaded) {
           // preload next image
@@ -73,11 +73,11 @@ export class ImagePlayer {
         }, RETRY_DELAY);
       }
     };
-    img.src = item.url;
+    img.src = item.imageUrl;
   };
 
   public reset = () => {
     this._activeImage = null;
     this._images = [];
-  }
+  };
 }
