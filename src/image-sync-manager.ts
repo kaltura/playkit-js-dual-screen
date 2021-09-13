@@ -1,6 +1,20 @@
 import {ImagePlayer} from './image-player';
 
-const ThumbCuePointType = 'thumbCuePoint.Thumb';
+const ThumbCuePointType = 'thumbCuePoint.Thumb'; // TODO: use enum from cue-point service once it got deployed
+
+interface TimedMetadata {
+  payload: {
+    cues: Array<{
+      track: {
+        label: string;
+      };
+      value: {
+        data: Record<string, any>;
+        key: string;
+      };
+    }>;
+  };
+}
 
 export class ImageSyncManager {
   _eventManager: KalturaPlayerTypes.EventManager;
@@ -26,18 +40,18 @@ export class ImageSyncManager {
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.cuePointManager.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
   };
 
-  private _onTimedMetadata = ({payload}: {payload: {cues: Array<{track: {label: string}; value: {data: {id: string; cuePointType: string}}}>}}) => {
+  private _onTimedMetadata = ({payload}: TimedMetadata) => {
     if (
-      payload.cues[0]?.track?.label === this._mainPlayer.cuePointManager.KalturaCuePointsTextTrack &&
+      payload.cues[0]?.track?.label === this._mainPlayer.cuePointManager.CuePointsTextTrack &&
       payload.cues[0]?.value?.data?.cuePointType === ThumbCuePointType
     ) {
       this._imagePlayer.setActive(payload.cues[0].value.data.id);
     }
   };
 
-  private _onTimedMetadataAdded = ({payload}: {payload: {cues: Array<{value: {key: string; data: Record<string, string>}}>}}) => {
+  private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
     payload.cues.forEach(cue => {
-      if (cue?.value?.key === this._mainPlayer.cuePointManager.KalturaCuePointKey && cue.value?.data?.cuePointType === ThumbCuePointType) {
+      if (cue?.value?.key === this._mainPlayer.cuePointManager.CuePointKey && cue.value?.data?.cuePointType === ThumbCuePointType) {
         this._imagePlayer.addImage({
           id: cue.value.data.id,
           imageUrl: cue.value.data.assetUrl,
