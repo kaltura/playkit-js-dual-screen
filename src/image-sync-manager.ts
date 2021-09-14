@@ -1,3 +1,5 @@
+// @ts-ignore
+import {cuepoint} from 'kaltura-player-js';
 import {ImagePlayer} from './image-player';
 
 const ThumbCuePointType = 'thumbCuePoint.Thumb'; // TODO: use enum from cue-point service once it got deployed
@@ -9,7 +11,11 @@ interface TimedMetadata {
         label: string;
       };
       value: {
-        data: Record<string, any>;
+        data: {
+          id: string;
+          cuePointType: string;
+          assetUrl: string;
+        };
         key: string;
       };
     }>;
@@ -37,19 +43,19 @@ export class ImageSyncManager {
 
   private _syncEvents = () => {
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA, this._onTimedMetadata);
-    this._eventManager.listen(this._mainPlayer, this._mainPlayer.cuePointManager.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
+    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.CuePoint.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
   };
 
   private _onTimedMetadata = ({payload}: TimedMetadata) => {
     const activeSlide = payload.cues?.find(cue => {
-      return cue.track?.label === this._mainPlayer.cuePointManager.Type.CuePointsTextTrack && cue.value?.data?.cuePointType === ThumbCuePointType;
+      return cue.track?.label === cuepoint.CUE_POINTS_TEXT_TRACK && cue.value?.data?.cuePointType === ThumbCuePointType;
     });
     this._imagePlayer.setActive(activeSlide ? activeSlide.value.data.id : null);
   };
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
     payload.cues.forEach(cue => {
-      if (cue?.value?.key === this._mainPlayer.cuePointManager.Type.CuePointKey && cue.value?.data?.cuePointType === ThumbCuePointType) {
+      if (cue?.value?.key === cuepoint.CUE_POINT_KEY && cue.value?.data?.cuePointType === ThumbCuePointType) {
         this._imagePlayer.addImage({
           id: cue.value.data.id,
           imageUrl: cue.value.data.assetUrl,
