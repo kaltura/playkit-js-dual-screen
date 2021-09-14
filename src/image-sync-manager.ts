@@ -43,7 +43,7 @@ export class ImageSyncManager {
 
   private _syncEvents = () => {
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA, this._onTimedMetadata);
-    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.CuePoint.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
+    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
   };
 
   private _onTimedMetadata = ({payload}: TimedMetadata) => {
