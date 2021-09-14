@@ -366,8 +366,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _onActiveSlideChanged = (slideItem: SlideItem) => {
-    if (slideItem.errored) {
+  private _onActiveSlideChanged = (slideItem: SlideItem | null) => {
+    if (!slideItem || slideItem.errored) {
       // deactivate dual-screen layout
       this._setSingleLayout();
       return;
