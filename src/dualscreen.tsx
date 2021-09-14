@@ -86,6 +86,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._getSecondaryMedia();
   }
 
+  reset(): void {
+    this._resetMode();
+    this._setSingleLayout();
+    this._imagePlayer.reset();
+    this._readyPromise = this._makeReadyPromise();
+  }
+
   private _makeReadyPromise = () => {
     return new Promise<void>(res => {
       this._resolveReadyPromise = res;
@@ -106,12 +113,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         this._resetMode();
         this._setMode();
       }
-    });
-    this.eventManager.listen(this.player, this.player.Event.RESET, () => {
-      this._resetMode();
-      this._setSingleLayout();
-      this._imagePlayer.reset();
-      this._readyPromise = this._makeReadyPromise();
     });
   }
 
