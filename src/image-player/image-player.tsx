@@ -3,9 +3,11 @@ import './image-player.scss';
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 2000;
 
+type OnActiveChange = (imageItem: SlideItem | null) => void;
+
 export interface SlideItem {
   id: string;
-  url: string;
+  imageUrl: string;
   loaded: boolean;
   errored: boolean;
   portrait: boolean;
@@ -15,10 +17,10 @@ export class ImagePlayer {
   private _images: Array<SlideItem> = [];
   private _imagePlayer: HTMLDivElement;
   private _activeImage: SlideItem | null = null;
-  private _onActiveChange: (imageItem: SlideItem) => void;
+  private _onActiveChange: OnActiveChange;
   private _retryInterval: any;
 
-  constructor(onActiveChanged: (imageItem: SlideItem) => void) {
+  constructor(onActiveChanged: OnActiveChange) {
     this._imagePlayer = this._createImagePlayer();
     this._onActiveChange = onActiveChanged;
   }
@@ -31,12 +33,23 @@ export class ImagePlayer {
     this._images.push(item);
   };
 
-  public setActive = (activeId: string) => {
+  public setActive = (activeId: string | null) => {
+    if (!activeId) {
+      // remove active image
+      this._imagePlayer.style.backgroundImage = 'none';
+      this._activeImage = null;
+      this._onActiveChange(null);
+      return;
+    }
+    if (this._activeImage && activeId === this._activeImage.id) {
+      // prevent set the same active image
+      return;
+    }
     clearTimeout(this._retryInterval);
     this._images.find((item, index) => {
       if (activeId === item.id) {
         this._onActiveChange(item);
-        this._imagePlayer.style.backgroundImage = `url('${item.url}')`;
+        this._imagePlayer.style.backgroundImage = `url('${item.imageUrl}')`;
         this._activeImage = item;
         if (this._images[index + 1] && !this._images[index + 1].loaded) {
           // preload next image
@@ -73,11 +86,11 @@ export class ImagePlayer {
         }, RETRY_DELAY);
       }
     };
-    img.src = item.url;
+    img.src = item.imageUrl;
   };
 
   public reset = () => {
     this._activeImage = null;
     this._images = [];
-  }
+  };
 }
