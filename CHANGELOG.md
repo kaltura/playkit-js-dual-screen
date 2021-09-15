@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.5.0...v1.6.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* **FEV-1070:** For entry with one source and uploaded slides the player will show error ([#32](https://github.com/kaltura/playkit-js-dual-screen/issues/32)) ([4b9dc56](https://github.com/kaltura/playkit-js-dual-screen/commit/4b9dc56))
+
+
+### Features
+
+* **FEV-1016:** CuePoint Manager - Push data to native tracks API ([#33](https://github.com/kaltura/playkit-js-dual-screen/issues/33)) ([a7bd2b1](https://github.com/kaltura/playkit-js-dual-screen/commit/a7bd2b1))
+* **FEV-1016:** CuePoint Manager - QA scripts ([#34](https://github.com/kaltura/playkit-js-dual-screen/issues/34)) ([9619a1b](https://github.com/kaltura/playkit-js-dual-screen/commit/9619a1b))
+* **FEV-1024:** image-sync-manager and image player unit tests ([#31](https://github.com/kaltura/playkit-js-dual-screen/issues/31)) ([a6df8e4](https://github.com/kaltura/playkit-js-dual-screen/commit/a6df8e4))
+
+
+
 ## [1.5.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.4.0...v1.5.0) (2021-08-18)
 
 
