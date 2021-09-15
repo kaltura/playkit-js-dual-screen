@@ -2,7 +2,7 @@
 import {cuepoint} from 'kaltura-player-js';
 import {ImagePlayer} from './image-player';
 
-const ThumbCuePointType = 'thumbCuePoint.Thumb'; // TODO: use enum from cue-point service once it got deployed
+export const ThumbCuePointType = 'thumbCuePoint.Thumb'; // TODO: use enum and interface from cue-point service once it got deployed
 
 interface TimedMetadata {
   payload: {

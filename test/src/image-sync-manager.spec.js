@@ -1,8 +1,8 @@
 import {setup} from 'kaltura-player-js';
 import * as TestUtils from './utils/test-utils';
-import {TIMED_METADATA_ADDED, SLIDE_CUE_POINT_TYPE} from '../../src/image-sync-manager';
-import {core} from 'kaltura-player-js';
-const {EventType, FakeEvent, Cue} = core;
+import {core, cuepoint} from 'kaltura-player-js';
+import {ThumbCuePointType} from '../../src/image-sync-manager';
+const {EventType} = core;
 
 describe('KDualscreenPlugin', function () {
   let player, sandbox;
@@ -52,38 +52,37 @@ describe('KDualscreenPlugin', function () {
       });
     });
 
+    const kalturaCuePoint = {
+      id: 'test_id',
+      assetUrl: 'test_url',
+      cuePointType: 'thumbCuePoint.Thumb',
+      startTime: 1,
+      endTime: 5
+    };
+
+    it('should handle TIMED_METADATA_ADDED event', done => {
+      player.addEventListener(EventType.TIMED_METADATA_ADDED, ({payload}) => {
+        expect(payload.cues[0].value.key).to.eql(cuepoint.CUE_POINT_KEY);
+        expect(payload.cues[0].value.data.cuePointType).to.eql(ThumbCuePointType);
+        done();
+      });
+      player.addEventListener(EventType.MEDIA_LOADED, () => {
+        player.cuePointManager.addCuePoints([kalturaCuePoint]);
+      });
+      player.play();
+    });
+
     it('should handle TIMED_METADATA event', done => {
       player.addEventListener(EventType.TIMED_METADATA, ({payload}) => {
-        expect(payload.cues[0].track.label).to.eql('KalturaCuePoints');
-        expect(payload.cues[0].track.language).to.eql(SLIDE_CUE_POINT_TYPE);
+        expect(payload.cues[0].track.label).to.eql(cuepoint.CUE_POINTS_TEXT_TRACK);
         expect(payload.cues[0].value.data.id).to.eql('test_id');
-        expect(payload.cues[0].value.data.url).to.eql('test_url');
+        expect(payload.cues[0].value.data.assetUrl).to.eql('test_url');
         expect(payload.cues[0].startTime).to.eql(1);
         expect(payload.cues[0].endTime).to.eql(5);
         done();
       });
       player.addEventListener(EventType.MEDIA_LOADED, () => {
-        const slideTrack = player.getVideoElement().addTextTrack('metadata', 'KalturaCuePoints', SLIDE_CUE_POINT_TYPE);
-        let cue;
-        if (window.VTTCue) {
-          cue = new VTTCue(1, 5, '');
-        } else if (window.TextTrackCue) {
-          cue = new Cue(1, 5, '');
-        }
-        cue.value = {key: 'KalturaCuePoint', type: SLIDE_CUE_POINT_TYPE, data: {id: 'test_id', url: 'test_url'}};
-        slideTrack.addCue(cue);
-      });
-      player.play();
-    });
-
-    it('should handle TIMED_METADATA_ADDED event', done => {
-      player.addEventListener(TIMED_METADATA_ADDED, ({payload}) => {
-        expect(payload.cues[0].value.key).to.eql('KalturaCuePoint');
-        expect(payload.cues[0].value.type).to.eql(SLIDE_CUE_POINT_TYPE);
-        done();
-      });
-      player.addEventListener(EventType.MEDIA_LOADED, () => {
-        player.dispatchEvent(new FakeEvent(TIMED_METADATA_ADDED, {cues: [{value: {key: 'KalturaCuePoint', type: SLIDE_CUE_POINT_TYPE}}]}));
+        player.cuePointManager.addCuePoints([kalturaCuePoint]);
       });
       player.play();
     });

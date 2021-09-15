@@ -457,3 +457,24 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this.eventManager.destroy();
   }
 }
+
+// TEMP - for QA drop only
+// @ts-ignore
+window.addSlide = function (assetId, startTime, endTime) {
+  // @ts-ignore
+  const player = window.kalturaPlayer;
+  startTime = startTime || Math.round(player.currentTime);
+  endTime = endTime || player.currentTime + 10;
+  const ks = player.config.provider.ks;
+  const serviceUrl = player.config.provider.env.serviceUrl;
+  const kalturaCuePoint = {
+    // @ts-ignore
+    assetUrl: `${serviceUrl}/index.php/service/thumbAsset/action/serve/thumbAssetId/${assetId}/ks/${ks}?thumbParams:objectType=KalturaThumbParams&thumbParams:width=600`,
+    id: `${Date.now()}-${Math.random()}`,
+    cuePointType: 'thumbCuePoint.Thumb',
+    startTime,
+    endTime
+  };
+  player.cuePointManager.addCuePoints([kalturaCuePoint]);
+  return 'ok';
+};
