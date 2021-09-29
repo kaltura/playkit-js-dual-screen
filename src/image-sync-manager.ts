@@ -50,7 +50,10 @@ export class ImageSyncManager {
     const activeSlide = payload.cues?.find(cue => {
       return cue.track?.label === cuepoint.CUE_POINTS_TEXT_TRACK && cue.value?.data?.cuePointType === ThumbCuePointType;
     });
-    this._imagePlayer.setActive(activeSlide ? activeSlide.value.data.id : null);
+    // this._imagePlayer.setActive(activeSlide ? activeSlide.value.data.id : null);
+    if (activeSlide) {
+      this._imagePlayer.setActive(activeSlide.value.data.id);
+    }
   };
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
