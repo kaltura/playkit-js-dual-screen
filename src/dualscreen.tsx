@@ -88,6 +88,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       сuepointService.registerTypes([сuepointService.CuepointType.SLIDE]);
     }
     this._getSecondaryMedia();
+    this._getThumbs();
   }
 
   reset(): void {
@@ -391,6 +392,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
   };
 
+  private _getThumbs() {
+    const kalturaCuePointService :any = this._player.getService('kalturaCuepoints');
+    kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE]);
+  }
+
   private _getSecondaryMedia() {
     this._player.provider
       .doRequest([{loader: SecondaryMediaLoader, params: {parentEntryId: this._player.getMediaInfo().entryId}}])
@@ -460,4 +466,5 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   destroy(): void {
     this.eventManager.destroy();
   }
+
 }
