@@ -1,7 +1,6 @@
 import {setup} from 'kaltura-player-js';
 import * as TestUtils from './utils/test-utils';
 import {core, cuepoint} from 'kaltura-player-js';
-import {ThumbCuePointType} from '../../src/image-sync-manager';
 const {EventType} = core;
 
 describe('KDualscreenPlugin', function () {
@@ -63,11 +62,11 @@ describe('KDualscreenPlugin', function () {
     it('should handle TIMED_METADATA_ADDED event', done => {
       player.addEventListener(EventType.TIMED_METADATA_ADDED, ({payload}) => {
         expect(payload.cues[0].value.key).to.eql(cuepoint.CUE_POINT_KEY);
-        expect(payload.cues[0].value.data.cuePointType).to.eql(ThumbCuePointType);
+        expect(payload.cues[0].value.data.cuePointType).to.eql("thumbCuePoint.Thumb");
         done();
       });
       player.addEventListener(EventType.MEDIA_LOADED, () => {
-        player.cuePointManager.addCuePoints([kalturaCuePoint]);
+        player.cuePointManager.addCuePoints([kalturaCuePoint]);   
       });
       player.play();
     });
