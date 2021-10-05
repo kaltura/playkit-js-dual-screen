@@ -4,7 +4,7 @@ import {PipChild, PipParent} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
 import {Position, Animations, Layout, ReservedPresetAreas, PlayerType} from './enums';
 import {VideoSyncManager} from './video-sync-manager';
-import {ImageSyncManager} from './image-sync-manager';
+import {ImageSyncManager, ViewChangeData} from './image-sync-manager';
 import {ResponsiveManager} from './components/responsive-manager';
 import {SecondaryMediaLoader} from './providers/secondary-media-loader';
 import {DragAndSnapManager} from './components/drag-and-snap-manager';
@@ -83,10 +83,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   }
 
   loadMedia(): void {
-    const сuepointService: any = this._player.getService('kalturaCuepoints');
-    if (сuepointService) {
-      сuepointService.registerTypes([сuepointService.CuepointType.SLIDE]);
-    }
     this._getSecondaryMedia();
     this._getThumbs();
   }
@@ -393,9 +389,52 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   };
 
   private _getThumbs() {
-    const kalturaCuePointService :any = this._player.getService('kalturaCuepoints');
+    const kalturaCuePointService: any = this._player.getService('kalturaCuepoints');
     kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE]);
   }
+
+  private _updateSlideLayout = () => {
+    if (this._imagePlayer.active) {
+      this._setMode();
+    }
+  };
+
+  private _onSlideViewChanged = ({playerViewModeId}: ViewChangeData) => {
+    switch (playerViewModeId) {
+      case 'pip-parent-in-large':
+        if (this._singleLayout || this._layout !== Layout.PIP || this._inverse) {
+          this._layout = Layout.PIP;
+          this._inverse = false;
+          this._updateSlideLayout();
+        }
+        break;
+      case 'pip-parent-in-small':
+        if (this._singleLayout || this._layout !== Layout.PIP || !this._inverse) {
+          this._layout = Layout.PIP;
+          this._inverse = true;
+          this._updateSlideLayout();
+        }
+        break;
+      case 'sbs-parent-in-left':
+        if (this._singleLayout || this._layout !== Layout.SideBySide || this._inverse) {
+          this._layout = Layout.SideBySide;
+          this._inverse = false;
+          this._updateSlideLayout();
+        }
+        break;
+      case 'sbs-parent-in-right':
+        if (this._singleLayout || this._layout !== Layout.SideBySide || !this._inverse) {
+          this._layout = Layout.SideBySide;
+          this._inverse = true;
+          this._updateSlideLayout();
+        }
+        break;
+      default:
+        if (!this._singleLayout) {
+          this._setSingleLayout();
+        }
+    }
+  };
 
   private _getSecondaryMedia() {
     this._player.provider
@@ -420,7 +459,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
             this.logger.warn('Secondary entry id not found');
             // subscribe on timed metadata events for image player
             this._secondaryPlayerType = PlayerType.IMAGE;
-            this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger);
+            this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger, this._onSlideViewChanged);
             this._resolveReadyPromise();
           }
         }
@@ -466,5 +505,4 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   destroy(): void {
     this.eventManager.destroy();
   }
-
 }

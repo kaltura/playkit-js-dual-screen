@@ -53,14 +53,14 @@ describe('KDualscreenPlugin', function () {
     });
   });
 
-  describe('VideoSyncManager', () => {
-    beforeEach(() => {
-      sandbox = sinon.createSandbox();
-      [playerMain, playerSecondary] = targets.map(target => {
-        return setup({...config, targetId: target});
-      });
+  beforeEach(() => {
+    sandbox = sinon.createSandbox();
+    [playerMain, playerSecondary] = targets.map(target => {
+      return setup({...config, targetId: target});
     });
+  });
 
+  describe('VideoSyncManager', () => {
     it('should sync play & pause events', done => {
       new VideoSyncManager(new EventManager(), playerMain, playerSecondary, {debug: TestUtils.noop});
       playerSecondary.addEventListener(EventType.PLAY, () => {

@@ -2,8 +2,6 @@
 import {cuepoint} from 'kaltura-player-js';
 import {ImagePlayer} from './image-player';
 
-export const ThumbCuePointType = 'thumbCuePoint.Thumb'; // TODO: use enum and interface from cue-point service once it got deployed
-
 interface TimedMetadata {
   payload: {
     cues: Array<{
@@ -15,11 +13,17 @@ interface TimedMetadata {
           id: string;
           cuePointType: string;
           assetUrl: string;
+          partnerData: ViewChangeData;
         };
         key: string;
       };
     }>;
+    label: string;
   };
+}
+
+export interface ViewChangeData {
+  playerViewModeId?: string;
 }
 
 export class ImageSyncManager {
@@ -27,18 +31,23 @@ export class ImageSyncManager {
   _mainPlayer: KalturaPlayerTypes.Player;
   _imagePlayer: ImagePlayer;
   _logger: KalturaPlayerTypes.Logger;
+  _onSlideViewChanged: (viewChangeData: ViewChangeData) => void;
+  _kalturaCuePointService: any;
 
   constructor(
     eventManager: KalturaPlayerTypes.EventManager,
     mainPlayer: KalturaPlayerTypes.Player,
     imagePlayer: ImagePlayer,
-    logger: KalturaPlayerTypes.Logger
+    logger: KalturaPlayerTypes.Logger,
+    onSlideViewChanged: (viewChangeData: ViewChangeData) => void
   ) {
     this._eventManager = eventManager;
     this._mainPlayer = mainPlayer;
     this._imagePlayer = imagePlayer;
     this._logger = logger;
+    this._onSlideViewChanged = onSlideViewChanged;
     this._syncEvents();
+    this._kalturaCuePointService = this._mainPlayer.getService('kalturaCuepoints');
   }
 
   private _syncEvents = () => {
@@ -47,18 +56,25 @@ export class ImageSyncManager {
   };
 
   private _onTimedMetadata = ({payload}: TimedMetadata) => {
-    const activeSlide = payload.cues?.find(cue => {
-      return cue.track?.label === cuepoint.CUE_POINTS_TEXT_TRACK && cue.value?.data?.cuePointType === ThumbCuePointType;
-    });
-    // this._imagePlayer.setActive(activeSlide ? activeSlide.value.data.id : null);
-    if (activeSlide) {
-      this._imagePlayer.setActive(activeSlide.value.data.id);
+    if (payload.label === KalturaPlayer.cuepoint.CUE_POINTS_TEXT_TRACK) {
+      const activeSlide = payload.cues?.find(cue => {
+        return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB;
+      });
+      // TODO: consider set single layout from view-change cue-points
+      this._imagePlayer.setActive(activeSlide ? activeSlide.value.data.id : null);
+
+      const viewChange = payload.cues?.find(cue => {
+        return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
+      });
+      if (viewChange) {
+        this._onSlideViewChanged(viewChange.value.data.partnerData);
+      }
     }
   };
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
     payload.cues.forEach(cue => {
-      if (cue?.value?.key === cuepoint.CUE_POINT_KEY && cue.value?.data?.cuePointType === ThumbCuePointType) {
+      if (cue?.value?.key === cuepoint.CUE_POINT_KEY && cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
         this._imagePlayer.addImage({
           id: cue.value.data.id,
           imageUrl: cue.value.data.assetUrl,
