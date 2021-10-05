@@ -390,7 +390,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   private _getThumbs() {
     const kalturaCuePointService: any = this._player.getService('kalturaCuepoints');
-    kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE]);
+    kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE, kalturaCuePointService.CuepointType.VIEW_CHANGE]);
   }
 
   private _updateSlideLayout = () => {
