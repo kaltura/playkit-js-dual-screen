@@ -125,22 +125,22 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   private _setMode = () => {
     switch (this._layout) {
       case Layout.PIP:
-        this._switchToPIP(false);
+        this._switchToPIP();
         break;
       case Layout.PIPInverse:
-        this._switchToPIPInverse(false);
+        this._switchToPIPInverse();
         break;
       case Layout.SingleMedia:
-        this._switchToSingleMedia(false);
+        this._switchToSingleMedia();
         break;
       case Layout.SingleMediaInverse:
-        this._switchToSingleMediaInverse(false);
+        this._switchToSingleMediaInverse();
         break;
       case Layout.SideBySide:
-        this._switchToSideBySide(false);
+        this._switchToSideBySide();
         break;
       case Layout.SideBySideInverse:
-        this._switchToSideBySideInverse(false);
+        this._switchToSideBySideInverse();
         break;
       default:
         this._switchToHidden();
@@ -156,7 +156,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         this._layout = this.config.inverse ? Layout.SideBySideInverse : Layout.SideBySide;
         break;
       case Layout.SingleMedia:
-        this._layout = Layout.SingleMedia;
+        this._layout = this.config.inverse ? Layout.SingleMediaInverse : Layout.SingleMedia;
         break;
       default:
         this._layout = Layout.Hidden;
@@ -185,13 +185,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._removeActives();
   };
 
-  private _switchToPIP = (changeLayout: boolean = true, parentAnimation: Animations = Animations.None) => {
+  private _switchToPIP = (parentAnimation: Animations = Animations.None) => {
     if (this._layout === Layout.PIP && this._removeActivesArr.length) {
       return;
     }
-    if (changeLayout) {
-      this._layout = Layout.PIP;
-    }
+    this._layout = Layout.PIP;
 
     setSubtitlesOnTop(true);
     this._removeActives();
@@ -215,7 +213,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         get: () => (
           <ResponsiveManager
             onMinSize={() => {
-              this._switchToSingleMedia(false);
+              this._switchToSingleMedia();
             }}
             onDefaultSize={this._setMode}>
             <DragAndSnapManager
@@ -227,9 +225,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this._getSecondaryPlayer()}
-                hide={() => this._switchToSingleMedia(true)}
-                onSideBySideSwitch={() => this._switchToSideBySide(true)}
-                onInversePIP={() => this._switchToPIPInverse(true, Animations.Fade)}
+                hide={() => this._switchToSingleMedia()}
+                onSideBySideSwitch={() => this._switchToSideBySide()}
+                onInversePIP={() => this._switchToPIPInverse(Animations.Fade)}
                 portrait={this._pipPortraitMode}
                 aspectRatio={this.config.childAspectRatio}
               />
@@ -240,13 +238,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _switchToPIPInverse = (changeLayout: boolean = true, parentAnimation: Animations = Animations.None) => {
+  private _switchToPIPInverse = (parentAnimation: Animations = Animations.None) => {
     if (this._layout === Layout.PIPInverse && this._removeActivesArr.length) {
       return;
     }
-    if (changeLayout) {
-      this._layout = Layout.PIPInverse;
-    }
+    this._layout = Layout.PIPInverse;
 
     setSubtitlesOnTop(true);
     this._removeActives();
@@ -270,7 +266,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         get: () => (
           <ResponsiveManager
             onMinSize={() => {
-              this._switchToSingleMediaInverse(false);
+              this._switchToSingleMediaInverse();
             }}
             onDefaultSize={this._setMode}>
             <DragAndSnapManager
@@ -282,9 +278,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this._player}
-                hide={() => this._switchToSingleMediaInverse(true)}
-                onSideBySideSwitch={() => this._switchToSideBySide(true)}
-                onInversePIP={() => this._switchToPIP(true, Animations.Fade)}
+                hide={() => this._switchToSingleMediaInverse()}
+                onSideBySideSwitch={() => this._switchToSideBySide()}
+                onInversePIP={() => this._switchToPIP(Animations.Fade)}
                 aspectRatio={this.config.childAspectRatio}
               />
             </DragAndSnapManager>
@@ -294,13 +290,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _switchToSingleMedia = (changeLayout: boolean = true, parentAnimation: Animations = Animations.None) => {
+  private _switchToSingleMedia = (parentAnimation: Animations = Animations.None) => {
     if (this._layout === Layout.SingleMedia && this._removeActivesArr.length) {
       return;
     }
-    if (changeLayout) {
-      this._layout = Layout.SingleMedia;
-    }
+    this._layout = Layout.SingleMedia;
 
     setSubtitlesOnTop(false);
     this._removeActives();
@@ -321,9 +315,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         get: () => (
           <ResponsiveManager onDefaultSize={this._setMode}>
             <PipMinimized
-              show={() => this._switchToPIP(true)}
+              show={() => this._switchToPIP()}
               player={this._getSecondaryPlayer()}
-              onInverse={() => this._switchToSingleMediaInverse(true, Animations.Fade)}
+              onInverse={() => this._switchToSingleMediaInverse(Animations.Fade)}
             />
           </ResponsiveManager>
         )
@@ -331,13 +325,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _switchToSingleMediaInverse = (changeLayout: boolean = true, parentAnimation: Animations = Animations.None) => {
+  private _switchToSingleMediaInverse = (parentAnimation: Animations = Animations.None) => {
     if (this._layout === Layout.SingleMediaInverse && this._removeActivesArr.length) {
       return;
     }
-    if (changeLayout) {
-      this._layout = Layout.SingleMediaInverse;
-    }
+    this._layout = Layout.SingleMediaInverse;
 
     setSubtitlesOnTop(false);
     this._removeActives();
@@ -358,9 +350,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         get: () => (
           <ResponsiveManager onDefaultSize={this._setMode}>
             <PipMinimized
-              show={() => this._switchToPIPInverse(true)}
+              show={() => this._switchToPIPInverse()}
               player={this._player}
-              onInverse={() => this._switchToSingleMedia(true, Animations.Fade)}
+              onInverse={() => this._switchToSingleMedia(Animations.Fade)}
             />
           </ResponsiveManager>
         )
@@ -368,13 +360,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _switchToSideBySide = (changeLayout: boolean = true) => {
+  private _switchToSideBySide = () => {
     if (this._layout === Layout.SideBySide && this._removeActivesArr.length) {
       return;
     }
-    if (changeLayout) {
-      this._layout = Layout.SideBySide;
-    }
+    this._layout = Layout.SideBySide;
 
     setSubtitlesOnTop(true);
     this._removeActives();
@@ -385,11 +375,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
     const leftSideProps = {
       player: this._player,
-      onExpand: () => this._switchToPIP(true, Animations.ScaleRight)
+      onExpand: () => this._switchToPIP(Animations.ScaleRight)
     };
     const rightSideProps = {
       player: this._getSecondaryPlayer(),
-      onExpand: () => this._switchToPIPInverse(true, Animations.ScaleLeft)
+      onExpand: () => this._switchToPIPInverse(Animations.ScaleLeft)
     };
 
     this._removeActivesArr.push(
@@ -409,13 +399,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _switchToSideBySideInverse = (changeLayout: boolean = true) => {
+  private _switchToSideBySideInverse = () => {
     if (this._layout === Layout.SideBySideInverse && this._removeActivesArr.length) {
       return;
     }
-    if (changeLayout) {
-      this._layout = Layout.SideBySideInverse;
-    }
+    this._layout = Layout.SideBySideInverse;
 
     setSubtitlesOnTop(true);
     this._removeActives();
@@ -426,11 +414,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
     const leftSideProps = {
       player: this._getSecondaryPlayer(),
-      onExpand: () => this._switchToPIPInverse(true, Animations.ScaleRight)
+      onExpand: () => this._switchToPIPInverse(Animations.ScaleRight)
     };
     const rightSideProps = {
       player: this._player,
-      onExpand: () => this._switchToPIP(true, Animations.ScaleLeft)
+      onExpand: () => this._switchToPIP(Animations.ScaleLeft)
     };
 
     this._removeActivesArr.push(
@@ -476,35 +464,35 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE, kalturaCuePointService.CuepointType.VIEW_CHANGE]);
   }
 
-  private _onSlideViewChanged = ({playerViewModeId, viewModeLockState}: ViewChangeData) => {
-    if (viewModeLockState === 'locked') {
+  private _onSlideViewChanged = ({playerViewModeId}: ViewChangeData, viewModeLockState: boolean) => {
+    if (viewModeLockState) {
       this._switchToHidden();
       return;
     }
     switch (playerViewModeId) {
       case 'parent-only':
         if (this._layout !== Layout.SingleMedia) {
-          this._switchToSingleMedia(true);
+          this._switchToSingleMedia();
         }
         break;
       case 'pip-parent-in-large':
         if (this._layout !== Layout.PIP) {
-          this._switchToPIP(true);
+          this._switchToPIP();
         }
         break;
       case 'pip-parent-in-small':
         if (this._layout !== Layout.PIPInverse) {
-          this._switchToPIPInverse(true);
+          this._switchToPIPInverse();
         }
         break;
       case 'sbs-parent-in-left':
         if (this._layout !== Layout.SideBySide) {
-          this._switchToSideBySide(true);
+          this._switchToSideBySide();
         }
         break;
       case 'sbs-parent-in-right':
         if (this._layout !== Layout.SideBySideInverse) {
-          this._switchToSideBySideInverse(true);
+          this._switchToSideBySideInverse();
         }
         break;
     }

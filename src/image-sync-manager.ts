@@ -32,7 +32,7 @@ export class ImageSyncManager {
   _mainPlayer: KalturaPlayerTypes.Player;
   _imagePlayer: ImagePlayer;
   _logger: KalturaPlayerTypes.Logger;
-  _onSlideViewChanged: (viewChangeData: ViewChangeData) => void;
+  _onSlideViewChanged: (viewChangeData: ViewChangeData, viewModeLockState: boolean) => void;
   _kalturaCuePointService: any;
 
   constructor(
@@ -40,7 +40,7 @@ export class ImageSyncManager {
     mainPlayer: KalturaPlayerTypes.Player,
     imagePlayer: ImagePlayer,
     logger: KalturaPlayerTypes.Logger,
-    onSlideViewChanged: (viewChangeData: ViewChangeData) => void
+    onSlideViewChanged: (viewChangeData: ViewChangeData, viewModeLockState: boolean) => void
   ) {
     this._eventManager = eventManager;
     this._mainPlayer = mainPlayer;
@@ -64,12 +64,13 @@ export class ImageSyncManager {
       // TODO: consider set single layout from view-change cue-points
       this._imagePlayer.setActive(activeSlide ? activeSlide.value.data.id : null);
 
-      const viewChange = payload.cues?.find(cue => {
+      const viewChanges = payload.cues?.filter(cue => {
         return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
       });
-      if (viewChange) {
-        this._onSlideViewChanged(viewChange.value.data.partnerData);
-      }
+      const lock = viewChanges.find(viewChange => (viewChange.value?.data?.partnerData?.viewModeLockState === 'locked'));
+      viewChanges.forEach(viewChange => {
+        this._onSlideViewChanged(viewChange.value.data.partnerData, !!lock);
+      });
     }
   };
 

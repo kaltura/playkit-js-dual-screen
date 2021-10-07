@@ -13,7 +13,7 @@ interface SideBySideWrapperComponentProps {
   leftSideProps: SideProps;
   rightSideProps: SideProps;
   onSizeChange: () => void;
-  onMinSize: (changeLayout?: boolean) => void;
+  onMinSize: () => void;
 }
 export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps> {
   render({leftSideProps, rightSideProps, onSizeChange, onMinSize}: SideBySideWrapperComponentProps) {
