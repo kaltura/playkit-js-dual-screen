@@ -24,6 +24,7 @@ interface TimedMetadata {
 
 export interface ViewChangeData {
   playerViewModeId?: string;
+  viewModeLockState?: string;
 }
 
 export class ImageSyncManager {
