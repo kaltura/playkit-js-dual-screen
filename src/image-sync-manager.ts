@@ -4,21 +4,23 @@ import {ImagePlayer} from './image-player';
 
 interface TimedMetadata {
   payload: {
-    cues: Array<{
-      track: {
-        label: string;
-      };
-      value: {
-        data: {
-          id: string;
-          cuePointType: string;
-          assetUrl: string;
-          partnerData: ViewChangeData;
-        };
-        key: string;
-      };
-    }>;
+    cues: Array<Cue>;
     label: string;
+  };
+}
+
+interface Cue {
+  track: {
+    label: string;
+  };
+  value: {
+    data: {
+      id: string;
+      cuePointType: string;
+      assetUrl: string;
+      partnerData: ViewChangeData;
+    };
+    key: string;
   };
 }
 
@@ -56,15 +58,17 @@ export class ImageSyncManager {
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
   };
 
-  private _onTimedMetadata = ({payload}: TimedMetadata) => {
-    if (payload.label === KalturaPlayer.cuepoint.CUE_POINTS_TEXT_TRACK) {
-      const activeSlide = payload.cues?.find(cue => {
+  private _onTimedMetadata = () => {
+    // TODO: use single "metadata" TextTrack once cue-point manager become use it
+    const kalturaCuePoints = this._mainPlayer.cuePointManager.getActiveCuePoints();
+    if (kalturaCuePoints.length) {
+      const activeSlide = Array.from<Cue>(kalturaCuePoints).find(cue => {
         return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB;
       });
       // TODO: consider set single layout from view-change cue-points
       this._imagePlayer.setActive(activeSlide ? activeSlide.value.data.id : null);
 
-      const viewChanges = payload.cues?.filter(cue => {
+      const viewChanges = Array.from<Cue>(kalturaCuePoints).filter(cue => {
         return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
       });
       const lock = viewChanges.find(viewChange => (viewChange.value?.data?.partnerData?.viewModeLockState === 'locked'));
