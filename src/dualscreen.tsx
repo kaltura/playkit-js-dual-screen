@@ -500,7 +500,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   private _getSecondaryMedia() {
     this._player.provider
-      .doRequest([{loader: SecondaryMediaLoader, params: {parentEntryId: this._player.config.sources.id}}])
+      .doRequest([{loader: SecondaryMediaLoader, params: {parentEntryId: this._player.sources.id}}])
       .then((data: Map<string, any>) => {
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
