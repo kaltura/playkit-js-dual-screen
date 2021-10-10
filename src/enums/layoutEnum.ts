@@ -1,5 +1,9 @@
 export enum Layout {
   PIP = 'PIP',
+  PIPInverse = 'PIPInverse',
   SingleMedia = 'SingleMedia',
-  SideBySide = 'SideBySide'
+  SingleMediaInverse = 'SingleMediaInverse',
+  SideBySide = 'SideBySide',
+  SideBySideInverse = 'SideBySideInverse',
+  Hidden = 'Hidden'
 }

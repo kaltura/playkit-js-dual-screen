@@ -4,36 +4,28 @@ import {Animations} from '../../enums';
 import {ResponsiveManager} from '../responsive-manager';
 import * as styles from './side-by-side.scss';
 
+interface SideProps {
+  player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
+  onExpand: () => void;
+}
+
 interface SideBySideWrapperComponentProps {
-  leftPlayer: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
-  rightPlayer: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
-  switchToPIP: Function;
-  switchToPIPMinimized: Function;
-  switchToPIPInverse: Function;
+  leftSideProps: SideProps;
+  rightSideProps: SideProps;
   onSizeChange: () => void;
-  inverse: boolean;
+  onMinSize: () => void;
 }
 export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps> {
-  render({leftPlayer, rightPlayer, switchToPIP, switchToPIPMinimized, onSizeChange, switchToPIPInverse, inverse}: SideBySideWrapperComponentProps) {
-    const leftSideProps = {
-      player: inverse ? rightPlayer : leftPlayer,
-      onExpand: inverse ? () => switchToPIPInverse(true, Animations.ScaleRight) : () => switchToPIP(true, Animations.ScaleRight),
-      animation: Animations.ScaleLeft
-    };
-    const rightSideProps = {
-      player: inverse ? leftPlayer : rightPlayer,
-      onExpand: inverse ? () => switchToPIP(true, Animations.ScaleLeft) : () => switchToPIPInverse(true, Animations.ScaleLeft),
-      animation: Animations.Fade
-    };
+  render({leftSideProps, rightSideProps, onSizeChange, onMinSize}: SideBySideWrapperComponentProps) {
     return (
       <ResponsiveManager
         onMinSize={() => {
-          switchToPIPMinimized(false);
+          onMinSize();
         }}
         onDefaultSize={onSizeChange}>
         <div className={styles.sideBySideWrapper}>
-          <SideBySide {...leftSideProps} />
-          <SideBySide {...rightSideProps} />
+          <SideBySide {...leftSideProps} animation={Animations.ScaleLeft} />
+          <SideBySide {...rightSideProps} animation={Animations.Fade} />
         </div>
       </ResponsiveManager>
     );

@@ -25,6 +25,10 @@ export class ImagePlayer {
     this._onActiveChange = onActiveChanged;
   }
 
+  get active() {
+    return this._activeImage;
+  }
+
   public addImage = (item: SlideItem) => {
     if (!this._images.length || (this._activeImage && this._images[this._images.length - 1].id === this._activeImage.id)) {
       // preload first or new image
@@ -35,6 +39,10 @@ export class ImagePlayer {
 
   public setActive = (activeId: string | null) => {
     if (!activeId) {
+      if (!this._activeImage) {
+        // prevent remove image if active is null
+        return;
+      }
       // remove active image
       this._imagePlayer.style.backgroundImage = 'none';
       this._activeImage = null;
