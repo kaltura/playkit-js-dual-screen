@@ -61,7 +61,7 @@
     "webpack-dev-server": "^3.11.0"
   },
   "peerDependencies": {
-    "kaltura-player-js": "https://github.com/kaltura/kaltura-player-js.git#v1.0.0"
+    "kaltura-player-js": "https://github.com/kaltura/kaltura-player-js.git#master"
   },
   "publishConfig": {
     "access": "public"

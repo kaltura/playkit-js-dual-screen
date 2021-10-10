@@ -9,11 +9,8 @@ interface TimedMetadata {
   };
 }
 
-interface Cue {
-  track: {
-    label: string;
-  };
-  value: {
+interface Cue extends VTTCue{
+  value?: {
     data: {
       id: string;
       cuePointType: string;
@@ -66,14 +63,14 @@ export class ImageSyncManager {
         return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB;
       });
       // TODO: consider set single layout from view-change cue-points
-      this._imagePlayer.setActive(activeSlide ? activeSlide.value.data.id : null);
+      this._imagePlayer.setActive(activeSlide ? activeSlide.value!.data.id : null);
 
       const viewChanges = Array.from<Cue>(kalturaCuePoints).filter(cue => {
         return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
       });
-      const lock = viewChanges.find(viewChange => (viewChange.value?.data?.partnerData?.viewModeLockState === 'locked'));
+      const lock = viewChanges.find(viewChange => (viewChange.value!.data?.partnerData?.viewModeLockState === 'locked'));
       viewChanges.forEach(viewChange => {
-        this._onSlideViewChanged(viewChange.value.data.partnerData, !!lock);
+        this._onSlideViewChanged(viewChange.value!.data.partnerData, !!lock);
       });
     }
   };
@@ -82,8 +79,8 @@ export class ImageSyncManager {
     payload.cues.forEach(cue => {
       if (cue?.value?.key === cuepoint.CUE_POINT_KEY && cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
         this._imagePlayer.addImage({
-          id: cue.value.data.id,
-          imageUrl: cue.value.data.assetUrl,
+          id: cue?.value!.data.id,
+          imageUrl: cue.value!.data.assetUrl,
           errored: false,
           portrait: false,
           loaded: false
