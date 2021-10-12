@@ -71,7 +71,6 @@ $hide-container-gap: 5px;
 
     .innerButtons {
       flex-direction: row-reverse;
-      border-radius: 8px;
       pointer-events: none;
       * {
         pointer-events: auto;
@@ -79,6 +78,7 @@ $hide-container-gap: 5px;
 
       .iconContainer {
         display: inline-block;
+        border-radius: 8px;
         padding: 2px;
         &:first-child {
           margin-left: 8px;

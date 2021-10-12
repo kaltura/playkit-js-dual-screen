@@ -23,7 +23,8 @@ export const Button = ({onClick, className, children, tooltip}: ButtonProps) => 
   const buttonProps: Record<string, any> = {
     className,
     onMouseUp: _handleClick,
-    role: 'button'
+    role: 'button',
+    tabIndex: 0
   };
   if (tooltip) {
     buttonProps['aria-label'] = tooltip.label;
