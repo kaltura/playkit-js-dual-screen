@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.6.2...v1.7.0) (2021-10-12)
+
+
+### Features
+
+* **FEV-1011:** handle view-change cue-points ([#37](https://github.com/kaltura/playkit-js-dual-screen/issues/37)) ([53e2e57](https://github.com/kaltura/playkit-js-dual-screen/commit/53e2e57))
+* **FEV-993:** getting thumb cue points using cue point service ([#36](https://github.com/kaltura/playkit-js-dual-screen/issues/36)) ([dcc8051](https://github.com/kaltura/playkit-js-dual-screen/commit/dcc8051))
+
+
+
 ### [1.6.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.6.1...v1.6.2) (2021-09-20)
 
 
