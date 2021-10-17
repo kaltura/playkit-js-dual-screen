@@ -9,7 +9,7 @@ interface TimedMetadata {
   };
 }
 
-interface Cue extends VTTCue{
+interface Cue extends VTTCue {
   value?: {
     data: {
       id: string;
@@ -33,6 +33,7 @@ export class ImageSyncManager {
   _logger: KalturaPlayerTypes.Logger;
   _onSlideViewChanged: (viewChangeData: ViewChangeData, viewModeLockState: boolean) => void;
   _kalturaCuePointService: any;
+  _previouslyHandledViewChanges: Map<string, VTTCue> = new Map();
 
   constructor(
     eventManager: KalturaPlayerTypes.EventManager,
@@ -57,22 +58,27 @@ export class ImageSyncManager {
 
   private _onTimedMetadata = () => {
     // TODO: use single "metadata" TextTrack once cue-point manager become use it
-    const kalturaCuePoints = this._mainPlayer.cuePointManager.getActiveCuePoints();
-    if (kalturaCuePoints.length) {
-      const activeSlide = Array.from<Cue>(kalturaCuePoints).find(cue => {
+    const activeCuePoints: Array<Cue> = Array.from(this._mainPlayer.cuePointManager.getActiveCuePoints());
+    const currHandledViewChanges: Map<string, VTTCue> = new Map();
+    if (activeCuePoints.length) {
+      const activeSlide = activeCuePoints.find(cue => {
         return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB;
       });
       // TODO: consider set single layout from view-change cue-points
       this._imagePlayer.setActive(activeSlide ? activeSlide.value!.data.id : null);
 
-      const viewChanges = Array.from<Cue>(kalturaCuePoints).filter(cue => {
+      const viewChanges = activeCuePoints.filter(cue => {
         return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
       });
-      const lock = viewChanges.find(viewChange => (viewChange.value!.data?.partnerData?.viewModeLockState === 'locked'));
+      const lock = viewChanges.find(viewChange => viewChange.value!.data?.partnerData?.viewModeLockState === 'locked');
       viewChanges.forEach(viewChange => {
-        this._onSlideViewChanged(viewChange.value!.data.partnerData, !!lock);
+        if (!this._previouslyHandledViewChanges.has(viewChange.id)) {
+          this._onSlideViewChanged(viewChange.value!.data.partnerData, !!lock);
+        }
+        currHandledViewChanges.set(viewChange.id, viewChange);
       });
     }
+    this._previouslyHandledViewChanges = currHandledViewChanges;
   };
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
@@ -88,4 +94,8 @@ export class ImageSyncManager {
       }
     });
   };
+
+  reset() {
+    this._previouslyHandledViewChanges.clear();
+  }
 }
