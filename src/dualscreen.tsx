@@ -440,7 +440,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   };
 
   private _onActiveSlideChanged = (slideItem: SlideItem | null) => {
-    if (!slideItem || slideItem.errored) {
+    if (!slideItem) {
       // deactivate dual-screen layout
       this._switchToHidden();
       return;

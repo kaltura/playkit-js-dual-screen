@@ -8,6 +8,7 @@ type OnActiveChange = (imageItem: SlideItem | null) => void;
 export interface SlideItem {
   id: string;
   imageUrl: string;
+  loading: boolean;
   loaded: boolean;
   errored: boolean;
   portrait: boolean;
@@ -29,11 +30,16 @@ export class ImagePlayer {
     return this._activeImage;
   }
 
-  public addImage = (item: SlideItem) => {
-    if (!this._images.length || (this._activeImage && this._images[this._images.length - 1].id === this._activeImage.id)) {
-      // preload first or new image
-      this._loadImage(item);
+  public preLoadImages = () => {
+    if (this._images.find(item => item.loading)) return; // preload process is already in progress
+    const nextImageToPreload = this._images.find(item => !item.loaded && !item.errored);
+
+    if (nextImageToPreload){
+      this._preLoadImage(nextImageToPreload);
     }
+  }
+
+  public addImage = (item: SlideItem) => {
     this._images.push(item);
   };
 
@@ -59,10 +65,6 @@ export class ImagePlayer {
         this._onActiveChange(item);
         this._imagePlayer.style.backgroundImage = `url('${item.imageUrl}')`;
         this._activeImage = item;
-        if (this._images[index + 1] && !this._images[index + 1].loaded) {
-          // preload next image
-          this._loadImage(this._images[index + 1]);
-        }
         return true;
       }
       return false;
@@ -79,19 +81,26 @@ export class ImagePlayer {
     return imagePlayer;
   };
 
-  private _loadImage = (item: SlideItem, attempt = 0) => {
+  private _preLoadImage = (item: SlideItem, attempt = 0) => {
+    item.loading = true;
     const img = new Image();
     img.onload = () => {
+      item.loading = false;
       item.loaded = true;
       item.errored = false;
       item.portrait = img.width < img.height;
+      this.preLoadImages();
     };
     img.onerror = () => {
       item.errored = true;
+      item.loading = false;
       if (attempt < MAX_RETRY_ATTEMPTS) {
         this._retryInterval = setTimeout(() => {
-          this._loadImage(item, attempt + 1);
+          this._preLoadImage(item, attempt + 1);
         }, RETRY_DELAY);
+      }
+      else {
+        this.preLoadImages();
       }
     };
     img.src = item.imageUrl;
