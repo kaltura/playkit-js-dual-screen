@@ -19,7 +19,7 @@ export class ImagePlayer {
   private _imagePlayer: HTMLDivElement;
   private _activeImage: SlideItem | null = null;
   private _onActiveChange: OnActiveChange;
-  private _retryInterval: any;
+  private _retryTimeout: any;
 
   constructor(onActiveChanged: OnActiveChange) {
     this._imagePlayer = this._createImagePlayer();
@@ -59,7 +59,7 @@ export class ImagePlayer {
       // prevent set the same active image
       return;
     }
-    clearTimeout(this._retryInterval);
+    clearTimeout(this._retryTimeout);
     this._images.find((item, index) => {
       if (activeId === item.id) {
         this._onActiveChange(item);
@@ -95,7 +95,7 @@ export class ImagePlayer {
       item.errored = true;
       item.loading = false;
       if (attempt < MAX_RETRY_ATTEMPTS) {
-        this._retryInterval = setTimeout(() => {
+        this._retryTimeout = setTimeout(() => {
           this._preLoadImage(item, attempt + 1);
         }, RETRY_DELAY);
       }
@@ -109,5 +109,6 @@ export class ImagePlayer {
   public reset = () => {
     this._activeImage = null;
     this._images = [];
+    clearTimeout(this._retryTimeout)
   };
 }
