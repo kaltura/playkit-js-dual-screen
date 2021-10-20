@@ -445,17 +445,21 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       this._switchToHidden();
       return;
     }
+
+    let originalHiddenLayout = false;
+    if (this._layout === Layout.Hidden) {
+      originalHiddenLayout = true;
+      this._setDefaultMode();
+    }
+
+    let portraitModeChanged = false;
     if (slideItem.portrait !== this._pipPortraitMode) {
       this._pipPortraitMode = slideItem.portrait;
-      if (this._layout === Layout.PIP) {
-        // update PIP component
-        this._setMode();
-        return;
-      }
+      portraitModeChanged = true;
     }
-    // apply dual-screen layout
-    if (this._layout === Layout.Hidden) {
-      this._setDefaultMode();
+
+    if (originalHiddenLayout || portraitModeChanged && this._layout === Layout.PIP) {
+      // update PIP component
       this._setMode();
     }
   };
