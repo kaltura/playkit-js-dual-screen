@@ -48,14 +48,15 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       width: 16,
       height: 9
     },
-    position: Position.BottomRight
+    position: Position.BottomRight,
+    slidesPreloadEnabled: true
   };
 
   constructor(name: string, player: any, config: DualScreenConfig) {
     super(name, player, config);
     this._player = player;
     this.secondaryKalturaPlayer = this._createSecondaryPlayer();
-    this._imagePlayer = new ImagePlayer(this._onActiveSlideChanged);
+    this._imagePlayer = new ImagePlayer(this._onActiveSlideChanged, this.config.slidesPreloadEnabled);
     this._readyPromise = this._makeReadyPromise();
     this._addBindings();
     this._layout = Layout.Hidden;

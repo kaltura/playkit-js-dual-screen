@@ -16,28 +16,35 @@ export interface SlideItem {
 
 export class ImagePlayer {
   private _images: Array<SlideItem> = [];
+  private _preloadIndex: number = -1;
   private _imagePlayer: HTMLDivElement;
   private _activeImage: SlideItem | null = null;
   private _onActiveChange: OnActiveChange;
   private _retryTimeout: any;
+  private _preloadEnabled: boolean = true;
 
-  constructor(onActiveChanged: OnActiveChange) {
+  constructor(onActiveChanged: OnActiveChange, preloadEnabled: boolean) {
     this._imagePlayer = this._createImagePlayer();
     this._onActiveChange = onActiveChanged;
+    this._preloadEnabled = preloadEnabled;
   }
 
   get active() {
     return this._activeImage;
   }
 
-  public preLoadImages = () => {
-    if (this._images.find(item => item.loading)) return; // preload process is already in progress
-    const nextImageToPreload = this._images.find(item => !item.loaded && !item.errored);
 
-    if (nextImageToPreload){
-      this._preLoadImage(nextImageToPreload);
-    }
-  }
+  public preLoadImages = () => {
+    if (
+      !this._preloadEnabled ||
+      (!this._images.length || this._preloadIndex === this._images.length - 1) || // No images or all images preloaded
+      this._images[this._preloadIndex]?.loading // we are already in a pre load process
+    )
+      return;
+
+    this._preloadIndex++;
+    this._preLoadImage(this._images[this._preloadIndex]);
+  };
 
   public addImage = (item: SlideItem) => {
     this._images.push(item);
@@ -93,13 +100,12 @@ export class ImagePlayer {
     };
     img.onerror = () => {
       item.errored = true;
-      item.loading = false;
       if (attempt < MAX_RETRY_ATTEMPTS) {
         this._retryTimeout = setTimeout(() => {
           this._preLoadImage(item, attempt + 1);
         }, RETRY_DELAY);
-      }
-      else {
+      } else {
+        item.loading = false;
         this.preLoadImages();
       }
     };
@@ -109,6 +115,7 @@ export class ImagePlayer {
   public reset = () => {
     this._activeImage = null;
     this._images = [];
-    clearTimeout(this._retryTimeout)
+    this._preloadIndex = -1;
+    clearTimeout(this._retryTimeout);
   };
 }
