@@ -56,9 +56,9 @@ export class ImagePlayer {
     clearTimeout(this._retryInterval);
     this._images.find((item, index) => {
       if (activeId === item.id) {
+        this._activeImage = item;
         this._onActiveChange(item);
         this._imagePlayer.style.backgroundImage = `url('${item.imageUrl}')`;
-        this._activeImage = item;
         if (this._images[index + 1] && !this._images[index + 1].loaded) {
           // preload next image
           this._loadImage(this._images[index + 1]);

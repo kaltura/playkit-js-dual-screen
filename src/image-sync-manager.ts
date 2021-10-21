@@ -66,7 +66,7 @@ export class ImageSyncManager {
       });
       // TODO: consider set single layout from view-change cue-points
       this._imagePlayer.setActive(activeSlide ? activeSlide.value!.data.id : null);
-      if (activeSlide){
+      if (activeSlide) {
         const viewChanges = activeCuePoints.filter(cue => {
           return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
         });
