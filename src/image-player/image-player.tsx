@@ -10,7 +10,6 @@ export interface SlideItem {
   imageUrl: string;
   loading: boolean;
   loaded: boolean;
-  errored: boolean;
   portrait: boolean;
 }
 
@@ -94,12 +93,10 @@ export class ImagePlayer {
     img.onload = () => {
       item.loading = false;
       item.loaded = true;
-      item.errored = false;
       item.portrait = img.width < img.height;
       this.preLoadImages();
     };
     img.onerror = () => {
-      item.errored = true;
       if (attempt < MAX_RETRY_ATTEMPTS) {
         this._retryTimeout = setTimeout(() => {
           this._preLoadImage(item, attempt + 1);

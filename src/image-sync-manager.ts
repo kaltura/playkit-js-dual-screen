@@ -92,7 +92,6 @@ export class ImageSyncManager {
         this._imagePlayer.addImage({
           id: cue?.value!.data.id,
           imageUrl: cue.value!.data.assetUrl,
-          errored: false,
           portrait: false,
           loading: false,
           loaded: false
