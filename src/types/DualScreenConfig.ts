@@ -1,4 +1,4 @@
-import {Layout, Position, PlayerType} from "../enums";
+import {Layout, Position, PlayerType} from '../enums';
 
 export interface DualScreenConfig {
   inverse: boolean;
@@ -8,5 +8,6 @@ export interface DualScreenConfig {
   childAspectRatio: {
     width: number;
     height: number;
-  }
+  };
+  slidesPreloadEnabled: boolean;
 }

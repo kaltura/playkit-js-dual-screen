@@ -34,6 +34,7 @@ export class ImageSyncManager {
   _onSlideViewChanged: (viewChangeData: ViewChangeData, viewModeLockState: boolean) => void;
   _kalturaCuePointService: any;
   _previouslyHandledViewChanges: Map<string, VTTCue> = new Map();
+  _firstPlaying: boolean = false;
 
   constructor(
     eventManager: KalturaPlayerTypes.EventManager,
@@ -54,6 +55,10 @@ export class ImageSyncManager {
   private _syncEvents = () => {
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA, this._onTimedMetadata);
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
+    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.FIRST_PLAYING, () => {
+      this._firstPlaying = true;
+      this._imagePlayer.preLoadImages();
+    });
   };
 
   private _onTimedMetadata = () => {
@@ -83,20 +88,26 @@ export class ImageSyncManager {
   };
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
-    payload.cues.forEach(cue => {
+    const slides = payload.cues.map(cue => {
       if (cue?.value?.key === cuepoint.CUE_POINT_KEY && cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
         this._imagePlayer.addImage({
           id: cue?.value!.data.id,
           imageUrl: cue.value!.data.assetUrl,
-          errored: false,
           portrait: false,
+          loading: false,
           loaded: false
         });
+        return cue;
       }
     });
+
+    if (slides.length && this._firstPlaying) {
+      this._imagePlayer.preLoadImages();
+    }
   };
 
   reset() {
     this._previouslyHandledViewChanges.clear();
+    this._firstPlaying = false;
   }
 }
