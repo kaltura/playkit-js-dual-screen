@@ -71,17 +71,18 @@ export class ImageSyncManager {
       });
       // TODO: consider set single layout from view-change cue-points
       this._imagePlayer.setActive(activeSlide ? activeSlide.value!.data.id : null);
-
-      const viewChanges = activeCuePoints.filter(cue => {
-        return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
-      });
-      const lock = viewChanges.find(viewChange => viewChange.value!.data?.partnerData?.viewModeLockState === 'locked');
-      viewChanges.forEach(viewChange => {
-        if (!this._previouslyHandledViewChanges.has(viewChange.id)) {
-          this._onSlideViewChanged(viewChange.value!.data.partnerData, !!lock);
-        }
-        currHandledViewChanges.set(viewChange.id, viewChange);
-      });
+      if (activeSlide){
+        const viewChanges = activeCuePoints.filter(cue => {
+          return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
+        });
+        const lock = viewChanges.find(viewChange => viewChange.value!.data?.partnerData?.viewModeLockState === 'locked');
+        viewChanges.forEach(viewChange => {
+          if (!this._previouslyHandledViewChanges.has(viewChange.id)) {
+            this._onSlideViewChanged(viewChange.value!.data.partnerData, !!lock);
+          }
+          currHandledViewChanges.set(viewChange.id, viewChange);
+        });
+      }
     }
     this._previouslyHandledViewChanges = currHandledViewChanges;
   };
