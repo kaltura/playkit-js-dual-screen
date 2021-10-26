@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.0...v1.7.2) (2021-10-26)
+
+
+### Bug Fixes
+
+* **FEV-1100:** when seeking more than one slide ahead it, slide loading is noticeable ([#40](https://github.com/kaltura/playkit-js-dual-screen/issues/40)) ([fcfe92c](https://github.com/kaltura/playkit-js-dual-screen/commit/fcfe92c))
+* **FEV-1107:** changing layouts via player does not work ([#38](https://github.com/kaltura/playkit-js-dual-screen/issues/38)) ([bf4cf62](https://github.com/kaltura/playkit-js-dual-screen/commit/bf4cf62))
+* **FEV-1109:** deleted slides leave black screen ([#39](https://github.com/kaltura/playkit-js-dual-screen/issues/39)) ([aaf32df](https://github.com/kaltura/playkit-js-dual-screen/commit/aaf32df))
+* **FEV-1115:** portrait slides are shown landscape ([#41](https://github.com/kaltura/playkit-js-dual-screen/issues/41)) ([6207cd5](https://github.com/kaltura/playkit-js-dual-screen/commit/6207cd5))
+
+
+
 ## [1.7.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.6.2...v1.7.0) (2021-10-12)
 
 
