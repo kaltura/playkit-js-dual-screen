@@ -68,9 +68,9 @@ export class ImagePlayer {
     clearTimeout(this._retryTimeout);
     this._images.find((item, index) => {
       if (activeId === item.id) {
+        this._activeImage = item;
         this._onActiveChange(item);
         this._imagePlayer.style.backgroundImage = `url('${item.imageUrl}')`;
-        this._activeImage = item;
         return true;
       }
       return false;
