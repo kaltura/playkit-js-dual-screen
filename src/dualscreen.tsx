@@ -187,9 +187,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   };
 
   private _switchToPIP = (parentAnimation: Animations = Animations.None) => {
-    if (this._layout === Layout.PIP && this._removeActivesArr.length) {
+    if (this._layout === Layout.PIP && this._removeActivesArr.length && this._imagePlayer.active?.portrait === this._pipPortraitMode) {
       return;
     }
+    this._pipPortraitMode = this._imagePlayer.active ? this._imagePlayer.active.portrait : this._pipPortraitMode;
     this._layout = Layout.PIP;
 
     setSubtitlesOnTop(true);
@@ -445,17 +446,20 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       this._switchToHidden();
       return;
     }
-    if (slideItem.portrait !== this._pipPortraitMode) {
-      this._pipPortraitMode = slideItem.portrait;
-      if (this._layout === Layout.PIP) {
-        // update PIP component
-        this._setMode();
-        return;
-      }
-    }
-    // apply dual-screen layout
+
+    let originalHiddenLayout = false;
     if (this._layout === Layout.Hidden) {
+      originalHiddenLayout = true;
       this._setDefaultMode();
+    }
+
+    let portraitModeChanged = false;
+    if (slideItem.portrait !== this._pipPortraitMode) {
+      portraitModeChanged = true;
+    }
+
+    if (originalHiddenLayout || (portraitModeChanged && this._layout === Layout.PIP)) {
+      // update PIP component
       this._setMode();
     }
   };
