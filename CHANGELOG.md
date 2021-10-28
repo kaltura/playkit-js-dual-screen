@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.3](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.2...v1.7.3) (2021-10-28)
+
+
+### Bug Fixes
+
+* **FEV-1122:** Slides switching breaks the current layout and changes it back to the default one ([#42](https://github.com/kaltura/playkit-js-dual-screen/issues/42)) ([b1f816c](https://github.com/kaltura/playkit-js-dual-screen/commit/b1f816cc734ee06b734fc1ebadf99445c1662316))
+
 ### [1.7.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.0...v1.7.2) (2021-10-26)
 
 
