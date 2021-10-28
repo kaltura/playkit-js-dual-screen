@@ -114,8 +114,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       if (this._playbackEnded) {
         // reset mode and pip-position on replay
         this._playbackEnded = false;
-        this._setDefaultMode();
-        this._setMode();
+        if (this._secondaryPlayerType === PlayerType.IMAGE && !this._imagePlayer.active) {
+          this._switchToHidden();
+        } else {
+          this._setDefaultMode();
+          this._setMode();
+        }
       }
     });
   }
@@ -144,12 +148,16 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       case Layout.SideBySideInverse:
         this._switchToSideBySideInverse();
         break;
-      default:
+      case Layout.Hidden:
         this._switchToHidden();
+        break;
+      default:
+        this.logger.warn('unrecognized layout, got:', this._layout);
     }
   };
 
   private _setDefaultMode = () => {
+    this._switchToHidden();
     switch (this.config.layout) {
       case Layout.PIP:
         this._layout = this.config.inverse ? Layout.PIPInverse : Layout.PIP;

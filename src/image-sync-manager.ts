@@ -55,36 +55,36 @@ export class ImageSyncManager {
   private _syncEvents = () => {
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA, this._onTimedMetadata);
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
-    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.FIRST_PLAYING, () => {
-      this._firstPlaying = true;
-      this._imagePlayer.preLoadImages();
-    });
+    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.FIRST_PLAYING, this._onFirstPlaying);
+  };
+
+  private _onFirstPlaying = () => {
+    this._firstPlaying = true;
+    this._imagePlayer.preLoadImages();
   };
 
   private _onTimedMetadata = () => {
     // TODO: use single "metadata" TextTrack once cue-point manager become use it
-    const activeCuePoints: Array<Cue> = Array.from(this._mainPlayer.cuePointManager.getActiveCuePoints());
+    const activeCuePoints: Array<Cue> = Array.from(this._mainPlayer.cuePointManager.getActiveCuePoints()).reverse();
     const currHandledViewChanges: Map<string, VTTCue> = new Map();
-    if (activeCuePoints.length) {
-      const activeSlide = activeCuePoints.find(cue => {
-        return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB;
+    const activeSlide = activeCuePoints.find(cue => {
+      return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB;
+    });
+    // TODO: consider set single layout from view-change cue-points
+    this._imagePlayer.setActive(activeSlide ? activeSlide.value!.data.id : null);
+    if (activeSlide) {
+      const viewChanges = activeCuePoints.filter(cue => {
+        return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
       });
-      // TODO: consider set single layout from view-change cue-points
-      this._imagePlayer.setActive(activeSlide ? activeSlide.value!.data.id : null);
-      if (activeSlide) {
-        const viewChanges = activeCuePoints.filter(cue => {
-          return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
-        });
-        const lock = viewChanges.find(viewChange => viewChange.value!.data?.partnerData?.viewModeLockState === 'locked');
-        viewChanges.forEach(viewChange => {
-          if (!this._previouslyHandledViewChanges.has(viewChange.id)) {
-            this._onSlideViewChanged(viewChange.value!.data.partnerData, !!lock);
-          }
-          currHandledViewChanges.set(viewChange.id, viewChange);
-        });
-      }
+      const lock = viewChanges.find(viewChange => viewChange.value!.data?.partnerData?.viewModeLockState === 'locked');
+      viewChanges.forEach(viewChange => {
+        if (!this._previouslyHandledViewChanges.has(viewChange.id)) {
+          this._onSlideViewChanged(viewChange.value!.data.partnerData, !!lock);
+        }
+        currHandledViewChanges.set(viewChange.id, viewChange);
+      });
+      this._previouslyHandledViewChanges = currHandledViewChanges;
     }
-    this._previouslyHandledViewChanges = currHandledViewChanges;
   };
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
