@@ -110,11 +110,4 @@ export class ImageSyncManager {
     this._previouslyHandledViewChanges.clear();
     this._firstPlaying = false;
   }
-
-  destroy() {
-    this.reset();
-    this._eventManager.unlisten(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA, this._onTimedMetadata);
-    this._eventManager.unlisten(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
-    this._eventManager.unlisten(this._mainPlayer, this._mainPlayer.Event.FIRST_PLAYING, this._onFirstPlaying);
-  }
 }
