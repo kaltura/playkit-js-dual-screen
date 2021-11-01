@@ -15,7 +15,7 @@ export class DualScreenEngineDecorator implements IEngineDecorator {
     this._dispatcher = dispatcher;
 
     plugin.eventManager.listen(plugin.player, EventType.SEEKING, () => {
-      this._isActive = true;
+      this._isActive = !!this._plugin.secondaryKalturaPlayer.src;
     });
     plugin.eventManager.listen(plugin.player, EventType.SEEKED, () => {
       this._isActive = false;
