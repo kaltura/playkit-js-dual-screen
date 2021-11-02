@@ -51,9 +51,6 @@ export class ImageSyncManager {
     this._onSlideViewChanged = onSlideViewChanged;
     this._syncEvents();
     this._kalturaCuePointService = this._mainPlayer.getService('kalturaCuepoints');
-    if (!this._kalturaCuePointService) {
-      this._logger.warn('kalturaCuepoints service is not registered');
-    }
   }
 
   private _syncEvents = () => {
@@ -78,7 +75,7 @@ export class ImageSyncManager {
     const viewChanges = activeCuePoints.filter(cue => {
       return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
     });
-    this._lock = !!(viewChanges.find(viewChange => viewChange.value!.data?.partnerData?.viewModeLockState === 'locked'));
+    this._lock = !!viewChanges.find(viewChange => viewChange.value!.data?.partnerData?.viewModeLockState === 'locked');
     // TODO: consider set single layout from view-change cue-points
     this._imagePlayer.setActive(!this._lock && activeSlide ? activeSlide.value!.data.id : null);
     if (activeSlide) {

@@ -1,1 +1,1 @@
-export * from "./drag-and-snap-manager";
+export * from './drag-and-snap-manager';

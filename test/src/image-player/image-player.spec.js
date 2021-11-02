@@ -86,16 +86,15 @@ describe('KDualscreenPlugin', function () {
     });
 
     it('should try and preload an two images', done => {
-      sandbox.stub(Image.prototype, "src").set(url=> {
-        setTimeout(()=>{
+      sandbox.stub(Image.prototype, 'src').set(url => {
+        setTimeout(() => {
           this.onloadCallback();
-          if (imageItemInstance1.loaded && imageItemInstance2.loaded){
+          if (imageItemInstance1.loaded && imageItemInstance2.loaded) {
             done();
           }
-        } ,10);
-
+        }, 10);
       });
-      sandbox.stub(Image.prototype, "onload").set(fn => {
+      sandbox.stub(Image.prototype, 'onload').set(fn => {
         this.onloadCallback = fn;
       });
       const imagePlayer = new ImagePlayer(TestUtils.noop, true);
@@ -105,28 +104,25 @@ describe('KDualscreenPlugin', function () {
     });
 
     it('should try and preload an two images, but fail on the first image', done => {
-      sandbox.stub(Image.prototype, "src").set(url=> {
-        if (url === imageItemInstance1.imageUrl){
-          setTimeout(()=>{
+      sandbox.stub(Image.prototype, 'src').set(url => {
+        if (url === imageItemInstance1.imageUrl) {
+          setTimeout(() => {
             this.onerrorCallback();
-          } ,10);
-        }
-        else{
-          setTimeout(()=>{
+          }, 10);
+        } else {
+          setTimeout(() => {
             this.onloadCallback();
-            if (!imageItemInstance1.loaded && imageItemInstance2.loaded){
+            if (!imageItemInstance1.loaded && imageItemInstance2.loaded) {
               done();
             }
-          } ,10);
+          }, 10);
         }
-
-
       });
-      sandbox.stub(Image.prototype, "onload").set(fn => {
+      sandbox.stub(Image.prototype, 'onload').set(fn => {
         this.onloadCallback = fn;
       });
 
-      sandbox.stub(Image.prototype, "onerror").set(fn => {
+      sandbox.stub(Image.prototype, 'onerror').set(fn => {
         this.onerrorCallback = fn;
       });
       const imagePlayer = new ImagePlayer(TestUtils.noop, true);

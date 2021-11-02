@@ -1,1 +1,1 @@
-export * from "./Gui";
+export * from './Gui';

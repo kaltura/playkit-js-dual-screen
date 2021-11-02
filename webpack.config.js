@@ -46,15 +46,14 @@ module.exports = {
               modules: {
                 localIdentName: '[name]__[local]___[hash:base64:5]',
                 exportLocalsConvention: 'camelCase'
-              },
-
+              }
             }
           },
           {
             loader: 'sass-loader'
           }
         ]
-      },
+      }
     ]
   },
   devServer: {

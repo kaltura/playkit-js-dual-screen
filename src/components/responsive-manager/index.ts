@@ -1,1 +1,1 @@
-export * from "./responsive-manager";
+export * from './responsive-manager';
