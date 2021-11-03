@@ -290,7 +290,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this._player}
                 hide={() => this._switchToSingleMediaInverse()}
-                onSideBySideSwitch={() => this._switchToSideBySide()}
+                onSideBySideSwitch={() => this._switchToSideBySideInverse()}
                 onInversePIP={() => this._switchToPIP(Animations.Fade)}
                 aspectRatio={this.config.childAspectRatio}
               />
