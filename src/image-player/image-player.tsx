@@ -32,11 +32,11 @@ export class ImagePlayer {
     return this._activeImage;
   }
 
-
   public preLoadImages = () => {
     if (
       !this._preloadEnabled ||
-      (!this._images.length || this._preloadIndex === this._images.length - 1) || // No images or all images preloaded
+      !this._images.length ||
+      this._preloadIndex === this._images.length - 1 || // No images or all images preloaded
       this._images[this._preloadIndex]?.loading // we are already in a pre load process
     )
       return;

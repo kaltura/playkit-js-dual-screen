@@ -83,8 +83,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   }
 
   loadMedia(): void {
+    const kalturaCuePointService: any = this._player.getService('kalturaCuepoints');
     this._getSecondaryMedia();
-    this._getThumbs();
+    if (kalturaCuePointService) {
+      this._getThumbs(kalturaCuePointService);
+    } else {
+      this.logger.warn('kalturaCuepoints service is not registered');
+    }
   }
 
   reset(): void {
@@ -473,8 +478,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
   };
 
-  private _getThumbs() {
-    const kalturaCuePointService: any = this._player.getService('kalturaCuepoints');
+  private _getThumbs(kalturaCuePointService: any) {
     kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE, kalturaCuePointService.CuepointType.VIEW_CHANGE]);
   }
 
@@ -536,7 +540,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
             this.logger.warn('Secondary entry id not found');
             // subscribe on timed metadata events for image player
             this._secondaryPlayerType = PlayerType.IMAGE;
-            this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger, this._onSlideViewChanged);
+
+            if (this.player.getService('kalturaCuepoints')) {
+              this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger, this._onSlideViewChanged);
+            }
             this._resolveReadyPromise();
           }
         }

@@ -1,1 +1,1 @@
-export * from "./pip-minimized";
+export * from './pip-minimized';

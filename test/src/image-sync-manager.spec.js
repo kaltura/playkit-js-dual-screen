@@ -62,11 +62,11 @@ describe('KDualscreenPlugin', function () {
     it('should handle TIMED_METADATA_ADDED event', done => {
       player.addEventListener(EventType.TIMED_METADATA_ADDED, ({payload}) => {
         expect(payload.cues[0].value.key).to.eql(cuepoint.CUE_POINT_KEY);
-        expect(payload.cues[0].value.data.cuePointType).to.eql("thumbCuePoint.Thumb");
+        expect(payload.cues[0].value.data.cuePointType).to.eql('thumbCuePoint.Thumb');
         done();
       });
       player.addEventListener(EventType.MEDIA_LOADED, () => {
-        player.cuePointManager.addCuePoints([kalturaCuePoint]);   
+        player.cuePointManager.addCuePoints([kalturaCuePoint]);
       });
       player.play();
     });

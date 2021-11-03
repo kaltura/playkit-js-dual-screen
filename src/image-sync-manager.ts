@@ -35,6 +35,7 @@ export class ImageSyncManager {
   _kalturaCuePointService: any;
   _previouslyHandledViewChanges: Map<string, VTTCue> = new Map();
   _firstPlaying: boolean = false;
+  _lock: boolean = false;
 
   constructor(
     eventManager: KalturaPlayerTypes.EventManager,
@@ -70,16 +71,17 @@ export class ImageSyncManager {
     const activeSlide = activeCuePoints.find(cue => {
       return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB;
     });
+
+    const viewChanges = activeCuePoints.filter(cue => {
+      return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
+    });
+    this._lock = !!viewChanges.find(viewChange => viewChange.value!.data?.partnerData?.viewModeLockState === 'locked');
     // TODO: consider set single layout from view-change cue-points
-    this._imagePlayer.setActive(activeSlide ? activeSlide.value!.data.id : null);
+    this._imagePlayer.setActive(!this._lock && activeSlide ? activeSlide.value!.data.id : null);
     if (activeSlide) {
-      const viewChanges = activeCuePoints.filter(cue => {
-        return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
-      });
-      const lock = viewChanges.find(viewChange => viewChange.value!.data?.partnerData?.viewModeLockState === 'locked');
       viewChanges.forEach(viewChange => {
         if (!this._previouslyHandledViewChanges.has(viewChange.id)) {
-          this._onSlideViewChanged(viewChange.value!.data.partnerData, !!lock);
+          this._onSlideViewChanged(viewChange.value!.data.partnerData, this._lock);
         }
         currHandledViewChanges.set(viewChange.id, viewChange);
       });
