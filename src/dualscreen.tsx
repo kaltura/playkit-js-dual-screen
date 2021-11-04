@@ -192,6 +192,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   private _switchToHidden = () => {
     this._layout = Layout.Hidden;
+    setSubtitlesOnTop(false);
     this._removeActives();
   };
 
@@ -307,7 +308,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
     this._layout = Layout.SingleMedia;
 
-    setSubtitlesOnTop(false);
+    setSubtitlesOnTop(true);
     this._removeActives();
 
     this._removeActivesArr.push(
@@ -342,7 +343,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
     this._layout = Layout.SingleMediaInverse;
 
-    setSubtitlesOnTop(false);
+    setSubtitlesOnTop(true);
     this._removeActives();
 
     this._removeActivesArr.push(
