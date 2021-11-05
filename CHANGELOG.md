@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.5](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.3...v1.7.5) (2021-11-05)
+
+
+### Bug Fixes
+
+* **FEV-1103:** incorrect live indicator color (state) appear when changing states between DVR to live ([#43](https://github.com/kaltura/playkit-js-dual-screen/issues/43)) ([b020a2b](https://github.com/kaltura/playkit-js-dual-screen/commit/b020a2b8cb8480bd12073cd1dd54534b207191fc))
+* **FEV-1120:** parent and child screens cannot be switched on SBS layout ([#45](https://github.com/kaltura/playkit-js-dual-screen/issues/45)) ([a7c1f95](https://github.com/kaltura/playkit-js-dual-screen/commit/a7c1f95907784881770f8bc3620400470e1e3815))
+* **FEV-1127:** slide appear in child container when changing slides in webcast application while producer set "hide slides" mode ([#44](https://github.com/kaltura/playkit-js-dual-screen/issues/44)) ([914225e](https://github.com/kaltura/playkit-js-dual-screen/commit/914225ebcfc18a4c3e97ef9b29e98ae342002bdd))
+* **FEV-1130:** Captions disappear when child video is in hidden mode ([#46](https://github.com/kaltura/playkit-js-dual-screen/issues/46)) ([3108788](https://github.com/kaltura/playkit-js-dual-screen/commit/31087880e4cc8265e435610976126cde763e548a))
+
 ### [1.7.4](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.3...v1.7.4) (2021-11-04)
 
 
