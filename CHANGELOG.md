@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.4](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.3...v1.7.4) (2021-11-04)
+
+
+### Bug Fixes
+
+* **FEV-1130:** add z-index to subtitles on single-view layout ([9483adc](https://github.com/kaltura/playkit-js-dual-screen/commit/9483adca95d9d339816600fea0d081c0aee40f34))
+
 ### [1.7.3](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.2...v1.7.3) (2021-10-28)
 
 
