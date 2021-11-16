@@ -7,3 +7,17 @@ export enum Layout {
   SideBySideInverse = 'SideBySideInverse',
   Hidden = 'Hidden'
 }
+
+export enum StreamLayout {
+  Hidden = 'locked',
+  SingleMedia = 'parent-only',
+  PIP = 'pip-parent-in-large',
+  PIPInverse = 'pip-parent-in-small',
+  SideBySide = 'sbs-parent-in-left',
+  SideBySideInverse = 'sbs-parent-in-right'
+}
+
+export enum ViewModeLockState {
+  Locked = 'locked',
+  Unlocked = 'unlocked'
+}

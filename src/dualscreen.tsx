@@ -2,7 +2,7 @@ import {h} from 'preact';
 import {DualScreenConfig} from './types/DualScreenConfig';
 import {PipChild, PipParent} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
-import {Animations, Layout, PlayerType, Position, ReservedPresetAreas} from './enums';
+import {Animations, Layout, PlayerType, Position, ReservedPresetAreas, StreamLayout} from './enums';
 import {VideoSyncManager} from './video-sync-manager';
 import {ImageSyncManager, ViewChangeData} from './image-sync-manager';
 import {ResponsiveManager} from './components/responsive-manager';
@@ -23,6 +23,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   public secondaryKalturaPlayer: KalturaPlayerTypes.Player;
   private _player: KalturaPlayerTypes.Player;
   private _layout: Layout;
+  private _streamLayout: StreamLayout | null = null;
   private _pipPosition: Position = Position.BottomRight;
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager?: VideoSyncManager;
@@ -178,6 +179,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
     this._pipPosition = this.config.position;
     this._pipPortraitMode = false;
+    this._streamLayout = null;
   };
 
   private _removeActives() {
@@ -463,7 +465,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
 
     let originalHiddenLayout = false;
-    if (this._layout === Layout.Hidden) {
+    if (this._layout === Layout.Hidden && !this._streamLayout) {
       originalHiddenLayout = true;
       this._setDefaultMode();
     }
@@ -483,33 +485,36 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE, kalturaCuePointService.CuepointType.VIEW_CHANGE]);
   }
 
-  private _onSlideViewChanged = ({playerViewModeId}: ViewChangeData, viewModeLockState: boolean) => {
-    if (viewModeLockState) {
-      this._switchToHidden();
+  private _onSlideViewChanged = (streamLayout: StreamLayout) => {
+    if (this._streamLayout === streamLayout) {
       return;
     }
-    switch (playerViewModeId) {
-      case 'parent-only':
+    this._streamLayout = streamLayout;
+    switch (this._streamLayout) {
+      case StreamLayout.Hidden:
+        this._switchToHidden();
+        break;
+      case StreamLayout.SingleMedia:
         if (this._layout !== Layout.SingleMedia) {
           this._switchToSingleMedia();
         }
         break;
-      case 'pip-parent-in-large':
+      case StreamLayout.PIP:
         if (this._layout !== Layout.PIP) {
           this._switchToPIP();
         }
         break;
-      case 'pip-parent-in-small':
+      case StreamLayout.PIPInverse:
         if (this._layout !== Layout.PIPInverse) {
           this._switchToPIPInverse();
         }
         break;
-      case 'sbs-parent-in-left':
+      case StreamLayout.SideBySide:
         if (this._layout !== Layout.SideBySide) {
           this._switchToSideBySide();
         }
         break;
-      case 'sbs-parent-in-right':
+      case StreamLayout.SideBySideInverse:
         if (this._layout !== Layout.SideBySideInverse) {
           this._switchToSideBySideInverse();
         }
