@@ -8,7 +8,7 @@ export enum Layout {
   Hidden = 'Hidden'
 }
 
-export enum StreamLayout {
+export enum ExternalLayout {
   Hidden = 'locked',
   SingleMedia = 'parent-only',
   PIP = 'pip-parent-in-large',

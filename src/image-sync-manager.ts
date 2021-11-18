@@ -1,6 +1,6 @@
 // @ts-ignore
 import {cuepoint} from 'kaltura-player-js';
-import {StreamLayout, ViewModeLockState} from './enums';
+import {ExternalLayout, ViewModeLockState} from './enums';
 import {ImagePlayer} from './image-player';
 
 interface TimedMetadata {
@@ -23,7 +23,7 @@ interface Cue extends VTTCue {
 }
 
 export interface ViewChangeData {
-  playerViewModeId?: string;
+  playerViewModeId?: ExternalLayout;
   viewModeLockState?: string;
 }
 
@@ -32,7 +32,7 @@ export class ImageSyncManager {
   _mainPlayer: KalturaPlayerTypes.Player;
   _imagePlayer: ImagePlayer;
   _logger: KalturaPlayerTypes.Logger;
-  _onSlideViewChanged: (viewChangeData: StreamLayout) => void;
+  _onSlideViewChanged: (viewChangeData: ExternalLayout) => void;
   _kalturaCuePointService: any;
   _firstPlaying: boolean = false;
   _lock: boolean = false;
@@ -42,7 +42,7 @@ export class ImageSyncManager {
     mainPlayer: KalturaPlayerTypes.Player,
     imagePlayer: ImagePlayer,
     logger: KalturaPlayerTypes.Logger,
-    onSlideViewChanged: (viewChangeData: StreamLayout) => void
+    onSlideViewChanged: (viewChangeData: ExternalLayout) => void
   ) {
     this._eventManager = eventManager;
     this._mainPlayer = mainPlayer;
@@ -67,14 +67,16 @@ export class ImageSyncManager {
   private _onTimedMetadata = () => {
     // TODO: use single "metadata" TextTrack once cue-point manager become use it
     const activeCuePoints: Array<Cue> = Array.from(this._mainPlayer.cuePointManager.getActiveCuePoints());
-    const {activeSlide, streamLayout} = activeCuePoints.reduce<{activeSlide: string | null; streamLayout: StreamLayout | null}>(
+    const {activeSlide, streamLayout} = activeCuePoints.reduce<{activeSlide: string | null; streamLayout: ExternalLayout | null}>(
       (acc, cue) => {
         if (cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
           return {...acc, activeSlide: cue.value!.data.id};
         }
         if (cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE) {
           const {playerViewModeId, viewModeLockState} = cue.value!.data.partnerData;
-          return {...acc, streamLayout: viewModeLockState === ViewModeLockState.Locked ? StreamLayout.Hidden : (playerViewModeId as StreamLayout)};
+          if (playerViewModeId) {
+            return {...acc, streamLayout: viewModeLockState === ViewModeLockState.Locked ? ExternalLayout.Hidden : playerViewModeId};
+          }
         }
         return acc;
       },
@@ -87,7 +89,7 @@ export class ImageSyncManager {
     if (streamLayout) {
       this._onSlideViewChanged(streamLayout);
     }
-    if (streamLayout !== StreamLayout.Hidden) {
+    if (streamLayout !== ExternalLayout.Hidden) {
       this._imagePlayer.setActive(activeSlide);
     }
   };
