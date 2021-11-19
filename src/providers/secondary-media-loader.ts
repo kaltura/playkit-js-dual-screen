@@ -2,11 +2,6 @@ import ILoader = KalturaPlayerTypes.ILoader;
 
 const {RequestBuilder, ResponseTypes} = KalturaPlayer.providers;
 
-interface SecondaryMediaLoaderParams {
-  parentEntryId: string;
-  ks: string;
-}
-
 export class SecondaryMediaLoader implements ILoader {
   _parentEntryId: string = '';
   _requests: any[] = [];
@@ -22,7 +17,7 @@ export class SecondaryMediaLoader implements ILoader {
    * @constructor
    * @param {Object} params loader params
    */
-  constructor(params: SecondaryMediaLoaderParams) {
+  constructor(params: any) {
     this._parentEntryId = params.parentEntryId;
     const headers: Map<string, string> = new Map();
     const request = new RequestBuilder(headers);
@@ -40,9 +35,6 @@ export class SecondaryMediaLoader implements ILoader {
         fields: 'id'
       }
     };
-    if (params.ks) {
-      request.params.ks = params.ks;
-    }
     this.requests.push(request);
   }
 
