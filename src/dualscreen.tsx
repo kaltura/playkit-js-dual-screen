@@ -84,7 +84,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   loadMedia(): void {
     const kalturaCuePointService: any = this._player.getService('kalturaCuepoints');
-    this._getSecondaryMedia();
+    setTimeout(() => {
+      // TODO: remove timeout once secondary media id will be included in initial player call
+      // currently timeout pospone API call to use KS from config.session.ks
+      this._getSecondaryMedia();
+    });
     if (kalturaCuePointService) {
       this._getThumbs(kalturaCuePointService);
     } else {
@@ -519,7 +523,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   private _getSecondaryMedia() {
     this._player.provider
-      .doRequest([{loader: SecondaryMediaLoader, params: {parentEntryId: this._player.sources.id}}])
+      .doRequest([{loader: SecondaryMediaLoader, params: {parentEntryId: this._player.sources.id, ks: this._player.config.session?.ks}}])
       .then((data: Map<string, any>) => {
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
@@ -551,6 +555,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       })
       .catch((e: any) => {
         this.logger.error(e);
+        this._resolveReadyPromise();
       });
   }
 
