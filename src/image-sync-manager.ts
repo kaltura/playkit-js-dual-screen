@@ -67,7 +67,7 @@ export class ImageSyncManager {
   private _onTimedMetadata = () => {
     // TODO: use single "metadata" TextTrack once cue-point manager become use it
     const activeCuePoints: Array<Cue> = Array.from(this._mainPlayer.cuePointManager.getActiveCuePoints());
-    const {activeSlide, streamLayout} = activeCuePoints.reduce<{activeSlide: string | null; streamLayout: ExternalLayout | null}>(
+    const {activeSlide, externalLayout} = activeCuePoints.reduce<{activeSlide: string | null; externalLayout: ExternalLayout | null}>(
       (acc, cue) => {
         if (cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
           return {...acc, activeSlide: cue.value!.data.id};
@@ -75,21 +75,21 @@ export class ImageSyncManager {
         if (cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE) {
           const {playerViewModeId, viewModeLockState} = cue.value!.data.partnerData;
           if (playerViewModeId) {
-            return {...acc, streamLayout: viewModeLockState === ViewModeLockState.Locked ? ExternalLayout.Hidden : playerViewModeId};
+            return {...acc, externalLayout: viewModeLockState === ViewModeLockState.Locked ? ExternalLayout.Hidden : playerViewModeId};
           }
         }
         return acc;
       },
       {
         activeSlide: null,
-        streamLayout: null
+        externalLayout: null
       }
     );
 
-    if (streamLayout) {
-      this._onSlideViewChanged(streamLayout);
+    if (externalLayout) {
+      this._onSlideViewChanged(externalLayout);
     }
-    if (streamLayout !== ExternalLayout.Hidden) {
+    if (externalLayout !== ExternalLayout.Hidden) {
       this._imagePlayer.setActive(activeSlide);
     }
   };

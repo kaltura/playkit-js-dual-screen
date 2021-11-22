@@ -23,7 +23,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   public secondaryKalturaPlayer: KalturaPlayerTypes.Player;
   private _player: KalturaPlayerTypes.Player;
   private _layout: Layout;
-  private _streamLayout: ExternalLayout | null = null;
+  private _externalLayout: ExternalLayout | null = null;
   private _pipPosition: Position = Position.BottomRight;
   private _removeActivesArr: Function[] = [];
   private _videoSyncManager?: VideoSyncManager;
@@ -179,7 +179,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
     this._pipPosition = this.config.position;
     this._pipPortraitMode = false;
-    this._streamLayout = null;
+    this._externalLayout = null;
   };
 
   private _removeActives() {
@@ -465,7 +465,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
 
     let originalHiddenLayout = false;
-    if (this._layout === Layout.Hidden && !this._streamLayout) {
+    if (this._layout === Layout.Hidden && !this._externalLayout) {
       originalHiddenLayout = true;
       this._setDefaultMode();
     }
@@ -486,11 +486,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   }
 
   private _onSlideViewChanged = (viewChange: ExternalLayout) => {
-    if (this._streamLayout === viewChange) {
+    if (this._externalLayout === viewChange) {
       return;
     }
-    this._streamLayout = viewChange;
-    switch (this._streamLayout) {
+    this._externalLayout = viewChange;
+    switch (this._externalLayout) {
       case ExternalLayout.Hidden:
         this._switchToHidden();
         break;
