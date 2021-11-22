@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.6](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.5...v1.7.6) (2021-11-22)
+
+
+### Bug Fixes
+
+* **FEV-1132:**  Player breaks when there is no KS and dual plugin is configured ([#48](https://github.com/kaltura/playkit-js-dual-screen/issues/48)) ([ddc5681](https://github.com/kaltura/playkit-js-dual-screen/commit/ddc568108f0bcf863505c74c3be27968ceb47d0c))
+* **FEV-1142:** Returning to a wrong layout when using DVR for getting back to a "non-slides" point ([#47](https://github.com/kaltura/playkit-js-dual-screen/issues/47)) ([2d2ac16](https://github.com/kaltura/playkit-js-dual-screen/commit/2d2ac1639a7eeb0e49b942652da36861a99da84d))
+
 ### [1.7.5](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.3...v1.7.5) (2021-11-05)
 
 
