@@ -1,1 +1,1 @@
-export * from "./side-by-side";
+export * from './side-by-side';

@@ -1,5 +1,6 @@
 // @ts-ignore
 import {cuepoint} from 'kaltura-player-js';
+import {ExternalLayout, ViewModeLockState} from './enums';
 import {ImagePlayer} from './image-player';
 
 interface TimedMetadata {
@@ -9,7 +10,7 @@ interface TimedMetadata {
   };
 }
 
-interface Cue extends VTTCue{
+interface Cue extends VTTCue {
   value?: {
     data: {
       id: string;
@@ -22,7 +23,7 @@ interface Cue extends VTTCue{
 }
 
 export interface ViewChangeData {
-  playerViewModeId?: string;
+  playerViewModeId?: ExternalLayout;
   viewModeLockState?: string;
 }
 
@@ -31,15 +32,17 @@ export class ImageSyncManager {
   _mainPlayer: KalturaPlayerTypes.Player;
   _imagePlayer: ImagePlayer;
   _logger: KalturaPlayerTypes.Logger;
-  _onSlideViewChanged: (viewChangeData: ViewChangeData, viewModeLockState: boolean) => void;
+  _onSlideViewChanged: (viewChangeData: ExternalLayout) => void;
   _kalturaCuePointService: any;
+  _firstPlaying: boolean = false;
+  _lock: boolean = false;
 
   constructor(
     eventManager: KalturaPlayerTypes.EventManager,
     mainPlayer: KalturaPlayerTypes.Player,
     imagePlayer: ImagePlayer,
     logger: KalturaPlayerTypes.Logger,
-    onSlideViewChanged: (viewChangeData: ViewChangeData, viewModeLockState: boolean) => void
+    onSlideViewChanged: (viewChangeData: ExternalLayout) => void
   ) {
     this._eventManager = eventManager;
     this._mainPlayer = mainPlayer;
@@ -53,39 +56,64 @@ export class ImageSyncManager {
   private _syncEvents = () => {
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA, this._onTimedMetadata);
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
+    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.FIRST_PLAYING, this._onFirstPlaying);
+  };
+
+  private _onFirstPlaying = () => {
+    this._firstPlaying = true;
+    this._imagePlayer.preLoadImages();
   };
 
   private _onTimedMetadata = () => {
     // TODO: use single "metadata" TextTrack once cue-point manager become use it
-    const kalturaCuePoints = this._mainPlayer.cuePointManager.getActiveCuePoints();
-    if (kalturaCuePoints.length) {
-      const activeSlide = Array.from<Cue>(kalturaCuePoints).find(cue => {
-        return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB;
-      });
-      // TODO: consider set single layout from view-change cue-points
-      this._imagePlayer.setActive(activeSlide ? activeSlide.value!.data.id : null);
+    const activeCuePoints: Array<Cue> = Array.from(this._mainPlayer.cuePointManager.getActiveCuePoints());
+    const {activeSlide, externalLayout} = activeCuePoints.reduce<{activeSlide: string | null; externalLayout: ExternalLayout | null}>(
+      (acc, cue) => {
+        if (cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
+          return {...acc, activeSlide: cue.value!.data.id};
+        }
+        if (cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE) {
+          const {playerViewModeId, viewModeLockState} = cue.value!.data.partnerData;
+          if (playerViewModeId) {
+            return {...acc, externalLayout: viewModeLockState === ViewModeLockState.Locked ? ExternalLayout.Hidden : playerViewModeId};
+          }
+        }
+        return acc;
+      },
+      {
+        activeSlide: null,
+        externalLayout: null
+      }
+    );
 
-      const viewChanges = Array.from<Cue>(kalturaCuePoints).filter(cue => {
-        return cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE;
-      });
-      const lock = viewChanges.find(viewChange => (viewChange.value!.data?.partnerData?.viewModeLockState === 'locked'));
-      viewChanges.forEach(viewChange => {
-        this._onSlideViewChanged(viewChange.value!.data.partnerData, !!lock);
-      });
+    if (externalLayout) {
+      this._onSlideViewChanged(externalLayout);
+    }
+    if (externalLayout !== ExternalLayout.Hidden) {
+      this._imagePlayer.setActive(activeSlide);
     }
   };
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
-    payload.cues.forEach(cue => {
+    const slides = payload.cues.map(cue => {
       if (cue?.value?.key === cuepoint.CUE_POINT_KEY && cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
         this._imagePlayer.addImage({
           id: cue?.value!.data.id,
           imageUrl: cue.value!.data.assetUrl,
-          errored: false,
           portrait: false,
+          loading: false,
           loaded: false
         });
+        return cue;
       }
     });
+
+    if (slides.length && this._firstPlaying) {
+      this._imagePlayer.preLoadImages();
+    }
   };
+
+  reset() {
+    this._firstPlaying = false;
+  }
 }
