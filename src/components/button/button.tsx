@@ -4,7 +4,7 @@ const {Tooltip} = KalturaPlayer.ui.components;
 
 interface ButtonProps {
   onClick: () => void;
-  className: string;
+  className?: string;
   children: VNode;
   tooltip?: {
     label: string;
@@ -20,12 +20,20 @@ export const Button = ({onClick, className, children, tooltip}: ButtonProps) => 
     },
     [onClick]
   );
+  const _handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.keyCode === KalturaPlayer.ui.utils.KeyMap.ENTER) {
+      _handleClick(e);
+    }
+  }, []);
   const buttonProps: Record<string, any> = {
-    className,
     onMouseUp: _handleClick,
+    onKeyDown: _handleKeyDown,
     role: 'button',
     tabIndex: 0
   };
+  if (className) {
+    buttonProps.className = className;
+  }
   if (tooltip) {
     buttonProps['aria-label'] = tooltip.label;
   }

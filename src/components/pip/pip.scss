@@ -64,13 +64,14 @@ $hide-container-gap: 5px;
     position: relative;
 
     .playerContainer {
-      border-radius: 8px;
+      border-radius: $border-radius;
       overflow: hidden;
       box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.3);
     }
 
     .innerButtons {
-      flex-direction: row-reverse;
+      flex-direction: row;
+      justify-content: flex-end;
       pointer-events: none;
       * {
         pointer-events: auto;
@@ -78,10 +79,9 @@ $hide-container-gap: 5px;
 
       .iconContainer {
         display: inline-block;
-        border-radius: 8px;
         padding: 2px;
         &:first-child {
-          margin-left: 8px;
+          margin-right: 8px;
         }
       }
     }
