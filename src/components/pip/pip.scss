@@ -14,13 +14,13 @@ $hide-container-gap: 5px;
     position: relative;
   }
 
-  &.hovering,
+  &.hideButtons,
   &.dragging {
     .innerButtons {
       display: none;
     }
   }
-  &.hovering .hideContainer {
+  &.hideButtons .hideContainer {
     display: none;
   }
   &.dragging .hideContainer {
@@ -62,10 +62,10 @@ $hide-container-gap: 5px;
 
   .playerWrapper {
     position: relative;
+    border-radius: $border-radius;
+    overflow: hidden;
 
     .playerContainer {
-      border-radius: $border-radius;
-      overflow: hidden;
       box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.3);
     }
 

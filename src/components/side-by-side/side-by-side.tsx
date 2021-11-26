@@ -8,19 +8,20 @@ const {connect} = KalturaPlayer.ui.redux;
 
 interface SideBySideComponentOwnProps {
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
-  onExpand: () => void;
+  onExpand: (byKeyboard: boolean) => void;
   animation: Animations;
+  focusOnMount?: boolean;
 }
 interface SideBySideComponentConnectProps {
-  guiClientRect?: {width: number; height: number};
-  playerHover?: boolean;
+  playerWidth?: number;
+  showUi?: boolean;
 }
 
 type SideBySideComponentProps = SideBySideComponentOwnProps & SideBySideComponentConnectProps;
 
 const mapStateToProps = (state: Record<string, any>) => ({
-  guiClientRect: state.shell.guiClientRect,
-  playerHover: state.shell.playerHover
+  playerWidth: state.shell.guiClientRect.width,
+  showUi: state.shell.playerHover || state.shell.playerNav
 });
 @connect(mapStateToProps)
 export class SideBySide extends Component<SideBySideComponentProps> {
@@ -31,28 +32,32 @@ export class SideBySide extends Component<SideBySideComponentProps> {
   }
 
   private _renderHoverButton() {
-    const {onExpand, playerHover} = this.props;
-    if (!playerHover) {
-      return null;
+    const {onExpand, showUi, focusOnMount} = this.props;
+    if (showUi) {
+      return (
+        <div className={styles.innerButtons}>
+          <Button
+            className={styles.iconContainer}
+            onClick={onExpand}
+            tooltip={{label: Labels.ExpandScreen, type: 'bottom-left'}}
+            focusOnMount={focusOnMount}>
+            <Icon
+              id="dualscreen-side-by-side-pip"
+              height={icons.MediumSize}
+              width={icons.MediumSize}
+              viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
+              path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH}
+            />
+          </Button>
+        </div>
+      );
     }
-    return (
-      <div className={styles.innerButtons}>
-        <Button className={styles.iconContainer} onClick={onExpand} tooltip={{label: Labels.ExpandScreen, type: 'bottom-left'}}>
-          <Icon
-            id="dualscreen-side-by-side-pip"
-            height={icons.MediumSize}
-            width={icons.MediumSize}
-            viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
-            path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH}
-          />
-        </Button>
-      </div>
-    );
+    return null;
   }
 
-  render({guiClientRect, animation}: SideBySideComponentProps) {
+  render({playerWidth, animation}: SideBySideComponentProps) {
     const playerContainerStyles = {
-      height: (guiClientRect?.width! / 2 / 16) * 9
+      height: (playerWidth! / 2 / 16) * 9
     };
     const classNames = [styles.player];
     if (animation === Animations.ScaleLeft) {

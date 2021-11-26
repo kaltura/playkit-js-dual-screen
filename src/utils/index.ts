@@ -27,3 +27,7 @@ export const setSubtitlesOnTop = (active: boolean): void => {
     document.getElementsByClassName('playkit-subtitles')[0].classList.remove('moveToTop');
   }
 };
+
+export const getValueOrUndefined = <T>(condition: boolean, value: T) => {
+  return condition ? value : undefined;
+};

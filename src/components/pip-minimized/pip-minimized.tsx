@@ -9,9 +9,10 @@ const {
 
 interface PIPMinimizedOwnProps {
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
-  show: () => void;
-  onInverse: () => void;
+  show: (byKeyboard: boolean) => void;
+  onInverse: (byKeyboard: boolean) => void;
   hideButtons?: boolean;
+  focusOnMount?: Labels;
 }
 interface PIPMinimizedConnectProps {
   playerSize?: string;
@@ -27,11 +28,11 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
   }
 
   private _renderHoverButton = () => {
-    const {show, onInverse, hideButtons} = this.props;
+    const {show, onInverse, hideButtons, focusOnMount} = this.props;
     return (
       <Fragment>
         {!hideButtons && (
-          <Button onClick={show} className={styles.showContainer}>
+          <Button onClick={show} className={styles.showContainer} ariaLabel={Labels.Show} focusOnMount={focusOnMount === Labels.Show}>
             <Fragment>
               <div className={styles.iconContainer}>
                 <Icon
@@ -47,7 +48,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
           </Button>
         )}
         <div className={[styles.innerButtons, hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
-          <Button onClick={onInverse}>
+          <Button onClick={onInverse} focusOnMount={focusOnMount === Labels.SwitchScreen}>
             <div className={styles.iconContainer}>
               <Icon
                 id="dualscreen-pip-minimized-swap"

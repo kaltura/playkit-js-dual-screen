@@ -1,12 +1,11 @@
 import {h, createRef, Component} from 'preact';
 import * as styles from './pip.scss';
 import {Animations} from '../../enums';
-import {GuiClientRect} from '../../types';
 const {connect} = KalturaPlayer.ui.redux;
 
 const mapStateToProps = (state: Record<string, any>) => ({
-  playerHover: state.shell.playerHover,
-  guiClientRect: state.shell.guiClientRect,
+  playerHeight: state.shell.guiClientRect.height,
+  playerWidth: state.shell.guiClientRect.width,
   prePlayback: state.engine.prePlayback
 });
 
@@ -15,7 +14,8 @@ interface PIPParentComponentOwnProps {
   animation: Animations;
 }
 interface PIPParentComponentConnectProps {
-  guiClientRect?: GuiClientRect;
+  playerHeight?: number;
+  playerWidth?: number;
   prePlayback?: boolean;
 }
 
@@ -47,8 +47,8 @@ export class PipParent extends Component<PIPParentComponentProps> {
     }
 
     const videoContainerStyles = {
-      height: `${props.guiClientRect!.height + 'px'}`,
-      width: `${props.guiClientRect!.width + 'px'}`
+      height: `${props.playerHeight + 'px'}`,
+      width: `${props.playerWidth + 'px'}`
     };
 
     return <div className={styleClass.join(' ')} style={videoContainerStyles} ref={this.videoContainerRef} />;
