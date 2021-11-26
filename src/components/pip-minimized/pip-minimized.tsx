@@ -48,7 +48,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
           </Button>
         )}
         <div className={[styles.innerButtons, hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
-          <Button onClick={onInverse} focusOnMount={focusOnMount === Labels.SwitchScreen}>
+          <Button onClick={onInverse} focusOnMount={focusOnMount === Labels.SwitchScreen} ariaLabel={Labels.SwitchScreen}>
             <div className={styles.iconContainer}>
               <Icon
                 id="dualscreen-pip-minimized-swap"
