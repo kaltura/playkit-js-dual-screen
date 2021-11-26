@@ -43,7 +43,9 @@ export class PipChild extends Component<PIPChildComponentProps> {
 
   componentDidMount() {
     const {player} = this.props;
-    this.playerContainerRef.current!.prepend(player.getVideoElement());
+    const videoElement = player.getVideoElement();
+    videoElement.tabIndex = -1;
+    this.playerContainerRef.current!.prepend(videoElement);
     this.props.setDraggableTarget!(this.playerContainerRef.current!);
   }
 
