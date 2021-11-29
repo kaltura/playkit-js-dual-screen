@@ -10,7 +10,7 @@ interface SideBySideComponentOwnProps {
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   onExpand: (byKeyboard: boolean) => void;
   animation: Animations;
-  focusOnMount?: boolean;
+  focusOnButton?: boolean;
 }
 interface SideBySideComponentConnectProps {
   playerWidth?: number;
@@ -34,7 +34,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
   }
 
   private _renderHoverButton() {
-    const {onExpand, showUi, focusOnMount} = this.props;
+    const {onExpand, showUi, focusOnButton} = this.props;
     if (showUi) {
       return (
         <div className={styles.innerButtons}>
@@ -42,7 +42,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
             className={styles.iconContainer}
             onClick={onExpand}
             tooltip={{label: Labels.ExpandScreen, type: 'bottom-left'}}
-            focusOnMount={focusOnMount}>
+            focusOnMount={focusOnButton}>
             <Icon
               id="dualscreen-side-by-side-pip"
               height={icons.MediumSize}

@@ -1,6 +1,6 @@
 import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip.scss';
-import {Animations, Labels} from '../../enums';
+import {Animations, Labels, DualScreenButtons} from '../../enums';
 import {icons} from '../../icons';
 import {Button} from './../button';
 const {connect} = KalturaPlayer.ui.redux;
@@ -27,7 +27,7 @@ interface PIPChildComponentOwnProps {
     width: number;
     height: number;
   };
-  focusOnMount?: Labels;
+  focusOnButton?: DualScreenButtons;
 }
 interface PIPChildComponentConnectProps {
   playerHeight?: number;
@@ -50,14 +50,14 @@ export class PipChild extends Component<PIPChildComponentProps> {
   }
 
   private _renderInnerButtons() {
-    const {onSideBySideSwitch, onInversePIP, focusOnMount} = this.props;
+    const {onSideBySideSwitch, onInversePIP, focusOnButton} = this.props;
     return (
       <div className={styles.innerButtons}>
         <Button
           className={styles.iconContainer}
           onClick={onSideBySideSwitch}
           tooltip={{label: Labels.SideBySide, type: 'bottom'}}
-          focusOnMount={focusOnMount === Labels.SideBySide}>
+          focusOnMount={focusOnButton === DualScreenButtons.SideBySide}>
           <Icon
             id="dualscreen-pip-side-by-side"
             height={icons.MediumSize}
@@ -70,7 +70,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
           className={styles.iconContainer}
           onClick={onInversePIP}
           tooltip={{label: Labels.SwitchScreen, type: 'bottom-left'}}
-          focusOnMount={focusOnMount === Labels.SwitchScreen}>
+          focusOnMount={focusOnButton === DualScreenButtons.SwitchScreen}>
           <Icon
             id="dualscreen-pip-swap"
             height={icons.MediumSize}
@@ -84,9 +84,9 @@ export class PipChild extends Component<PIPChildComponentProps> {
   }
 
   private _renderHideButton() {
-    const {hide, focusOnMount} = this.props;
+    const {hide, focusOnButton} = this.props;
     return (
-      <Button className={styles.hideContainer} onClick={hide} ariaLabel={Labels.Hide} focusOnMount={focusOnMount === Labels.Hide}>
+      <Button className={styles.hideContainer} onClick={hide} ariaLabel={Labels.Hide} focusOnMount={focusOnButton === DualScreenButtons.Hide}>
         <Fragment>
           <div className={styles.iconContainer}>
             <Icon
