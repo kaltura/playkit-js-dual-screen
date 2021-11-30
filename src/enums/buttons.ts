@@ -1,4 +1,4 @@
-export enum DualScreenButtons {
+export enum ButtonsEnum {
   Hide,
   Show,
   ExpandScreen,

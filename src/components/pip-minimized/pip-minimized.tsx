@@ -2,7 +2,7 @@ import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip-minimized.scss';
 import {icons} from '../../icons';
 import {Button} from './../button';
-import {Labels, DualScreenButtons} from '../../enums';
+import {Labels, ButtonsEnum} from '../../enums';
 const {
   components: {Icon}
 } = KalturaPlayer.ui;
@@ -12,7 +12,7 @@ interface PIPMinimizedOwnProps {
   show: (byKeyboard: boolean) => void;
   onInverse: (byKeyboard: boolean) => void;
   hideButtons?: boolean;
-  focusOnButton?: DualScreenButtons;
+  focusOnButton?: ButtonsEnum;
 }
 interface PIPMinimizedConnectProps {
   playerSize?: string;
@@ -34,7 +34,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
     return (
       <Fragment>
         {!hideButtons && (
-          <Button onClick={show} className={styles.showContainer} ariaLabel={Labels.Show} focusOnMount={focusOnButton === DualScreenButtons.Show}>
+          <Button onClick={show} className={styles.showContainer} ariaLabel={Labels.Show} focusOnMount={focusOnButton === ButtonsEnum.Show}>
             <Fragment>
               <div className={styles.iconContainer}>
                 <Icon
@@ -50,7 +50,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
           </Button>
         )}
         <div className={[styles.innerButtons, hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
-          <Button onClick={onInverse} focusOnMount={focusOnButton === DualScreenButtons.SwitchScreen} ariaLabel={Labels.SwitchScreen}>
+          <Button onClick={onInverse} focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen} ariaLabel={Labels.SwitchScreen}>
             <div className={styles.iconContainer}>
               <Icon
                 id="dualscreen-pip-minimized-swap"

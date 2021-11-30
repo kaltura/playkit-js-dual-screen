@@ -1,6 +1,6 @@
 import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip.scss';
-import {Animations, Labels, DualScreenButtons} from '../../enums';
+import {Animations, Labels, ButtonsEnum} from '../../enums';
 import {icons} from '../../icons';
 import {Button} from './../button';
 const {connect} = KalturaPlayer.ui.redux;
@@ -27,7 +27,7 @@ interface PIPChildComponentOwnProps {
     width: number;
     height: number;
   };
-  focusOnButton?: DualScreenButtons;
+  focusOnButton?: ButtonsEnum;
 }
 interface PIPChildComponentConnectProps {
   playerHeight?: number;
@@ -57,7 +57,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
           className={styles.iconContainer}
           onClick={onSideBySideSwitch}
           tooltip={{label: Labels.SideBySide, type: 'bottom'}}
-          focusOnMount={focusOnButton === DualScreenButtons.SideBySide}>
+          focusOnMount={focusOnButton === ButtonsEnum.SideBySide}>
           <Icon
             id="dualscreen-pip-side-by-side"
             height={icons.MediumSize}
@@ -70,7 +70,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
           className={styles.iconContainer}
           onClick={onInversePIP}
           tooltip={{label: Labels.SwitchScreen, type: 'bottom-left'}}
-          focusOnMount={focusOnButton === DualScreenButtons.SwitchScreen}>
+          focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen}>
           <Icon
             id="dualscreen-pip-swap"
             height={icons.MediumSize}
@@ -86,7 +86,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
   private _renderHideButton() {
     const {hide, focusOnButton} = this.props;
     return (
-      <Button className={styles.hideContainer} onClick={hide} ariaLabel={Labels.Hide} focusOnMount={focusOnButton === DualScreenButtons.Hide}>
+      <Button className={styles.hideContainer} onClick={hide} ariaLabel={Labels.Hide} focusOnMount={focusOnButton === ButtonsEnum.Hide}>
         <Fragment>
           <div className={styles.iconContainer}>
             <Icon
