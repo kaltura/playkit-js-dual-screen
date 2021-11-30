@@ -6,7 +6,8 @@ import * as styles from './side-by-side.scss';
 
 interface SideProps {
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
-  onExpand: () => void;
+  onExpand: (byKeyboard: boolean) => void;
+  focusOnButton?: boolean;
 }
 
 interface SideBySideWrapperComponentProps {

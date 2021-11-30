@@ -1,25 +1,24 @@
 import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip.scss';
-import {Animations, Labels} from '../../enums';
+import {Animations, Labels, ButtonsEnum} from '../../enums';
 import {icons} from '../../icons';
-import {GuiClientRect} from '../../types';
 import {Button} from './../button';
 const {connect} = KalturaPlayer.ui.redux;
 const {utils, reducers} = KalturaPlayer.ui;
 const {Icon} = KalturaPlayer.ui.components;
 
 const mapStateToProps = (state: Record<string, any>) => ({
-  playerHover: state.shell.playerHover,
-  guiClientRect: state.shell.guiClientRect,
+  showUi: state.shell.playerHover || state.shell.playerNav,
+  playerHeight: state.shell.guiClientRect.height,
   prePlayback: state.engine.prePlayback
 });
 
 interface PIPChildComponentOwnProps {
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   playerSizePercentage: number;
-  hide: () => void;
-  onSideBySideSwitch: () => void;
-  onInversePIP: () => void;
+  hide: (byKeyboard: boolean) => void;
+  onSideBySideSwitch: (byKeyboard: boolean) => void;
+  onInversePIP: (byKeyboard: boolean) => void;
   animation: Animations;
   isDragging?: boolean;
   setDraggableTarget?: (targetEl: HTMLDivElement) => void;
@@ -28,10 +27,11 @@ interface PIPChildComponentOwnProps {
     width: number;
     height: number;
   };
+  focusOnButton?: ButtonsEnum;
 }
 interface PIPChildComponentConnectProps {
-  guiClientRect?: GuiClientRect;
-  playerHover?: boolean;
+  playerHeight?: number;
+  showUi?: boolean;
   prePlayback?: boolean;
 }
 
@@ -43,24 +43,21 @@ export class PipChild extends Component<PIPChildComponentProps> {
 
   componentDidMount() {
     const {player} = this.props;
-    this.playerContainerRef.current!.prepend(player.getVideoElement());
+    const videoElement = player.getVideoElement();
+    videoElement.tabIndex = -1;
+    this.playerContainerRef.current!.prepend(videoElement);
     this.props.setDraggableTarget!(this.playerContainerRef.current!);
   }
 
   private _renderInnerButtons() {
-    const {onSideBySideSwitch, onInversePIP} = this.props;
+    const {onSideBySideSwitch, onInversePIP, focusOnButton} = this.props;
     return (
       <div className={styles.innerButtons}>
-        <Button className={styles.iconContainer} onClick={onInversePIP} tooltip={{label: Labels.SwitchScreen, type: 'bottom-left'}}>
-          <Icon
-            id="dualscreen-pip-swap"
-            height={icons.MediumSize}
-            width={icons.MediumSize}
-            viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
-            path={icons.SWAP_ICON_PATH}
-          />
-        </Button>
-        <Button className={styles.iconContainer} onClick={onSideBySideSwitch} tooltip={{label: Labels.SideBySide, type: 'bottom'}}>
+        <Button
+          className={styles.iconContainer}
+          onClick={onSideBySideSwitch}
+          tooltip={{label: Labels.SideBySide, type: 'bottom'}}
+          focusOnMount={focusOnButton === ButtonsEnum.SideBySide}>
           <Icon
             id="dualscreen-pip-side-by-side"
             height={icons.MediumSize}
@@ -69,13 +66,27 @@ export class PipChild extends Component<PIPChildComponentProps> {
             path={icons.SIDE_BY_SIDE_ICON_PATH}
           />
         </Button>
+        <Button
+          className={styles.iconContainer}
+          onClick={onInversePIP}
+          tooltip={{label: Labels.SwitchScreen, type: 'bottom-left'}}
+          focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen}>
+          <Icon
+            id="dualscreen-pip-swap"
+            height={icons.MediumSize}
+            width={icons.MediumSize}
+            viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
+            path={icons.SWAP_ICON_PATH}
+          />
+        </Button>
       </div>
     );
   }
 
   private _renderHideButton() {
+    const {hide, focusOnButton} = this.props;
     return (
-      <Button className={styles.hideContainer} onClick={this.props.hide}>
+      <Button className={styles.hideContainer} onClick={hide} ariaLabel={Labels.Hide} focusOnMount={focusOnButton === ButtonsEnum.Hide}>
         <Fragment>
           <div className={styles.iconContainer}>
             <Icon
@@ -98,8 +109,8 @@ export class PipChild extends Component<PIPChildComponentProps> {
     if (props.isDragging) {
       styleClass.push(styles.dragging);
     }
-    if (!props.playerHover) {
-      styleClass.push(styles.hovering);
+    if (!props.showUi) {
+      styleClass.push(styles.hideButtons);
     }
 
     if (!props.prePlayback && props.animation) {
@@ -116,7 +127,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
       }
     }
 
-    const height: number = (props.guiClientRect!.height * props.playerSizePercentage) / 100;
+    const height: number = (props.playerHeight! * props.playerSizePercentage) / 100;
     const width: number = (height * props.aspectRatio.width) / props.aspectRatio.height;
     const playerContainerStyles = {
       height: `${props.portrait ? width : height}px`,

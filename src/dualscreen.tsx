@@ -2,14 +2,14 @@ import {h} from 'preact';
 import {DualScreenConfig} from './types/DualScreenConfig';
 import {PipChild, PipParent} from './components/pip';
 import {PipMinimized} from './components/pip-minimized';
-import {Animations, Layout, PlayerType, Position, ReservedPresetAreas, ExternalLayout} from './enums';
+import {Animations, Layout, PlayerType, Position, ReservedPresetAreas, ExternalLayout, ButtonsEnum} from './enums';
 import {VideoSyncManager} from './video-sync-manager';
-import {ImageSyncManager, ViewChangeData} from './image-sync-manager';
+import {ImageSyncManager} from './image-sync-manager';
 import {ResponsiveManager} from './components/responsive-manager';
 import {SecondaryMediaLoader} from './providers/secondary-media-loader';
 import {DragAndSnapManager} from './components/drag-and-snap-manager';
 import {SideBySideWrapper} from './components/side-by-side/side-by-side-wrapper';
-import {setSubtitlesOnTop} from './utils';
+import {setSubtitlesOnTop, getValueOrUndefined} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
 import {ImagePlayer, SlideItem} from './image-player';
 // @ts-ignore
@@ -203,7 +203,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._removeActives();
   };
 
-  private _switchToPIP = (parentAnimation: Animations = Animations.None) => {
+  private _switchToPIP = (parentAnimation: Animations = Animations.None, focusOnButton?: ButtonsEnum) => {
     if (this._layout === Layout.PIP && this._removeActivesArr.length && this._imagePlayer.active?.portrait === this._pipPortraitMode) {
       return;
     }
@@ -244,11 +244,14 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this._getSecondaryPlayer()}
-                hide={() => this._switchToSingleMedia()}
-                onSideBySideSwitch={() => this._switchToSideBySide()}
-                onInversePIP={() => this._switchToPIPInverse(Animations.Fade)}
+                hide={(byKeyboard: boolean) => this._switchToSingleMedia(Animations.None, getValueOrUndefined(byKeyboard, ButtonsEnum.Show))}
+                onSideBySideSwitch={(byKeyboard: boolean) => this._switchToSideBySide(byKeyboard)}
+                onInversePIP={(byKeyboard: boolean) =>
+                  this._switchToPIPInverse(Animations.Fade, getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen))
+                }
                 portrait={this._pipPortraitMode}
                 aspectRatio={this.config.childAspectRatio}
+                focusOnButton={focusOnButton}
               />
             </DragAndSnapManager>
           </ResponsiveManager>
@@ -257,7 +260,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _switchToPIPInverse = (parentAnimation: Animations = Animations.None) => {
+  private _switchToPIPInverse = (parentAnimation: Animations = Animations.None, focusOnButton?: ButtonsEnum) => {
     if (this._layout === Layout.PIPInverse && this._removeActivesArr.length) {
       return;
     }
@@ -297,10 +300,15 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this._player}
-                hide={() => this._switchToSingleMediaInverse()}
-                onSideBySideSwitch={() => this._switchToSideBySideInverse()}
-                onInversePIP={() => this._switchToPIP(Animations.Fade)}
+                hide={(byKeyboard: boolean) =>
+                  this._switchToSingleMediaInverse(Animations.None, getValueOrUndefined(byKeyboard, ButtonsEnum.Show))
+                }
+                onSideBySideSwitch={(byKeyboard: boolean) => this._switchToSideBySideInverse(byKeyboard)}
+                onInversePIP={(byKeyboard: boolean) =>
+                  this._switchToPIP(Animations.Fade, getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen))
+                }
                 aspectRatio={this.config.childAspectRatio}
+                focusOnButton={focusOnButton}
               />
             </DragAndSnapManager>
           </ResponsiveManager>
@@ -309,7 +317,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _switchToSingleMedia = (parentAnimation: Animations = Animations.None) => {
+  private _switchToSingleMedia = (parentAnimation: Animations = Animations.None, focusOnButton?: ButtonsEnum) => {
     if (this._layout === Layout.SingleMedia && this._removeActivesArr.length) {
       return;
     }
@@ -334,9 +342,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         get: () => (
           <ResponsiveManager onDefaultSize={this._setMode}>
             <PipMinimized
-              show={() => this._switchToPIP()}
+              show={(byKeyboard: boolean) => this._switchToPIP(Animations.None, getValueOrUndefined(byKeyboard, ButtonsEnum.Hide))}
               player={this._getSecondaryPlayer()}
-              onInverse={() => this._switchToSingleMediaInverse(Animations.Fade)}
+              onInverse={(byKeyboard: boolean) =>
+                this._switchToSingleMediaInverse(Animations.Fade, getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen))
+              }
+              focusOnButton={focusOnButton}
             />
           </ResponsiveManager>
         )
@@ -344,7 +355,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _switchToSingleMediaInverse = (parentAnimation: Animations = Animations.None) => {
+  private _switchToSingleMediaInverse = (parentAnimation: Animations = Animations.None, focusOnButton?: ButtonsEnum) => {
     if (this._layout === Layout.SingleMediaInverse && this._removeActivesArr.length) {
       return;
     }
@@ -369,9 +380,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         get: () => (
           <ResponsiveManager onDefaultSize={this._setMode}>
             <PipMinimized
-              show={() => this._switchToPIPInverse()}
+              show={(byKeyboard: boolean) => this._switchToPIPInverse(Animations.None, getValueOrUndefined(byKeyboard, ButtonsEnum.Hide))}
               player={this._player}
-              onInverse={() => this._switchToSingleMedia(Animations.Fade)}
+              onInverse={(byKeyboard: boolean) =>
+                this._switchToSingleMedia(Animations.Fade, getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen))
+              }
+              focusOnButton={focusOnButton}
             />
           </ResponsiveManager>
         )
@@ -379,7 +393,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _switchToSideBySide = () => {
+  private _switchToSideBySide = (focusOnButton?: boolean) => {
     if (this._layout === Layout.SideBySide && this._removeActivesArr.length) {
       return;
     }
@@ -394,11 +408,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
     const leftSideProps = {
       player: this._player,
-      onExpand: () => this._switchToPIP(Animations.ScaleRight)
+      onExpand: (byKeyboard: boolean) => this._switchToPIP(Animations.ScaleRight, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)),
+      focusOnButton
     };
     const rightSideProps = {
       player: this._getSecondaryPlayer(),
-      onExpand: () => this._switchToPIPInverse(Animations.ScaleLeft)
+      onExpand: (byKeyboard: boolean) => this._switchToPIPInverse(Animations.ScaleLeft, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide))
     };
 
     this._removeActivesArr.push(
@@ -418,7 +433,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     );
   };
 
-  private _switchToSideBySideInverse = () => {
+  private _switchToSideBySideInverse = (focusOnButton?: boolean) => {
     if (this._layout === Layout.SideBySideInverse && this._removeActivesArr.length) {
       return;
     }
@@ -433,11 +448,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
     const leftSideProps = {
       player: this._getSecondaryPlayer(),
-      onExpand: () => this._switchToPIPInverse(Animations.ScaleRight)
+      onExpand: (byKeyboard: boolean) =>
+        this._switchToPIPInverse(Animations.ScaleRight, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)),
+      focusOnButton
     };
     const rightSideProps = {
       player: this._player,
-      onExpand: () => this._switchToPIP(Animations.ScaleLeft)
+      onExpand: (byKeyboard: boolean) => this._switchToPIP(Animations.ScaleLeft, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide))
     };
 
     this._removeActivesArr.push(
