@@ -63,7 +63,16 @@ Finally, add the bundle as a script tag in your page, and initialize the player
 
 ## Documentation
 
+Dual screen plugin configuration can been found here:
+
 - **[Configuration](docs/configuration.md)**
+
+###Slides configuration
+If you are showing slides, you MUST also include kalturaCuePoints plugin in the configuration as follow -
+
+```html
+plugins: { dualscreen: {...}, kalturaCuepoints: { } }
+```
 
 ## Running the tests
 
