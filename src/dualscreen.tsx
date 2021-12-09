@@ -558,7 +558,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
               this._setDefaultMode();
               this._setMode();
             });
-            this.secondaryKalturaPlayer.loadMedia({entryId, ks: this._player.config.session.ks});
+            this.secondaryKalturaPlayer.loadMedia({entryId, ks: this.player.config.session.isAnonymous ? '' : this.player.config.session.ks});
           } else {
             this.logger.warn('Secondary entry id not found');
             // subscribe on timed metadata events for image player
