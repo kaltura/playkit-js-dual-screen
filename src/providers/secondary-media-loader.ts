@@ -4,6 +4,7 @@ const {RequestBuilder, ResponseTypes} = KalturaPlayer.providers;
 
 interface SecondaryMediaLoaderParams {
   parentEntryId: string;
+  ks: string;
 }
 
 export class SecondaryMediaLoader implements ILoader {
@@ -37,7 +38,8 @@ export class SecondaryMediaLoader implements ILoader {
       responseProfile: {
         type: INCLUDE_FIELDS,
         fields: 'id'
-      }
+      },
+      ks: params.ks
     };
     this.requests.push(request);
   }
