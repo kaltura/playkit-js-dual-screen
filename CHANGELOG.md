@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.6...v1.8.0) (2021-12-29)
+
+
+### Features
+
+* **FEV-1105:** Dual-screen accessibility ([#49](https://github.com/kaltura/playkit-js-dual-screen/issues/49)) ([3342ad7](https://github.com/kaltura/playkit-js-dual-screen/commit/3342ad77bdafe4b5c907bc6b1cea0df64397d50c))
+
+
+### Bug Fixes
+
+* **FEV-1154:** loadMedia for secondary screen transform anonymous user to non-anonymous ([#51](https://github.com/kaltura/playkit-js-dual-screen/issues/51)) ([92b0c9a](https://github.com/kaltura/playkit-js-dual-screen/commit/92b0c9a17c075d45636c19c3fe4b578c735d087c))
+
 ### [1.7.6](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.5...v1.7.6) (2021-11-22)
 
 
