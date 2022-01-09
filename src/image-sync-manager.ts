@@ -1,24 +1,13 @@
 // @ts-ignore
-import {cuepoint} from 'kaltura-player-js';
+import {cuepoint, core} from 'kaltura-player-js';
 import {ExternalLayout, ViewModeLockState} from './enums';
 import {ImagePlayer} from './image-player';
 
+const {CuePoint} = core;
+
 interface TimedMetadata {
   payload: {
-    cues: Array<Cue>;
-    label: string;
-  };
-}
-
-interface Cue extends VTTCue {
-  value?: {
-    data: {
-      id: string;
-      cuePointType: string;
-      assetUrl: string;
-      partnerData: ViewChangeData;
-    };
-    key: string;
+    cues: Array<typeof CuePoint>;
   };
 }
 
@@ -54,7 +43,7 @@ export class ImageSyncManager {
   }
 
   private _syncEvents = () => {
-    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA, this._onTimedMetadata);
+    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_CHANGE, this._onTimedMetadataChange);
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.FIRST_PLAYING, this._onFirstPlaying);
   };
@@ -64,16 +53,16 @@ export class ImageSyncManager {
     this._imagePlayer.preLoadImages();
   };
 
-  private _onTimedMetadata = () => {
+  private _onTimedMetadataChange = ({payload}: TimedMetadata) => {
     // TODO: use single "metadata" TextTrack once cue-point manager become use it
-    const activeCuePoints: Array<Cue> = Array.from(this._mainPlayer.cuePointManager.getActiveCuePoints());
+    const {cues: activeCuePoints} = payload;
     const {activeSlide, externalLayout} = activeCuePoints.reduce<{activeSlide: string | null; externalLayout: ExternalLayout | null}>(
       (acc, cue) => {
-        if (cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
-          return {...acc, activeSlide: cue.value!.data.id};
+        if (cue.metadata?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
+          return {...acc, activeSlide: cue.id};
         }
-        if (cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE) {
-          const {playerViewModeId, viewModeLockState} = cue.value!.data.partnerData;
+        if (cue.metadata?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE) {
+          const {playerViewModeId, viewModeLockState} = cue.metadata!.data.partnerData;
           if (playerViewModeId) {
             return {...acc, externalLayout: viewModeLockState === ViewModeLockState.Locked ? ExternalLayout.Hidden : playerViewModeId};
           }
@@ -96,10 +85,13 @@ export class ImageSyncManager {
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
     const slides = payload.cues.map(cue => {
-      if (cue?.value?.key === cuepoint.CUE_POINT_KEY && cue.value?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
+      if (
+        cue?.metadata?.key === cuepoint.CUE_POINT_KEY &&
+        cue.metadata?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB
+      ) {
         this._imagePlayer.addImage({
-          id: cue?.value!.data.id,
-          imageUrl: cue.value!.data.assetUrl,
+          id: cue?.id,
+          imageUrl: cue.metadata!.data.assetUrl,
           portrait: false,
           loading: false,
           loaded: false
