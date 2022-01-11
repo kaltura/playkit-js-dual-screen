@@ -54,7 +54,6 @@ export class ImageSyncManager {
   };
 
   private _onTimedMetadataChange = ({payload}: TimedMetadata) => {
-    // TODO: use single "metadata" TextTrack once cue-point manager become use it
     const {cues: activeCuePoints} = payload;
     const {activeSlide, externalLayout} = activeCuePoints.reduce<{activeSlide: string | null; externalLayout: ExternalLayout | null}>(
       (acc, cue) => {
