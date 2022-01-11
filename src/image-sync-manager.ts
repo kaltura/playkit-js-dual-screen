@@ -58,11 +58,11 @@ export class ImageSyncManager {
     const {cues: activeCuePoints} = payload;
     const {activeSlide, externalLayout} = activeCuePoints.reduce<{activeSlide: string | null; externalLayout: ExternalLayout | null}>(
       (acc, cue) => {
-        if (cue.metadata?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
+        if (cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
           return {...acc, activeSlide: cue.id};
         }
-        if (cue.metadata?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE) {
-          const {playerViewModeId, viewModeLockState} = cue.metadata!.data.partnerData;
+        if (cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE) {
+          const {playerViewModeId, viewModeLockState} = cue.metadata!.partnerData;
           if (playerViewModeId) {
             return {...acc, externalLayout: viewModeLockState === ViewModeLockState.Locked ? ExternalLayout.Hidden : playerViewModeId};
           }
@@ -85,13 +85,10 @@ export class ImageSyncManager {
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
     const slides = payload.cues.map(cue => {
-      if (
-        cue?.metadata?.key === cuepoint.CUE_POINT_KEY &&
-        cue.metadata?.data?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB
-      ) {
+      if (cue?.type === CuePoint.TYPE.CUE_POINT && cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
         this._imagePlayer.addImage({
           id: cue?.id,
-          imageUrl: cue.metadata!.data.assetUrl,
+          imageUrl: cue.metadata!.assetUrl,
           portrait: false,
           loading: false,
           loaded: false
