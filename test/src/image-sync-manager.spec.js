@@ -1,6 +1,6 @@
 import {setup} from 'kaltura-player-js';
 import * as TestUtils from './utils/test-utils';
-import {core, cuepoint} from 'kaltura-player-js';
+import {core} from 'kaltura-player-js';
 const {EventType} = core;
 
 describe('KDualscreenPlugin', function () {
@@ -73,7 +73,6 @@ describe('KDualscreenPlugin', function () {
 
     it('should handle TIMED_METADATA event', done => {
       player.addEventListener(EventType.TIMED_METADATA, ({payload}) => {
-        expect(payload.cues[0].track.label).to.eql(cuepoint.CUE_POINTS_TEXT_TRACK);
         expect(payload.cues[0].value.data.id).to.eql('test_id');
         expect(payload.cues[0].value.data.assetUrl).to.eql('test_url');
         expect(payload.cues[0].startTime).to.eql(1);
