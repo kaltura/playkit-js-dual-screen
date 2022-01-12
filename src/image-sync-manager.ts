@@ -3,11 +3,11 @@ import {cuepoint, core} from 'kaltura-player-js';
 import {ExternalLayout, ViewModeLockState} from './enums';
 import {ImagePlayer} from './image-player';
 
-const {CuePoint} = core;
+const {TimedMetadata} = core;
 
-interface TimedMetadata {
+interface TimedMetadataEvent {
   payload: {
-    cues: Array<typeof CuePoint>;
+    cues: Array<typeof TimedMetadata>;
   };
 }
 
@@ -53,7 +53,7 @@ export class ImageSyncManager {
     this._imagePlayer.preLoadImages();
   };
 
-  private _onTimedMetadataChange = ({payload}: TimedMetadata) => {
+  private _onTimedMetadataChange = ({payload}: TimedMetadataEvent) => {
     const {cues: activeCuePoints} = payload;
     const {activeSlide, externalLayout} = activeCuePoints.reduce<{activeSlide: string | null; externalLayout: ExternalLayout | null}>(
       (acc, cue) => {
@@ -82,9 +82,9 @@ export class ImageSyncManager {
     }
   };
 
-  private _onTimedMetadataAdded = ({payload}: TimedMetadata) => {
+  private _onTimedMetadataAdded = ({payload}: TimedMetadataEvent) => {
     const slides = payload.cues.map(cue => {
-      if (cue?.type === CuePoint.TYPE.CUE_POINT && cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
+      if (cue?.type === TimedMetadata.TYPE.CUE_POINT && cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
         this._imagePlayer.addImage({
           id: cue?.id,
           imageUrl: cue.metadata!.assetUrl,
