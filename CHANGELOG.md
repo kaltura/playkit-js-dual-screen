@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.9.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.8.0...v1.9.0) (2022-01-19)
+
+
+### Features
+
+* **FEC-11761:** expose stream timed metadata - phase 2 ([#53](https://github.com/kaltura/playkit-js-dual-screen/issues/53)) ([7b94779](https://github.com/kaltura/playkit-js-dual-screen/commit/7b94779e8c91c1442a909f292a6b53e1b5a91ee5))
+
+
+### Bug Fixes
+
+* **FEV-1165:** fix draggable area styles ([#54](https://github.com/kaltura/playkit-js-dual-screen/issues/54)) ([8816ccb](https://github.com/kaltura/playkit-js-dual-screen/commit/8816ccbee4a0ad3cb0964733b2f5b0609ae41dbb))
+
 ## [1.8.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.7.6...v1.8.0) (2021-12-29)
 
 
