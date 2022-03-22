@@ -22,6 +22,7 @@ export class ImageSyncManager {
   _imagePlayer: ImagePlayer;
   _logger: KalturaPlayerTypes.Logger;
   _onSlideViewChanged: (viewChangeData: ExternalLayout) => void;
+  _onSlidesInitialized: () => void;
   _kalturaCuePointService: any;
   _firstPlaying: boolean = false;
   _lock: boolean = false;
@@ -31,13 +32,15 @@ export class ImageSyncManager {
     mainPlayer: KalturaPlayerTypes.Player,
     imagePlayer: ImagePlayer,
     logger: KalturaPlayerTypes.Logger,
-    onSlideViewChanged: (viewChangeData: ExternalLayout) => void
+    onSlideViewChanged: (viewChangeData: ExternalLayout) => void,
+    onSlidesInitialized: () => void
   ) {
     this._eventManager = eventManager;
     this._mainPlayer = mainPlayer;
     this._imagePlayer = imagePlayer;
     this._logger = logger;
     this._onSlideViewChanged = onSlideViewChanged;
+    this._onSlidesInitialized = onSlidesInitialized;
     this._syncEvents();
     this._kalturaCuePointService = this._mainPlayer.getService('kalturaCuepoints');
   }
@@ -51,6 +54,9 @@ export class ImageSyncManager {
   private _onFirstPlaying = () => {
     this._firstPlaying = true;
     this._imagePlayer.preLoadImages();
+    if (this._imagePlayer.images.length > 0) {
+      this._onSlidesInitialized();
+    }
   };
 
   private _onTimedMetadataChange = ({payload}: TimedMetadataEvent) => {

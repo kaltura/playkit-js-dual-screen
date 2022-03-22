@@ -72,15 +72,15 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     return this._readyPromise;
   }
 
-  getUIComponents() {
-    return [
-      {
-        presets: PRESETS,
-        container: ReservedPresetAreas.BottomBarRightControls,
-        get: KalturaPlayer.ui.components.Remove,
-        replaceComponent: KalturaPlayer.ui.components.Settings.displayName
-      }
-    ];
+  private _removeSettingsComponent() {
+    const removeSettings =
+        {
+          presets: PRESETS,
+          container: ReservedPresetAreas.BottomBarRightControls,
+          get: KalturaPlayer.ui.components.Remove,
+          replaceComponent: KalturaPlayer.ui.components.Settings.displayName
+        }
+    this._player.ui.addComponent(removeSettings);
   }
 
   loadMedia(): void {
@@ -502,6 +502,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE, kalturaCuePointService.CuepointType.VIEW_CHANGE]);
   }
 
+  private _onSlidesInitialized = () => {
+    this._removeSettingsComponent();
+  }
+
   private _onSlideViewChanged = (viewChange: ExternalLayout) => {
     if (this._externalLayout === viewChange) {
       return;
@@ -549,6 +553,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           if (entryId) {
             // subscribe on secondary player readiness
             this._secondaryPlayerType = PlayerType.VIDEO;
+            this._removeSettingsComponent();
             this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
               this._resolveReadyPromise();
             });
@@ -565,7 +570,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
             this._secondaryPlayerType = PlayerType.IMAGE;
 
             if (this.player.getService('kalturaCuepoints')) {
-              this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger, this._onSlideViewChanged);
+              this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger, this._onSlideViewChanged, this._onSlidesInitialized);
             }
             this._resolveReadyPromise();
           }
