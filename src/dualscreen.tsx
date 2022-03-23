@@ -35,6 +35,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   private _secondaryPlayerType = PlayerType.VIDEO;
   private _pipPortraitMode = false;
   private _originalVideoElementParent?: HTMLElement;
+  private _undoRemoveSettings = () => {};
 
   /**
    * The default configuration of the plugin.
@@ -72,7 +73,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     return this._readyPromise;
   }
 
-  private _removeSettingsComponent() {
+  private _removeSettingsComponent = () => {
     const removeSettings =
         {
           presets: PRESETS,
@@ -80,7 +81,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           get: KalturaPlayer.ui.components.Remove,
           replaceComponent: KalturaPlayer.ui.components.Settings.displayName
         }
-    this._player.ui.addComponent(removeSettings);
+    this._undoRemoveSettings = this._player.ui.addComponent(removeSettings);
   }
 
   loadMedia(): void {
@@ -98,6 +99,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._imagePlayer.reset();
     this._imageSyncManager?.reset();
     this._readyPromise = this._makeReadyPromise();
+    this._undoRemoveSettings();
   }
 
   private _makeReadyPromise = () => {
@@ -502,10 +504,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE, kalturaCuePointService.CuepointType.VIEW_CHANGE]);
   }
 
-  private _onSlidesInitialized = () => {
-    this._removeSettingsComponent();
-  }
-
   private _onSlideViewChanged = (viewChange: ExternalLayout) => {
     if (this._externalLayout === viewChange) {
       return;
@@ -570,7 +568,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
             this._secondaryPlayerType = PlayerType.IMAGE;
 
             if (this.player.getService('kalturaCuepoints')) {
-              this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger, this._onSlideViewChanged, this._onSlidesInitialized);
+              this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger, this._onSlideViewChanged, this._removeSettingsComponent);
             }
             this._resolveReadyPromise();
           }

@@ -54,7 +54,7 @@ export class ImageSyncManager {
   private _onFirstPlaying = () => {
     this._firstPlaying = true;
     this._imagePlayer.preLoadImages();
-    if (this._imagePlayer.images.length > 0) {
+    if (this._imagePlayer.isImages()) {
       this._onSlidesInitialized();
     }
   };

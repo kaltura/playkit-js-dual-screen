@@ -28,8 +28,8 @@ export class ImagePlayer {
     this._preloadEnabled = preloadEnabled;
   }
 
-  get images() {
-    return this._images;
+  public isImages() {
+    return this._images.length;
   }
 
   get active() {
