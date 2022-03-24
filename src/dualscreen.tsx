@@ -100,6 +100,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._imageSyncManager?.reset();
     this._readyPromise = this._makeReadyPromise();
     this._undoRemoveSettings();
+    this._undoRemoveSettings = () => {};
   }
 
   private _makeReadyPromise = () => {

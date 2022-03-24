@@ -48,13 +48,13 @@ export class ImageSyncManager {
   private _syncEvents = () => {
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_CHANGE, this._onTimedMetadataChange);
     this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
-    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.FIRST_PLAYING, this._onFirstPlaying);
+    this._eventManager.listenOnce(this._mainPlayer, this._mainPlayer.Event.FIRST_PLAYING, this._onFirstPlaying);
   };
 
   private _onFirstPlaying = () => {
     this._firstPlaying = true;
     this._imagePlayer.preLoadImages();
-    if (this._imagePlayer.isImages()) {
+    if (this._imagePlayer.isImagesReady()) {
       this._onSlidesInitialized();
     }
   };
