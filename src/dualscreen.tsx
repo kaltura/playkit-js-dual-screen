@@ -20,7 +20,7 @@ const {EventType} = core;
 const PRESETS = ['Playback', 'Live', 'Ads'];
 // @ts-ignore
 export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngineDecoratorProvider {
-  public secondaryKalturaPlayer: KalturaPlayerTypes.Player;
+  public secondaryKalturaPlayer?: KalturaPlayerTypes.Player | any;
   private _player: KalturaPlayerTypes.Player;
   private _layout: Layout;
   private _externalLayout: ExternalLayout | null = null;
@@ -57,10 +57,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   constructor(name: string, player: any, config: DualScreenConfig) {
     super(name, player, config);
     this._player = player;
-    this.secondaryKalturaPlayer = this._createSecondaryPlayer();
     this._imagePlayer = new ImagePlayer(this._onActiveSlideChanged, this.config.slidesPreloadEnabled);
     this._readyPromise = this._makeReadyPromise();
-    this._addBindings();
     this._layout = Layout.Hidden;
     this._pipPosition = this.config.position;
   }
@@ -82,9 +80,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           replaceComponent: KalturaPlayer.ui.components.Settings.displayName
         }
     this._undoRemoveSettings = this._player.ui.addComponent(removeSettings);
+    this.secondaryKalturaPlayer = this._createSecondaryPlayer();
   }
 
   loadMedia(): void {
+    this._addBindings();
     const kalturaCuePointService: any = this._player.getService('kalturaCuepoints');
     this._getSecondaryMedia();
     if (kalturaCuePointService) {
@@ -101,6 +101,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._readyPromise = this._makeReadyPromise();
     this._undoRemoveSettings();
     this._undoRemoveSettings = () => {};
+    this.secondaryKalturaPlayer?.destroy();
+    this.secondaryKalturaPlayer = null;
+    this.eventManager.removeAll();
   }
 
   private _makeReadyPromise = () => {
@@ -110,9 +113,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   };
 
   private _addBindings() {
-    this.eventManager.listen(this.player, this.player.Event.RESIZE, (e: any) => {
-      this.logger.debug(e);
-    });
     this.eventManager.listen(this.player, this.player.Event.PLAYBACK_ENDED, () => {
       this._playbackEnded = true;
     });
