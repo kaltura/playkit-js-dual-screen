@@ -35,7 +35,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   private _secondaryPlayerType = PlayerType.VIDEO;
   private _pipPortraitMode = false;
   private _originalVideoElementParent?: HTMLElement;
-  private _undoRemoveSettings = () => {};
+  private _undoRemoveSettings?: Function | null = null;
 
   /**
    * The default configuration of the plugin.
@@ -72,15 +72,16 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   }
 
   private _removeSettingsComponent = () => {
-    const removeSettings =
-        {
-          presets: PRESETS,
-          container: ReservedPresetAreas.BottomBarRightControls,
-          get: KalturaPlayer.ui.components.Remove,
-          replaceComponent: KalturaPlayer.ui.components.Settings.displayName
-        }
-    this._undoRemoveSettings = this._player.ui.addComponent(removeSettings);
-    this.secondaryKalturaPlayer = this._createSecondaryPlayer();
+    if (!this._undoRemoveSettings) {
+      const removeSettings =
+          {
+            presets: PRESETS,
+            container: ReservedPresetAreas.BottomBarRightControls,
+            get: KalturaPlayer.ui.components.Remove,
+            replaceComponent: KalturaPlayer.ui.components.Settings.displayName
+          }
+      this._undoRemoveSettings = this._player.ui.addComponent(removeSettings);
+    }
   }
 
   loadMedia(): void {
@@ -99,11 +100,21 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._imagePlayer.reset();
     this._imageSyncManager?.reset();
     this._readyPromise = this._makeReadyPromise();
-    this._undoRemoveSettings();
-    this._undoRemoveSettings = () => {};
+    if (this._undoRemoveSettings) {
+      this._undoRemoveSettings();
+      this._undoRemoveSettings = null;
+    }
     this.secondaryKalturaPlayer?.destroy();
     this.secondaryKalturaPlayer = null;
+    this._removeSecondaryPlaceholder();
     this.eventManager.removeAll();
+  }
+
+  private _removeSecondaryPlaceholder() {
+    const secondaryPlaceholderEl = document.getElementById('secondaryPlaceholder');
+    if (secondaryPlaceholderEl) {
+      document.body.removeChild(secondaryPlaceholderEl);
+    }
   }
 
   private _makeReadyPromise = () => {
@@ -499,6 +510,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       // update PIP component
       this._setMode();
     }
+
+    this._removeSettingsComponent();
   };
 
   private _getThumbs(kalturaCuePointService: any) {
@@ -553,6 +566,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
             // subscribe on secondary player readiness
             this._secondaryPlayerType = PlayerType.VIDEO;
             this._removeSettingsComponent();
+            this.secondaryKalturaPlayer = this._createSecondaryPlayer();
             this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
               this._resolveReadyPromise();
             });
@@ -569,7 +583,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
             this._secondaryPlayerType = PlayerType.IMAGE;
 
             if (this.player.getService('kalturaCuepoints')) {
-              this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger, this._onSlideViewChanged, this._removeSettingsComponent);
+              this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, this._imagePlayer, this.logger, this._onSlideViewChanged);
             }
             this._resolveReadyPromise();
           }

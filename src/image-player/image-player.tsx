@@ -28,10 +28,6 @@ export class ImagePlayer {
     this._preloadEnabled = preloadEnabled;
   }
 
-  public isImagesReady() {
-    return this._images.length > 0;
-  }
-
   get active() {
     return this._activeImage;
   }
