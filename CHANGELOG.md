@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.9.1](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.9.0...v1.9.1) (2022-05-26)
+
+
+### Bug Fixes
+
+* **FEV-1172:** reset active slide on locked-view state ([#55](https://github.com/kaltura/playkit-js-dual-screen/issues/55)) ([e5ef1ac](https://github.com/kaltura/playkit-js-dual-screen/commit/e5ef1ac03ebf428e168d056cadb4f64eae6760e6))
+* **FEV-1204:** remove Settings only when dual is loaded ([#56](https://github.com/kaltura/playkit-js-dual-screen/issues/56)) ([efcd2e9](https://github.com/kaltura/playkit-js-dual-screen/commit/efcd2e9f7032c65e03cb0fc685e613e7db684801))
+
+
+### Build System
+
+* set prerelease false ([d965d65](https://github.com/kaltura/playkit-js-dual-screen/commit/d965d650f22ceae848d0ae525c477d2690902f4b))
+
 ## [1.9.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.8.0...v1.9.0) (2022-01-19)
 
 
