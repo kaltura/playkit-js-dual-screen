@@ -73,16 +73,15 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   private _removeSettingsComponent = () => {
     if (!this._undoRemoveSettings) {
-      const removeSettings =
-          {
-            presets: PRESETS,
-            container: ReservedPresetAreas.BottomBarRightControls,
-            get: KalturaPlayer.ui.components.Remove,
-            replaceComponent: KalturaPlayer.ui.components.Settings.displayName
-          }
+      const removeSettings = {
+        presets: PRESETS,
+        container: ReservedPresetAreas.BottomBarRightControls,
+        get: KalturaPlayer.ui.components.Remove,
+        replaceComponent: KalturaPlayer.ui.components.Settings.displayName
+      };
       this._undoRemoveSettings = this._player.ui.addComponent(removeSettings);
     }
-  }
+  };
 
   loadMedia(): void {
     this._addBindings();
@@ -202,6 +201,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       value();
     });
     this._removeActivesArr = [];
+    this._originalVideoElementParent!.appendChild(this._player.getVideoElement());
   }
 
   private _setPipPosition = (position: Position) => {
@@ -236,9 +236,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         get: () => <PipParent animation={parentAnimation} player={this._player} />
       })
     );
-    this._removeActivesArr.push(() => {
-      this._originalVideoElementParent!.appendChild(this._player.getVideoElement());
-    });
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
@@ -292,9 +289,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
         get: () => <PipParent animation={parentAnimation} player={this._getSecondaryPlayer()} />
       })
     );
-    this._removeActivesArr.push(() => {
-      this._originalVideoElementParent!.appendChild(this._player.getVideoElement());
-    });
     this._removeActivesArr.push(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
@@ -315,13 +309,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this._player}
-                hide={(byKeyboard: boolean) =>
-                  this._switchToSingleMediaInverse(Animations.None, getValueOrUndefined(byKeyboard, ButtonsEnum.Show))
-                }
+                hide={(byKeyboard: boolean) => this._switchToSingleMediaInverse(Animations.None, getValueOrUndefined(byKeyboard, ButtonsEnum.Show))}
                 onSideBySideSwitch={(byKeyboard: boolean) => this._switchToSideBySideInverse(byKeyboard)}
-                onInversePIP={(byKeyboard: boolean) =>
-                  this._switchToPIP(Animations.Fade, getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen))
-                }
+                onInversePIP={(byKeyboard: boolean) => this._switchToPIP(Animations.Fade, getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen))}
                 aspectRatio={this.config.childAspectRatio}
                 focusOnButton={focusOnButton}
               />
@@ -417,10 +407,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     setSubtitlesOnTop(true);
     this._removeActives();
 
-    this._removeActivesArr.push(() => {
-      this._originalVideoElementParent!.appendChild(this._player.getVideoElement());
-    });
-
     const leftSideProps = {
       player: this._player,
       onExpand: (byKeyboard: boolean) => this._switchToPIP(Animations.ScaleRight, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)),
@@ -457,14 +443,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     setSubtitlesOnTop(true);
     this._removeActives();
 
-    this._removeActivesArr.push(() => {
-      this._originalVideoElementParent!.appendChild(this._player.getVideoElement());
-    });
-
     const leftSideProps = {
       player: this._getSecondaryPlayer(),
-      onExpand: (byKeyboard: boolean) =>
-        this._switchToPIPInverse(Animations.ScaleRight, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)),
+      onExpand: (byKeyboard: boolean) => this._switchToPIPInverse(Animations.ScaleRight, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)),
       focusOnButton
     };
     const rightSideProps = {
