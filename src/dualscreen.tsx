@@ -96,6 +96,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   reset(): void {
     this._setDefaultMode();
+    this._layout = Layout.Hidden;
     this._imagePlayer.reset();
     this._imageSyncManager?.reset();
     this._readyPromise = this._makeReadyPromise();
