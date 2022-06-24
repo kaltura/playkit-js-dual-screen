@@ -201,7 +201,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       value();
     });
     this._removeActivesArr = [];
-    this._originalVideoElementParent!.appendChild(this._player.getVideoElement());
+    if (this._originalVideoElementParent) {
+      this._originalVideoElementParent.appendChild(this._player.getVideoElement());
+    }
   }
 
   private _setPipPosition = (position: Position) => {
