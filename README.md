@@ -67,7 +67,7 @@ Dual screen plugin configuration can been found here:
 
 - **[Configuration](docs/configuration.md)**
 
-###Slides configuration
+### Slides configuration
 If you are showing slides, you MUST also include kalturaCuePoints plugin in the configuration as follow -
 
 ```html
