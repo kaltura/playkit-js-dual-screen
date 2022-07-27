@@ -25,12 +25,3 @@
     }
   }
 }
-
-:global(.playkit-player) {
-  :global(.playkit-player .playkit-top-bar .playkit-right-controls) {
-    display: flex;
-  }
-  :global(.playkit-slideIn) {
-    z-index: 1;
-  }
-}
