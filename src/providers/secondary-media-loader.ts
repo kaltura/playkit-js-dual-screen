@@ -32,7 +32,7 @@ export class SecondaryMediaLoader implements ILoader {
       filter: {
         objectType: 'KalturaBaseEntryFilter',
         parentEntryIdEqual: this._parentEntryId,
-        typeEqual: ResponseTypes.KalturaMediaEntry.MediaType.VIDEO.value
+        typeIn: `${ResponseTypes.KalturaMediaEntry.MediaType.VIDEO.value},7` // VOD and LIVE
       },
       responseProfile: {
         type: INCLUDE_FIELDS,
