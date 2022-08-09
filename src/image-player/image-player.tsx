@@ -56,7 +56,7 @@ export class ImagePlayer {
         return;
       }
       // remove active image
-      this._imagePlayer.style.backgroundImage = 'none';
+      (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', '');
       this._activeImage = null;
       this._onActiveChange(null);
       return;
@@ -70,7 +70,7 @@ export class ImagePlayer {
       if (activeId === item.id) {
         this._activeImage = item;
         this._onActiveChange(item);
-        this._imagePlayer.style.backgroundImage = `url('${item.imageUrl}')`;
+        (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', item.imageUrl);
         return true;
       }
       return false;
@@ -83,6 +83,8 @@ export class ImagePlayer {
 
   private _createImagePlayer = () => {
     const imagePlayer = document.createElement('div');
+    const img = document.createElement("img");
+    imagePlayer.appendChild(img);
     imagePlayer.classList.add('playkit-image-player');
     return imagePlayer;
   };

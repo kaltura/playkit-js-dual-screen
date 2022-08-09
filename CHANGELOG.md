@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.9.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.9.1...v1.9.2) (2022-07-20)
+
+
+### Bug Fixes
+
+* **FEV-1267:** put player in original element on layout change ([#58](https://github.com/kaltura/playkit-js-dual-screen/issues/58)) ([63e7ec1](https://github.com/kaltura/playkit-js-dual-screen/commit/63e7ec1e7de890d53f3eda42101d917c96fd5e31))
+* **FEV-1287:** Slides doesn't appears in dual screen plugin if the user jumps to the entry containing the slides ([#57](https://github.com/kaltura/playkit-js-dual-screen/issues/57)) ([1237dda](https://github.com/kaltura/playkit-js-dual-screen/commit/1237ddaf36f7c445c8790762e4195d59616d21f0))
+* **FEV-1295:** check if original Video Element exist ([#59](https://github.com/kaltura/playkit-js-dual-screen/issues/59)) ([8338629](https://github.com/kaltura/playkit-js-dual-screen/commit/83386298bfe25a707bc3956d67f6920ca438a5c2))
+* **FEV-963:** fix border-radius of div containing video on Safari ([#61](https://github.com/kaltura/playkit-js-dual-screen/issues/61)) ([465bf31](https://github.com/kaltura/playkit-js-dual-screen/commit/465bf3170eafc9dce6496b3fad2dbc6eeff3de5f))
+
 ### [1.9.1](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.9.0...v1.9.1) (2022-05-26)
 
 
