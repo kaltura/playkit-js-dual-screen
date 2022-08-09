@@ -9,15 +9,21 @@ import {ResponsiveManager} from './components/responsive-manager';
 import {SecondaryMediaLoader} from './providers/secondary-media-loader';
 import {DragAndSnapManager} from './components/drag-and-snap-manager';
 import {SideBySideWrapper} from './components/side-by-side/side-by-side-wrapper';
-import {setSubtitlesOnTop, getValueOrUndefined} from './utils';
+import {getValueOrUndefined} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
 import {ImagePlayer, SlideItem} from './image-player';
 // @ts-ignore
 import {core} from 'kaltura-player-js';
+import './styles/global.scss';
 
+const {
+  reducers: {shell}
+} = KalturaPlayer.ui;
 const {EventType} = core;
 
+const HAS_DUAL_SCREEN_PLUGIN_OVERLAY = 'has-dual-screen-plugin-overlay';
 const PRESETS = ['Playback', 'Live', 'Ads'];
+
 // @ts-ignore
 export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngineDecoratorProvider {
   public secondaryKalturaPlayer?: KalturaPlayerTypes.Player | any;
@@ -197,7 +203,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   };
 
   private _addActives(...removeActives: Array<Function>) {
-    setSubtitlesOnTop(true);
+    const {
+      store: {dispatch}
+    } = this._player.ui;
+    dispatch(shell.actions.addPlayerClass(HAS_DUAL_SCREEN_PLUGIN_OVERLAY));
     this._removeActives();
     this._removeActivesArr = removeActives;
   }
@@ -221,8 +230,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   };
 
   private _switchToHidden = () => {
+    const {
+      store: {dispatch}
+    } = this._player.ui;
     this._layout = Layout.Hidden;
-    setSubtitlesOnTop(false);
+    dispatch(shell.actions.removePlayerClass(HAS_DUAL_SCREEN_PLUGIN_OVERLAY));
     this._removeActives();
   };
 
@@ -425,9 +437,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
     this._layout = Layout.SideBySideInverse;
 
-    setSubtitlesOnTop(true);
-    this._removeActives();
-
     const leftSideProps = {
       player: this._getSecondaryPlayer(),
       onExpand: (byKeyboard: boolean) => this._switchToPIPInverse(Animations.ScaleRight, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)),
@@ -438,7 +447,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       onExpand: (byKeyboard: boolean) => this._switchToPIP(Animations.ScaleLeft, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide))
     };
 
-    this._removeActivesArr.push(
+    this._addActives(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-side-by-side',
         presets: PRESETS,
