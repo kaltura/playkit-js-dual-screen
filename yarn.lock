@@ -262,33 +262,33 @@
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.3.tgz#e45e384e4b8ec16bce2fd903af78450f6bf7ec98"
   integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
 
-"@playkit-js/playkit-js-dash@1.27.3":
-  version "1.27.3"
-  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-dash/-/playkit-js-dash-1.27.3.tgz#67eb96dd4caeef3d8766a7d28114d489fee69757"
-  integrity sha512-ROe9HnEF9yIV4wL6VxMXb8rHeL+f0hQcCRfwiJI8Mm4BC/LYfwTZwMd6yat5/hDLe9AcMFS9IzrJ4ozSJWKnGQ==
+"@playkit-js/playkit-js-dash@1.30.3":
+  version "1.30.3"
+  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-dash/-/playkit-js-dash-1.30.3.tgz#e59dfee3ce9ea82957cf1cfc9c6f9653c6f8b297"
+  integrity sha512-f9qx4wC357YojY3DJ+5TwmTc+dXI3PpuqG5DL/4Y1ZPn5Dc12uKvJclU3FlsXS+i31mIILeE8ApZ6gnnhVow8g==
 
-"@playkit-js/playkit-js-hls@1.27.3":
-  version "1.27.3"
-  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-hls/-/playkit-js-hls-1.27.3.tgz#4992f79f9ed857fae588d7083ce0253028241516"
-  integrity sha512-gcYF50OiFv8e3G+uEE8WNVcnOhGFwiyMbftCYDS18olkGwfl6O0yIxk+BwmjGMAuhuIv+Flst9GG177VvpmJpg==
+"@playkit-js/playkit-js-hls@1.30.1":
+  version "1.30.1"
+  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-hls/-/playkit-js-hls-1.30.1.tgz#1c6298cafadfabe9510e013f319774f486f3a4c6"
+  integrity sha512-92nrsOXBQveF+BmKqC2LxLp+zGjqKvBCh5vL8Ea0+COzha/jPovKtwhGxzyF3gTIukYoocMC8IisFFQCIPkCmw==
 
-"@playkit-js/playkit-js-ui@0.69.4":
-  version "0.69.4"
-  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-ui/-/playkit-js-ui-0.69.4.tgz#177ccad8d3d9feef7282fe9553babca991b48e00"
-  integrity sha512-TYP+tDCGGPGxQpNb7MFqrWX59e9MTvKv3N9xHRfVx1gm1GXHIOoOVCcYOXD7a64aJTvUUv7rnywJcdiBKnvy2w==
+"@playkit-js/playkit-js-ui@0.72.1":
+  version "0.72.1"
+  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js-ui/-/playkit-js-ui-0.72.1.tgz#dff414b45681f7c95bb4e4abd459219bed259af5"
+  integrity sha512-ZyUstM2Zs0kiJ86SgIVhWdtrTKrXoXcqfvDWYQRHFz/q+4rhZX/86K3mAKk8LYqXCBd0tqdB2Q1V27qSEPifwQ==
   dependencies:
     preact "^10.3.4"
     preact-i18n "^2.0.0-preactx.2"
     react-redux "^7.2.0"
     redux "^4.0.5"
 
-"@playkit-js/playkit-js@0.75.0":
-  version "0.75.0"
-  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js/-/playkit-js-0.75.0.tgz#b0985e14bde4da3e5955b283be38386430c2f1cd"
-  integrity sha512-eXJljn2M4b7p5uTZtC5JNqvca9t3fwUsu+b3kRIRBsO9enXcjyEt8Smx2IUjXy8TCf9YQBdGcBX7MnArBlQMKA==
+"@playkit-js/playkit-js@0.80.4":
+  version "0.80.4"
+  resolved "https://registry.yarnpkg.com/@playkit-js/playkit-js/-/playkit-js-0.80.4.tgz#b4bc0dba2c7c188e075c5e585c231d91a006c706"
+  integrity sha512-aJ4ukc3hu+1l9KNXFCny3oX65rbydo3hB3Qxdh8PkdV5es99EOu2Vj8bZScNSvYlomu/HHVLX2yf1F0vqwmmkA==
   dependencies:
     js-logger "^1.6.0"
-    ua-parser-js "^0.7.21"
+    ua-parser-js "1.0.2"
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
@@ -4161,10 +4161,10 @@ highlight.js@^10.7.2:
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.7.3.tgz#697272e3991356e40c3cac566a74eef681756531"
   integrity sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==
 
-hls.js@^1.0.7:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.1.1.tgz#d8ff641f764741f13259a2740aa33336810a10a5"
-  integrity sha512-2VEVzO/gr5LOD6K/DEmBkKEary6hr4YZ/SLb0PV81jOAM/Tl9DviL0sFMoUHDq05/j4OZxIj691Zo0p40u3Gtw==
+hls.js@^1.1.5:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.2.0.tgz#e213773be09d6f99f08cefbf608c4a1fe226f998"
+  integrity sha512-QIEQIUpBRhcpBMq3NA+/qozG8lbNfVekuX7kCMUlhiVu4382xFWsnwcuBe/CA4Gp/wB/pf2aRBaGRFlxh/FN8g==
 
 hmac-drbg@^1.0.1:
   version "1.0.1"
@@ -5063,19 +5063,19 @@ just-extend@^4.0.2:
   integrity sha512-g3UB796vUFIY90VIv/WX3L2c8CS2MdWUww3CNrYmqza1Fg0DURc2K/O4YrnklBdQarSJ/y8JnJYDGc+1iumQjg==
 
 "kaltura-player-js@https://github.com/kaltura/kaltura-player-js.git#master":
-  version "1.16.3"
-  resolved "https://github.com/kaltura/kaltura-player-js.git#91b56d3a7820183cf9a5600a29ce68d937475dcf"
+  version "3.5.0"
+  resolved "https://github.com/kaltura/kaltura-player-js.git#a0e012ebacdff92cf79f5541f5a43c8be04a6650"
   dependencies:
     "@babel/polyfill" "^7.0.0"
-    "@playkit-js/playkit-js" "0.75.0"
-    "@playkit-js/playkit-js-dash" "1.27.3"
-    "@playkit-js/playkit-js-hls" "1.27.3"
-    "@playkit-js/playkit-js-ui" "0.69.4"
-    hls.js "^1.0.7"
+    "@playkit-js/playkit-js" "0.80.4"
+    "@playkit-js/playkit-js-dash" "1.30.3"
+    "@playkit-js/playkit-js-hls" "1.30.1"
+    "@playkit-js/playkit-js-ui" "0.72.1"
+    hls.js "^1.1.5"
     intersection-observer "^0.12.0"
-    playkit-js-providers "https://github.com/kaltura/playkit-js-providers.git#v2.31.0"
+    playkit-js-providers "https://github.com/kaltura/playkit-js-providers.git#v2.36.0"
     proxy-polyfill "^0.3.0"
-    shaka-player "3.0.13"
+    shaka-player "3.3.3"
 
 karma-chai@^0.1.0:
   version "0.1.0"
@@ -6956,9 +6956,9 @@ pkg-dir@^5.0.0:
   dependencies:
     find-up "^5.0.0"
 
-"playkit-js-providers@https://github.com/kaltura/playkit-js-providers.git#v2.31.0":
-  version "2.31.0"
-  resolved "https://github.com/kaltura/playkit-js-providers.git#4ae3214262d2da305056639392d00bffce6a72f9"
+"playkit-js-providers@https://github.com/kaltura/playkit-js-providers.git#v2.36.0":
+  version "2.36.0"
+  resolved "https://github.com/kaltura/playkit-js-providers.git#78c8e861f49079cb7cdc8814493cc8bd68930a32"
 
 please-upgrade-node@^3.2.0:
   version "3.2.0"
@@ -8003,10 +8003,10 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-shaka-player@3.0.13:
-  version "3.0.13"
-  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-3.0.13.tgz#0d6e9a666ab53e17e798740b3563f09cc81a170a"
-  integrity sha512-2ntqfuNtyl04GjJSI1oa4TopFzaDWkvsEu14IpSzfBhpN1bX/uwUL6ArLzUe3hUCtl+hCEOS5Dw+h7NzQ/W0jA==
+shaka-player@3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-3.3.3.tgz#c94b12c5ffafd8cbf67baa654cdb4a01fc9ff722"
+  integrity sha512-E6VRILD9rKunKCQ+lbUnNqqxAvoKuw/6vNaIC+Gz9nW2lYfLX22XCu0wjGZlkvwaR9Q1H+PF7A9iZzzoctSWwg==
   dependencies:
     eme-encryption-scheme-polyfill "^2.0.3"
 
@@ -9083,10 +9083,10 @@ ua-parser-js@0.7.22:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.22.tgz#960df60a5f911ea8f1c818f3747b99c6e177eae3"
   integrity sha512-YUxzMjJ5T71w6a8WWVcMGM6YWOTX27rCoIQgLXiWaxqXSx9D7DNjiGWn1aJIRSQ5qr0xuhra77bSIh6voR/46Q==
 
-ua-parser-js@^0.7.21:
-  version "0.7.31"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.31.tgz#649a656b191dffab4f21d5e053e27ca17cbff5c6"
-  integrity sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==
+ua-parser-js@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-1.0.2.tgz#e2976c34dbfb30b15d2c300b2a53eac87c57a775"
+  integrity sha512-00y/AXhx0/SsnI51fTc0rLRmafiGOM4/O+ny10Ps7f+j/b8p/ZY11ytMgznXkOVo4GQ+KwQG5UQLkLGirsACRg==
 
 uglify-js@^3.1.4, uglify-js@^3.6.0:
   version "3.14.3"

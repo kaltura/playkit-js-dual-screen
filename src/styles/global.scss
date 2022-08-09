@@ -1,0 +1,8 @@
+:global(.playkit-player.has-dual-screen-plugin-overlay) {
+  :global(.playkit-subtitles) {
+    z-index: 1;
+  }
+  :global(.playkit-slideIn) {
+    z-index: 1;
+  }
+}

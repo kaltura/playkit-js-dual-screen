@@ -20,14 +20,6 @@ export const dimensionStyleToString = (value: number): string => {
   return `${value}px`;
 };
 
-export const setSubtitlesOnTop = (active: boolean): void => {
-  if (active) {
-    document.getElementsByClassName('playkit-subtitles')[0].classList.add('moveToTop');
-  } else {
-    document.getElementsByClassName('playkit-subtitles')[0].classList.remove('moveToTop');
-  }
-};
-
 export const getValueOrUndefined = <T>(condition: boolean, value: T) => {
   return condition ? value : undefined;
 };
