@@ -196,6 +196,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._externalLayout = null;
   };
 
+  private _addActives(...removeActives: Array<Function>) {
+    setSubtitlesOnTop(true);
+    this._removeActives();
+    this._removeActivesArr = removeActives;
+  }
+
   private _removeActives() {
     this._removeActivesArr.forEach(value => {
       value();
@@ -227,18 +233,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     this._pipPortraitMode = this._imagePlayer.active ? this._imagePlayer.active.portrait : this._pipPortraitMode;
     this._layout = Layout.PIP;
 
-    setSubtitlesOnTop(true);
-    this._removeActives();
-
-    this._removeActivesArr.push(
+    this._addActives(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
         get: () => <PipParent animation={parentAnimation} player={this._player} />
-      })
-    );
-    this._removeActivesArr.push(
+      }),
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
@@ -280,18 +281,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
     this._layout = Layout.PIPInverse;
 
-    setSubtitlesOnTop(true);
-    this._removeActives();
-
-    this._removeActivesArr.push(
+    this._addActives(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
         get: () => <PipParent animation={parentAnimation} player={this._getSecondaryPlayer()} />
-      })
-    );
-    this._removeActivesArr.push(
+      }),
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
@@ -330,18 +326,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
     this._layout = Layout.SingleMedia;
 
-    setSubtitlesOnTop(true);
-    this._removeActives();
-
-    this._removeActivesArr.push(
+    this._addActives(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
         get: () => <PipParent animation={parentAnimation} player={this._player} />
-      })
-    );
-    this._removeActivesArr.push(
+      }),
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip-minimized',
         presets: PRESETS,
@@ -368,18 +359,13 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
     this._layout = Layout.SingleMediaInverse;
 
-    setSubtitlesOnTop(true);
-    this._removeActives();
-
-    this._removeActivesArr.push(
+    this._addActives(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
         get: () => <PipParent animation={parentAnimation} player={this._getSecondaryPlayer()} />
-      })
-    );
-    this._removeActivesArr.push(
+      }),
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-pip-minimized',
         presets: PRESETS,
@@ -406,9 +392,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     }
     this._layout = Layout.SideBySide;
 
-    setSubtitlesOnTop(true);
-    this._removeActives();
-
     const leftSideProps = {
       player: this._player,
       onExpand: (byKeyboard: boolean) => this._switchToPIP(Animations.ScaleRight, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)),
@@ -419,7 +402,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       onExpand: (byKeyboard: boolean) => this._switchToPIPInverse(Animations.ScaleLeft, getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide))
     };
 
-    this._removeActivesArr.push(
+    this._addActives(
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-side-by-side',
         presets: PRESETS,
