@@ -103,8 +103,7 @@ This project is licensed under the AGPL-3.0 License - see the [LICENSE.md](LICEN
 <a name="configuration"></a>
 ## Configuration
 
-## DualScreenConfigObject
-
+#### DualScreenConfigObject
 Defines the configuration of the dual screen. Except `childSizePercentage`, the configuration only defines the appearance when the player loads. After that, the user can adjust and change it.
 
 #### Configuration Structure
