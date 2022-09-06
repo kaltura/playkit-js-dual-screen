@@ -41,6 +41,8 @@ Finally, add the bundle as a script tag in your page, and initialize the player
 ```html
 <script type="text/javascript" src="/PATH/TO/FILE/kaltura-player.js"></script>
 <!--Kaltura player-->
+<script type='text/javascript' src='/PATH/TO/FILE//playkit-kaltura-cuepoints.js'></script>
+<!--PlayKit cuepoint plugin-->
 <script type="text/javascript" src="/PATH/TO/FILE/playkit-dual-screen.js"></script>
 <!--PlayKit dual screen plugin-->
 <div id="player-placeholder" style="height:360px; width:640px">
@@ -50,8 +52,8 @@ Finally, add the bundle as a script tag in your page, and initialize the player
      ...
      targetId: 'player-placeholder',
      plugins: {
-       dualscreen: {
-       }
+      dualscreen: { ... },
+      kalturaCuepoints: { ... },
      }
      ...
     };
@@ -65,31 +67,17 @@ Finally, add the bundle as a script tag in your page, and initialize the player
 
 Dual screen plugin configuration can been found here:
 
-- **[Configuration](docs/configuration.md)**
+- **[Configuration](#configuration)**
+
+Dual screen plugin dependencies can been found here:
+
+- **[Dependencies](#dependencies)**
 
 ### Slides configuration
 If you are showing slides, you MUST also include kalturaCuePoints plugin in the configuration as follow -
 
 ```html
 plugins: { dualscreen: {...}, kalturaCuepoints: { } }
-```
-
-## Running the tests
-
-Tests can be run locally via [Karma], which will run on Chrome, Firefox and Safari
-
-[karma]: https://karma-runner.github.io/1.0/index.html
-
-```
-yarn run test
-```
-
-You can test individual browsers:
-
-```
-yarn run test:chrome
-yarn run test:firefox
-yarn run test:safari
 ```
 
 ### And coding style tests
@@ -99,10 +87,6 @@ We use ESLint [recommended set](http://eslint.org/docs/rules/) with some additio
 See [ESLint config](.eslintrc.json) for full configuration.
 
 We also use [.editorconfig](.editorconfig) to maintain consistent coding styles and settings, please make sure you comply with the styling.
-
-## Compatibility
-
-TBD
 
 ## Contributing
 
@@ -115,3 +99,73 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## License
 
 This project is licensed under the AGPL-3.0 License - see the [LICENSE.md](LICENSE.md) file for details
+
+<a name="configuration"></a>
+## Configuration
+
+#### DualScreenConfigObject
+Defines the configuration of the dual screen. Except `childSizePercentage`, the configuration only defines the appearance when the player loads. After that, the user can adjust and change it.
+
+#### Configuration Structure
+
+```js
+//Default configuration
+"dualscreen" = {};
+//Plugin params
+"dualscreen" = {
+  position?: string, // optional
+  layout?: string, // optional
+  inverse?: boolean, // optional
+  childSizePercentage?: number, // optional
+}
+```
+
+##
+
+> ### config.position
+>
+> ##### Type: `string`
+>
+> ##### Default: `bottom-right`
+>
+> ##### Description: ("bottom-left" | "bottom-right" | "top-left" | "top-right") The position where the child player will be displayed.
+>
+
+##
+
+> ### config.layout
+>
+> ##### Type: `string`
+>
+> ##### Default: `PIP`
+>
+> ##### Description: ("PIP" | "SingleMedia" | "SideBySide") The layout of the parent and child players.
+>
+
+##
+
+> ### config.inverse
+>
+> ##### Type: `boolean`
+>
+> ##### Default: `false`
+>
+> ##### Description: When set to true, the Parent and Secondary players will swap positions.
+>
+
+##
+
+> ### config.childSizePercentage
+>
+> ##### Type: `number`
+>
+> ##### Default: `30`
+>
+> ##### Description: Relevant only for PIP layout - Sets the height of the child player as percentage of the parent player height.
+>
+
+<a name="dependencies"></a>
+## Dependencies
+
+Plugin dependencies:<br/>
+<a href="https://github.com/kaltura/playkit-js-kaltura-cuepoints">Cue Points</a><br/>
