@@ -11,6 +11,7 @@ export enum Layout {
 export enum ExternalLayout {
   Hidden = 'locked',
   SingleMedia = 'parent-only',
+  SingleMediaInverse = 'no-parent',
   PIP = 'pip-parent-in-large',
   PIPInverse = 'pip-parent-in-small',
   SideBySide = 'sbs-parent-in-left',

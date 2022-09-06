@@ -60,7 +60,7 @@ export class ImageSyncManager {
         if (cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
           return {...acc, activeSlide: cue.id};
         }
-        if (cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE) {
+        if (cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE && cue.metadata?.tags === 'change-view-mode') {
           const {playerViewModeId, viewModeLockState} = cue.metadata!.partnerData;
           if (playerViewModeId) {
             return {...acc, externalLayout: viewModeLockState === ViewModeLockState.Locked ? ExternalLayout.Hidden : playerViewModeId};
