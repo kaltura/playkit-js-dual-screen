@@ -508,6 +508,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           this._switchToSingleMedia();
         }
         break;
+      case ExternalLayout.SingleMediaInverse:
+        if (this._layout !== Layout.SingleMediaInverse) {
+          this._switchToSingleMediaInverse();
+        }
+        break;
       case ExternalLayout.PIP:
         if (this._layout !== Layout.PIP) {
           this._switchToPIP();
