@@ -91,6 +91,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   loadMedia(): void {
     this._addBindings();
+    const {
+      store: {dispatch}
+    } = this._player.ui;
+    dispatch(shell.actions.addPlayerClass(HAS_DUAL_SCREEN_PLUGIN_OVERLAY));
     const kalturaCuePointService: any = this._player.getService('kalturaCuepoints');
     this._getSecondaryMedia();
     if (kalturaCuePointService) {
@@ -102,6 +106,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   reset(): void {
     this._setDefaultMode();
+    const {
+      store: {dispatch}
+    } = this._player.ui;
+    dispatch(shell.actions.removePlayerClass(HAS_DUAL_SCREEN_PLUGIN_OVERLAY));
     this._layout = Layout.Hidden;
     this._imagePlayer.reset();
     this._imageSyncManager?.reset();
@@ -203,10 +211,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   };
 
   private _addActives(...removeActives: Array<Function>) {
-    const {
-      store: {dispatch}
-    } = this._player.ui;
-    dispatch(shell.actions.addPlayerClass(HAS_DUAL_SCREEN_PLUGIN_OVERLAY));
     this._removeActives();
     this._removeActivesArr = removeActives;
   }
@@ -230,11 +234,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
   };
 
   private _switchToHidden = () => {
-    const {
-      store: {dispatch}
-    } = this._player.ui;
     this._layout = Layout.Hidden;
-    dispatch(shell.actions.removePlayerClass(HAS_DUAL_SCREEN_PLUGIN_OVERLAY));
     this._removeActives();
   };
 
