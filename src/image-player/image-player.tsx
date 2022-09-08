@@ -94,8 +94,11 @@ export class ImagePlayer {
         this._preLoadImage(item);
         this._activeImage = item;
         item.ready.then(() => {
-          this._onActiveChange(item);
-          (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', item.imageUrl);
+          // check that during loading active image haven't changed
+          if (this._activeImage?.id === item.id) {
+            this._onActiveChange(item);
+            (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', item.imageUrl);
+          }
         });
         return true;
       }
