@@ -25,3 +25,10 @@
     }
   }
 }
+
+@mixin hideImagePlayer {
+  &:has(:global(.playkit-image-player > img[src=''])) {
+    // hide image player container if image haven't loaded
+    visibility: hidden;
+  }
+}

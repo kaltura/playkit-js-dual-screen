@@ -85,10 +85,7 @@ export class ImageSyncManager {
       if (cue?.type === TimedMetadata.TYPE.CUE_POINT && cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
         this._imagePlayer.addImage({
           id: cue?.id,
-          imageUrl: cue.metadata!.assetUrl,
-          portrait: false,
-          loading: false,
-          loaded: false
+          imageUrl: cue.metadata!.assetUrl
         });
         return cue;
       }

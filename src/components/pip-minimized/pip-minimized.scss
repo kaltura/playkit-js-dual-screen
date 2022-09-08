@@ -5,6 +5,7 @@ $show-container-height: 32px;
 $show-container-gap: 5px;
 
 .childPlayerContainer {
+  @include hideImagePlayer;
   video {
     position: relative;
   }

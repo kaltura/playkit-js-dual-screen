@@ -5,12 +5,18 @@ const RETRY_DELAY = 2000;
 
 type OnActiveChange = (imageItem: SlideItem | null) => void;
 
-export interface SlideItem {
+export interface RawSlideItem {
   id: string;
   imageUrl: string;
+}
+
+export interface SlideItem extends RawSlideItem {
   loading: boolean;
   loaded: boolean;
   portrait: boolean;
+  ready: Promise<void>;
+  setReady: () => void;
+  retryAttempts: number;
 }
 
 export class ImagePlayer {
@@ -42,11 +48,28 @@ export class ImagePlayer {
       return;
 
     this._preloadIndex++;
-    this._preLoadImage(this._images[this._preloadIndex]);
+    this._preLoadImage(this._images[this._preloadIndex], true);
   };
 
-  public addImage = (item: SlideItem) => {
-    this._images.push(item);
+  public addImage = (item: RawSlideItem) => {
+    if (this._images.find(slideItem => slideItem.id === item.id)) {
+      // prevent add duplications
+      return;
+    }
+    let setReadyFn = () => {};
+    const readyPromise = new Promise<void>(setReady => {
+      setReadyFn = setReady;
+    });
+    const slideItem: SlideItem = {
+      ...item,
+      loading: false,
+      loaded: false,
+      portrait: false,
+      retryAttempts: 0,
+      ready: readyPromise,
+      setReady: setReadyFn
+    };
+    this._images.push(slideItem);
   };
 
   public setActive = (activeId: string | null) => {
@@ -66,11 +89,14 @@ export class ImagePlayer {
       return;
     }
     clearTimeout(this._retryTimeout);
-    this._images.find((item, index) => {
+    this._images.find(item => {
       if (activeId === item.id) {
+        this._preLoadImage(item);
         this._activeImage = item;
-        this._onActiveChange(item);
-        (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', item.imageUrl);
+        item.ready.then(() => {
+          this._onActiveChange(item);
+          (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', item.imageUrl);
+        });
         return true;
       }
       return false;
@@ -83,30 +109,37 @@ export class ImagePlayer {
 
   private _createImagePlayer = () => {
     const imagePlayer = document.createElement('div');
-    const img = document.createElement("img");
+    const img = document.createElement('img');
+    img.src = '';
     imagePlayer.appendChild(img);
     imagePlayer.classList.add('playkit-image-player');
     return imagePlayer;
   };
 
-  private _preLoadImage = (item: SlideItem, attempt = 0) => {
+  private _preLoadImage = (item: SlideItem, bunch = false) => {
+    if (item.loading || item.loaded || item.retryAttempts >= MAX_RETRY_ATTEMPTS) {
+      // skip preloading
+      if (bunch) {
+        // continue bunch preloading
+        this.preLoadImages();
+      }
+      return;
+    }
+    item.retryAttempts++;
     item.loading = true;
     const img = new Image();
     img.onload = () => {
       item.loading = false;
       item.loaded = true;
       item.portrait = img.width < img.height;
+      item.setReady();
       this.preLoadImages();
     };
     img.onerror = () => {
-      if (attempt < MAX_RETRY_ATTEMPTS) {
-        this._retryTimeout = setTimeout(() => {
-          this._preLoadImage(item, attempt + 1);
-        }, RETRY_DELAY);
-      } else {
-        item.loading = false;
-        this.preLoadImages();
-      }
+      item.loading = false;
+      this._retryTimeout = setTimeout(() => {
+        this._preLoadImage(item, bunch);
+      }, RETRY_DELAY);
     };
     img.src = item.imageUrl;
   };
