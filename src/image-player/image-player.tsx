@@ -11,6 +11,7 @@ export interface RawSlideItem {
 }
 
 export interface SlideItem extends RawSlideItem {
+  index: number;
   loading: boolean;
   loaded: boolean;
   portrait: boolean;
@@ -21,7 +22,6 @@ export interface SlideItem extends RawSlideItem {
 
 export class ImagePlayer {
   private _images: Array<SlideItem> = [];
-  private _preloadIndex: number = -1;
   private _imagePlayer: HTMLDivElement;
   private _activeImage: SlideItem | null = null;
   private _onActiveChange: OnActiveChange;
@@ -39,16 +39,27 @@ export class ImagePlayer {
   }
 
   public preLoadImages = () => {
-    if (
-      !this._preloadEnabled ||
-      !this._images.length ||
-      this._preloadIndex === this._images.length - 1 || // No images or all images preloaded
-      this._images[this._preloadIndex]?.loading // we are already in a pre load process
-    )
+    const isPreloadingActive = this._images.some(slide => slide.loading);
+    if (!this._preloadEnabled || isPreloadingActive) {
+      // preload feature disabled or preloading currently in progress
       return;
-
-    this._preloadIndex++;
-    this._preLoadImage(this._images[this._preloadIndex], true);
+    }
+    const startIndex = this._activeImage ? this._activeImage.index : 0;
+    for (let i = startIndex; i < this._images.length; i++) {
+      const preloadCandidate = this._images[i];
+      if (!this._isSlideItemPreloded(preloadCandidate)) {
+        this._preLoadImage(preloadCandidate);
+        // preload candidate found, interrupt search
+        return;
+      }
+    }
+    // preloadCandidate haven't found, try find nextPreloadCandidate from beginnig of array
+    const nextPreloadCandidate = this._images.find(slideItem => {
+      return !this._isSlideItemPreloded(slideItem);
+    });
+    if (nextPreloadCandidate) {
+      this._preLoadImage(nextPreloadCandidate);
+    }
   };
 
   public addImage = (item: RawSlideItem) => {
@@ -62,6 +73,7 @@ export class ImagePlayer {
     });
     const slideItem: SlideItem = {
       ...item,
+      index: this._images.length,
       loading: false,
       loaded: false,
       portrait: false,
@@ -110,6 +122,10 @@ export class ImagePlayer {
     return this._imagePlayer;
   };
 
+  private _isSlideItemPreloded = (item: SlideItem) => {
+    return item.loaded || item.loading || item.retryAttempts >= MAX_RETRY_ATTEMPTS;
+  };
+
   private _createImagePlayer = () => {
     const imagePlayer = document.createElement('div');
     const img = document.createElement('img');
@@ -119,13 +135,10 @@ export class ImagePlayer {
     return imagePlayer;
   };
 
-  private _preLoadImage = (item: SlideItem, bunch = false) => {
-    if (item.loading || item.loaded || item.retryAttempts >= MAX_RETRY_ATTEMPTS) {
-      // skip preloading
-      if (bunch) {
-        // continue bunch preloading
-        this.preLoadImages();
-      }
+  private _preLoadImage = (item: SlideItem) => {
+    if (this._isSlideItemPreloded(item)) {
+      // current item already preloaded, try next
+      this.preLoadImages();
       return;
     }
     item.retryAttempts++;
@@ -141,7 +154,7 @@ export class ImagePlayer {
     img.onerror = () => {
       item.loading = false;
       this._retryTimeout = setTimeout(() => {
-        this._preLoadImage(item, bunch);
+        this._preLoadImage(item);
       }, RETRY_DELAY);
     };
     img.src = item.imageUrl;
@@ -150,7 +163,6 @@ export class ImagePlayer {
   public reset = () => {
     this._activeImage = null;
     this._images = [];
-    this._preloadIndex = -1;
     clearTimeout(this._retryTimeout);
   };
 }
