@@ -477,6 +477,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       this._setDefaultMode();
     }
 
+    if (this._layout === Layout.Hidden && this._externalLayout) {
+      this._applyExternalLayout();
+    }
+
     let portraitModeChanged = false;
     if (slideItem.portrait !== this._pipPortraitMode) {
       portraitModeChanged = true;
@@ -499,6 +503,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       return;
     }
     this._externalLayout = viewChange;
+    this._applyExternalLayout();
+  };
+
+  private _applyExternalLayout = () => {
     switch (this._externalLayout) {
       case ExternalLayout.Hidden:
         this._switchToHidden();
