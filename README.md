@@ -117,6 +117,11 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
   layout?: string, // optional
   inverse?: boolean, // optional
   childSizePercentage?: number, // optional
+  slidesPreloadEnabled?: boolean, // optional
+  childAspectRatio?: { // optional
+    width: number,
+    height: number
+  }
 }
 ```
 
@@ -162,6 +167,28 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
 > ##### Default: `30`
 >
 > ##### Description: Relevant only for PIP layout - Sets the height of the child player as percentage of the parent player height.
+>
+
+##
+
+> ### config.slidesPreloadEnabled
+>
+> ##### Type: `boolean`
+>
+> ##### Default: `true`
+>
+> ##### Description: Enable image preloading
+>
+
+##
+
+> ### config.childAspectRatio
+>
+> ##### Type: `Object<width: number, height: number>`
+>
+> ##### Default: `{ width: 16, height: 9 }`
+>
+> ##### Description: set aspect ration for PIP container
 >
 
 <a name="dependencies"></a>

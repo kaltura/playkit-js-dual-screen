@@ -217,7 +217,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     });
     this._removeActivesArr = [];
     if (this._originalVideoElementParent) {
-      this._originalVideoElementParent.appendChild(this._player.getVideoElement());
+      this._originalVideoElementParent.prepend(this._player.getVideoElement());
     }
   }
 
@@ -514,6 +514,11 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       case ExternalLayout.SingleMedia:
         if (this._layout !== Layout.SingleMedia) {
           this._switchToSingleMedia();
+        }
+        break;
+      case ExternalLayout.SingleMediaInverse:
+        if (this._layout !== Layout.SingleMediaInverse) {
+          this._switchToSingleMediaInverse();
         }
         break;
       case ExternalLayout.PIP:
