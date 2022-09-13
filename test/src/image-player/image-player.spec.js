@@ -4,10 +4,7 @@ import * as TestUtils from '../utils/test-utils';
 describe('KDualscreenPlugin', function () {
   const imageItem = {
     id: 'test_id',
-    imageUrl: 'https://corp.kaltura.com/wp-content/themes/kaltura/img/logo-black-static.png',
-    loading: false,
-    loaded: false,
-    portrait: false
+    imageUrl: 'https://corp.kaltura.com/wp-content/themes/kaltura/img/logo-black-static.png'
   };
 
   describe('ImageSyncManager', () => {
@@ -20,17 +17,15 @@ describe('KDualscreenPlugin', function () {
       const imagePlayer = new ImagePlayer(TestUtils.noop);
       imagePlayer.addImage(imageItem);
       expect(imagePlayer._images.length).to.eql(1);
-      expect(imagePlayer._images[0]).to.eql(imageItem);
+      expect(imagePlayer._images[0].id).to.eql(imageItem.id);
       done();
     });
     it('should test setActive', done => {
-      const onActiveChaged = sinon.spy();
-      const imagePlayer = new ImagePlayer(onActiveChaged);
+      const imagePlayer = new ImagePlayer(TestUtils.noop);
       expect(imagePlayer._activeImage).to.eql(null);
       imagePlayer.addImage(imageItem);
       imagePlayer.setActive('test_id');
-      expect(imagePlayer._activeImage).to.eql(imageItem);
-      expect(onActiveChaged).to.have.been.calledWithExactly(imageItem);
+      expect(imagePlayer._activeImage.id).to.eql(imageItem.id);
       done();
     });
   });
@@ -43,18 +38,12 @@ describe('KDualscreenPlugin', function () {
       sandbox = sinon.createSandbox();
 
       imageItemInstance1 = {
-        id: 'test_id',
-        imageUrl: 'https://corp.kaltura.com/wp-content/themes/kaltura/img/logo-black-static.png',
-        loading: false,
-        loaded: false,
-        portrait: false
+        id: 'test_id_1',
+        imageUrl: 'firstdUrl'
       };
       imageItemInstance2 = {
-        id: 'test_id',
-        imageUrl: 'secondUrl',
-        loading: false,
-        loaded: false,
-        portrait: false
+        id: 'test_id_2',
+        imageUrl: 'secondUrl'
       };
     });
 
@@ -78,18 +67,11 @@ describe('KDualscreenPlugin', function () {
       done();
     });
 
-    it('should try and preload an empty image array', done => {
-      const imagePlayer = new ImagePlayer(TestUtils.noop, false);
-      imagePlayer.preLoadImages();
-      expect(imagePlayer._preloadIndex).to.eql(-1);
-      done();
-    });
-
     it('should try and preload an two images', done => {
       sandbox.stub(Image.prototype, 'src').set(url => {
         setTimeout(() => {
           this.onloadCallback();
-          if (imageItemInstance1.loaded && imageItemInstance2.loaded) {
+          if (imagePlayer._images[0].loaded && imagePlayer._images[1].loaded) {
             done();
           }
         }, 10);
@@ -100,19 +82,21 @@ describe('KDualscreenPlugin', function () {
       const imagePlayer = new ImagePlayer(TestUtils.noop, true);
       imagePlayer.addImage(imageItemInstance1);
       imagePlayer.addImage(imageItemInstance2);
+      expect(imagePlayer._images[0].loaded).to.eq(false);
+      expect(imagePlayer._images[1].loaded).to.eq(false);
       imagePlayer.preLoadImages();
     });
 
-    it('should try and preload an two images, but fail on the first image', done => {
+    it('should try and preload an two images, but fail on the second image', done => {
       sandbox.stub(Image.prototype, 'src').set(url => {
         if (url === imageItemInstance1.imageUrl) {
           setTimeout(() => {
-            this.onerrorCallback();
+            this.onloadCallback();
           }, 10);
         } else {
           setTimeout(() => {
-            this.onloadCallback();
-            if (!imageItemInstance1.loaded && imageItemInstance2.loaded) {
+            this.onerrorCallback();
+            if (imagePlayer._images[0].loaded && !imagePlayer._images[1].loaded) {
               done();
             }
           }, 10);
