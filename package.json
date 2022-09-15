@@ -74,5 +74,8 @@
     "playkit-js",
     "playkit-js-dual-screen",
     "html5 player"
+  ],
+    "kalturaDependencies" : [
+    "playkit-kaltura-cuepoints"
   ]
 }
