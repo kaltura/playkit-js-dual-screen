@@ -49,7 +49,6 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
    * @static
    */
   static defaultConfig: DualScreenConfig = {
-    inverse: false,
     layout: Layout.PIP,
     childSizePercentage: 30,
     childAspectRatio: {
@@ -184,19 +183,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   private _setDefaultMode = () => {
     this._switchToHidden();
-    switch (this.config.layout) {
-      case Layout.PIP:
-        this._layout = this.config.inverse ? Layout.PIPInverse : Layout.PIP;
-        break;
-      case Layout.SideBySide:
-        this._layout = this.config.inverse ? Layout.SideBySideInverse : Layout.SideBySide;
-        break;
-      case Layout.SingleMedia:
-        this._layout = this.config.inverse ? Layout.SingleMediaInverse : Layout.SingleMedia;
-        break;
-      default:
-        this._layout = Layout.Hidden;
-    }
+    const configLayouts = [Layout.PIP, Layout.PIPInverse, Layout.SideBySide, Layout.SideBySideInverse, Layout.SingleMedia, Layout.SingleMediaInverse];
+    this._layout = configLayouts.includes(this.config.layout) ? this.config.layout : Layout.Hidden;
     this._pipPosition = this.config.position;
     this._pipPortraitMode = false;
     this._externalLayout = null;
