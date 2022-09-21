@@ -30,7 +30,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
   componentDidMount() {
     const videoElement = this.props.player.getVideoElement();
     videoElement.tabIndex = -1;
-    this.ref.current.appendChild(videoElement);
+    this.ref.current.prepend(videoElement);
   }
 
   private _renderHoverButton() {
