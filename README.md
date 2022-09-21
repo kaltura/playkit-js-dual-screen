@@ -41,7 +41,7 @@ Finally, add the bundle as a script tag in your page, and initialize the player
 ```html
 <script type="text/javascript" src="/PATH/TO/FILE/kaltura-player.js"></script>
 <!--Kaltura player-->
-<script type='text/javascript' src='/PATH/TO/FILE//playkit-kaltura-cuepoints.js'></script>
+<script type="text/javascript" src="/PATH/TO/FILE//playkit-kaltura-cuepoints.js"></script>
 <!--PlayKit cuepoint plugin-->
 <script type="text/javascript" src="/PATH/TO/FILE/playkit-dual-screen.js"></script>
 <!--PlayKit dual screen plugin-->
@@ -74,6 +74,7 @@ Dual screen plugin dependencies can been found here:
 - **[Dependencies](#dependencies)**
 
 ### Slides configuration
+
 If you are showing slides, you MUST also include kalturaCuePoints plugin in the configuration as follow -
 
 ```html
@@ -101,9 +102,11 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 This project is licensed under the AGPL-3.0 License - see the [LICENSE.md](LICENSE.md) file for details
 
 <a name="configuration"></a>
+
 ## Configuration
 
 #### DualScreenConfigObject
+
 Defines the configuration of the dual screen. Except `childSizePercentage`, the configuration only defines the appearance when the player loads. After that, the user can adjust and change it.
 
 #### Configuration Structure
@@ -115,7 +118,6 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
 "dualscreen" = {
   position?: string, // optional
   layout?: string, // optional
-  inverse?: boolean, // optional
   childSizePercentage?: number, // optional
   slidesPreloadEnabled?: boolean, // optional
   childAspectRatio?: { // optional
@@ -134,7 +136,6 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
 > ##### Default: `bottom-right`
 >
 > ##### Description: ("bottom-left" | "bottom-right" | "top-left" | "top-right") The position where the child player will be displayed.
->
 
 ##
 
@@ -144,19 +145,7 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
 >
 > ##### Default: `PIP`
 >
-> ##### Description: ("PIP" | "SingleMedia" | "SideBySide") The layout of the parent and child players.
->
-
-##
-
-> ### config.inverse
->
-> ##### Type: `boolean`
->
-> ##### Default: `false`
->
-> ##### Description: When set to true, the Parent and Secondary players will swap positions.
->
+> ##### Description: ("PIP" | "PIPInverse" | "SingleMedia" | "SingleMediaInverse" | "SideBySide" | "SideBySideInverse") The layout of the parent and child players.
 
 ##
 
@@ -167,7 +156,6 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
 > ##### Default: `30`
 >
 > ##### Description: Relevant only for PIP layout - Sets the height of the child player as percentage of the parent player height.
->
 
 ##
 
@@ -178,7 +166,6 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
 > ##### Default: `true`
 >
 > ##### Description: Enable image preloading
->
 
 ##
 
@@ -189,9 +176,9 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
 > ##### Default: `{ width: 16, height: 9 }`
 >
 > ##### Description: set aspect ration for PIP container
->
 
 <a name="dependencies"></a>
+
 ## Dependencies
 
 Plugin dependencies:<br/>
