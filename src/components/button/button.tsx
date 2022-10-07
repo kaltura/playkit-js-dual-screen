@@ -1,4 +1,3 @@
-import {KeyboardEvent, MouseEvent} from 'react';
 import {h, VNode} from 'preact';
 import {useCallback, useRef, useEffect} from 'preact/hooks';
 const {Tooltip} = KalturaPlayer.ui.components;
@@ -23,15 +22,15 @@ export const Button = ({onClick, className, children, tooltip, ariaLabel, focusO
     }
   }, [focusOnMount]);
   const _handleClick = useCallback(
-    (e: KeyboardEvent<HTMLDivElement> | MouseEvent<HTMLDivElement>, byKeyboard = false) => {
-      const {offsetX, offsetY} = (e as MouseEvent<HTMLDivElement>).nativeEvent;
+    (e: KeyboardEvent | MouseEvent, byKeyboard = false) => {
+      const {offsetX, offsetY} = (e as MouseEvent);
       const byNarrator = !offsetX && !offsetY;
       e.stopPropagation();
       onClick(byKeyboard || byNarrator);
     },
     [onClick]
   );
-  const _handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
+  const _handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.keyCode === KalturaPlayer.ui.utils.KeyMap.ENTER) {
       _handleClick(e, true);
     }
