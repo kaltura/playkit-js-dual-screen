@@ -22,9 +22,11 @@ export const Button = ({onClick, className, children, tooltip, ariaLabel, focusO
     }
   }, [focusOnMount]);
   const _handleClick = useCallback(
-    (e: Event, byKeyboard = false) => {
+    (e: KeyboardEvent | MouseEvent, byKeyboard = false) => {
+      const {offsetX, offsetY} = (e as MouseEvent);
+      const byNarrator = !offsetX && !offsetY;
       e.stopPropagation();
-      onClick(byKeyboard);
+      onClick(byKeyboard || byNarrator);
     },
     [onClick]
   );
