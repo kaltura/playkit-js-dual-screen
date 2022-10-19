@@ -1,4 +1,5 @@
 import './image-player.scss';
+import {Labels} from '../enums';
 
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 2000;
@@ -8,6 +9,7 @@ type OnActiveChange = (imageItem: SlideItem | null) => void;
 export interface RawSlideItem {
   id: string;
   imageUrl: string;
+  alt: string;
 }
 
 export interface SlideItem extends RawSlideItem {
@@ -92,6 +94,7 @@ export class ImagePlayer {
       }
       // remove active image
       (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', '');
+      (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('alt', '');
       this._activeImage = null;
       this._onActiveChange(null);
       return;
@@ -110,6 +113,7 @@ export class ImagePlayer {
           if (this._activeImage?.id === item.id) {
             this._onActiveChange(item);
             (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', item.imageUrl);
+            (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('alt', `${Labels.Slide}: ${item.alt}`);
           }
         });
         return true;
@@ -130,6 +134,7 @@ export class ImagePlayer {
     const imagePlayer = document.createElement('div');
     const img = document.createElement('img');
     img.src = '';
+    img.alt = '';
     imagePlayer.appendChild(img);
     imagePlayer.classList.add('playkit-image-player');
     return imagePlayer;

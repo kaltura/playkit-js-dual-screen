@@ -84,8 +84,9 @@ export class ImageSyncManager {
     const slides = payload.cues.map(cue => {
       if (cue?.type === TimedMetadata.TYPE.CUE_POINT && cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
         this._imagePlayer.addImage({
-          id: cue?.id,
-          imageUrl: cue.metadata!.assetUrl
+          id: cue.id,
+          imageUrl: cue.metadata!.assetUrl,
+          alt: cue.metadata!.title || cue.metadata!.description
         });
         return cue;
       }
