@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.9.2...v3.0.1) (2022-10-26)
+
+
+### Bug Fixes
+
+* **FEc-12359:** prepend video element in order to keep the original HTML nodes layout ([20bd283](https://github.com/kaltura/playkit-js-dual-screen/commit/20bd2836fde425fd139663cb46f51ff2cf658653))
+* **FEV-1119:** better css performances for thumb loading ([#62](https://github.com/kaltura/playkit-js-dual-screen/issues/62)) ([93320b4](https://github.com/kaltura/playkit-js-dual-screen/commit/93320b41a202bc5e8401fc7398e22d1b4dae8893))
+* **FEV-1158:** show/hide buttons focus issue fixed when narrator is turned on ([#77](https://github.com/kaltura/playkit-js-dual-screen/issues/77)) ([a8d437f](https://github.com/kaltura/playkit-js-dual-screen/commit/a8d437fec6e4e40b4412a66175df6e6caacb855b))
+* **FEV-1296:** fixed issue with dual screen plugin overlap ([#60](https://github.com/kaltura/playkit-js-dual-screen/issues/60)) ([dda6578](https://github.com/kaltura/playkit-js-dual-screen/commit/dda6578a48a1873f9b132921c227cb830474bda7))
+* **FEV-1322:** slides that were broadcasted prior to the archive will appear in the navigation ([#70](https://github.com/kaltura/playkit-js-dual-screen/issues/70)) ([65bae58](https://github.com/kaltura/playkit-js-dual-screen/commit/65bae588102ad7ad708ed2fbc2bf7b8a7a134824))
+* **FEV-1327:** handle slide only on entire screen layout change ([62d035b](https://github.com/kaltura/playkit-js-dual-screen/commit/62d035b50b08cf5b59f905d36288c6970b552b9b))
+* **FEV-1329:** add live type of media to getSecondaryMedia API call ([24268a4](https://github.com/kaltura/playkit-js-dual-screen/commit/24268a46d943f6c09dcd0cb79d1c227a83a867a4))
+* **FEV-1387:** prevent apply SbS buttons over side-panels ([#75](https://github.com/kaltura/playkit-js-dual-screen/issues/75)) ([f22398f](https://github.com/kaltura/playkit-js-dual-screen/commit/f22398ffa3029530e30d8971830846750d69538a))
+* **FEV-1418:** add plugin dependencies ([dc77335](https://github.com/kaltura/playkit-js-dual-screen/commit/dc7733522ff2ffe0d24f93e588da5f2476cacf67))
+* **FEV-1519:** simplify dual-screen config ([#73](https://github.com/kaltura/playkit-js-dual-screen/issues/73)) ([819171d](https://github.com/kaltura/playkit-js-dual-screen/commit/819171d37510d1f3545733dde080a5243c4cb574))
+* **FEV-963:** set round corners on Safari for child player (minimized) ([759e968](https://github.com/kaltura/playkit-js-dual-screen/commit/759e968d77446ee8a55c004c17ab20e27d42b488))
+
 ### [1.9.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.9.1...v1.9.2) (2022-07-20)
 
 
