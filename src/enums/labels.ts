@@ -3,5 +3,6 @@ export enum Labels {
   Show = 'Show',
   ExpandScreen = 'Expand Screen',
   SideBySide = 'Side by Side',
-  SwitchScreen = 'Switch Screen'
+  SwitchScreen = 'Switch Screen',
+  Slide = 'Slide'
 }

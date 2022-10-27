@@ -1,6 +1,7 @@
 import {h, VNode} from 'preact';
 import {useCallback, useRef, useEffect} from 'preact/hooks';
 const {Tooltip} = KalturaPlayer.ui.components;
+const {ENTER, SPACE} = KalturaPlayer.ui.utils.KeyMap;
 
 interface ButtonProps {
   onClick: (byKeyboard: boolean) => void;
@@ -23,7 +24,7 @@ export const Button = ({onClick, className, children, tooltip, ariaLabel, focusO
   }, [focusOnMount]);
   const _handleClick = useCallback(
     (e: KeyboardEvent | MouseEvent, byKeyboard = false) => {
-      const {offsetX, offsetY} = (e as MouseEvent);
+      const {offsetX, offsetY} = e as MouseEvent;
       const byNarrator = !offsetX && !offsetY;
       e.stopPropagation();
       onClick(byKeyboard || byNarrator);
@@ -31,7 +32,7 @@ export const Button = ({onClick, className, children, tooltip, ariaLabel, focusO
     [onClick]
   );
   const _handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.keyCode === KalturaPlayer.ui.utils.KeyMap.ENTER) {
+    if ([ENTER, SPACE].includes(e.keyCode)) {
       _handleClick(e, true);
     }
   }, []);
