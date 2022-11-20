@@ -42,14 +42,14 @@ $hide-container-gap: 5px;
     align-items: center;
 
     cursor: pointer;
-    color: #ffffff;
+    color: white;
     font-style: normal;
-    font-weight: normal;
+    font-weight: 400;
     font-size: 14px;
     line-height: 18px;
 
     background: rgba(0, 0, 0, 0.6);
-    border-radius: 4px;
+    border-radius: $roundness-1;
 
     &:hover {
       background: rgba(0, 0, 0, 0.7);
@@ -64,7 +64,7 @@ $hide-container-gap: 5px;
 
   .playerWrapper {
     position: relative;
-    border-radius: $border-radius;
+    border-radius: $roundness-2;
     overflow: hidden;
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     .playerContainer {

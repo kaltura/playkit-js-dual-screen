@@ -19,8 +19,8 @@
 
   .iconContainer {
     &:hover {
-      background: #444444;
-      border-radius: 4px;
+      background: $tone-4;
+      border-radius: $roundness-1;
       opacity: 1;
     }
   }
