@@ -81,7 +81,5 @@
       "playkit-kaltura-cuepoints": "3.0.0"
     }
   },
-  "dependencies": {
-    "@playkit-js/playkit-js-ui": "^0.72.3"
-  }
+  "dependencies": {}
 }
