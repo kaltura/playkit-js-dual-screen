@@ -19,7 +19,7 @@
 
   .iconContainer {
     &:hover {
-      background: $tone-4;
+      background: var(--tone-4-color);
       border-radius: $roundness-1;
       opacity: 1;
     }
