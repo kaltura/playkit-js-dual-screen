@@ -1,11 +1,21 @@
 import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip.scss';
-import {Animations, Labels, ButtonsEnum} from '../../enums';
+import {Animations, ButtonsEnum} from '../../enums';
 import {icons} from '../../icons';
 import {Button} from './../button';
 const {connect} = KalturaPlayer.ui.redux;
 const {utils, reducers} = KalturaPlayer.ui;
 const {Icon} = KalturaPlayer.ui.components;
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
+
+const translates = () => {
+  return {
+    sideBySide: <Text id="dualScreen.side_by_side">Side by side screens</Text>,
+    switchScreen: <Text id="dualScreen.switch_screen">Switch Screen</Text>,
+    hideLabel: <Text id="dualScreen.hide">Hide</Text>,
+    hideAriaLabel: <Text id="dualScreen.hide_label">Hide dual screen</Text>
+  };
+};
 
 const mapStateToProps = (state: Record<string, any>) => ({
   showUi: state.shell.playerHover || state.shell.playerNav,
@@ -34,8 +44,16 @@ interface PIPChildComponentConnectProps {
   showUi?: boolean;
   prePlayback?: boolean;
 }
+interface PIPChildComponentTranslates {
+  sideBySide?: string;
+  switchScreen?: string;
+  hideLabel?: string;
+  hideAriaLabel?: string;
+}
 
-type PIPChildComponentProps = PIPChildComponentOwnProps & PIPChildComponentConnectProps;
+type PIPChildComponentProps = PIPChildComponentOwnProps & PIPChildComponentConnectProps & PIPChildComponentTranslates;
+
+@withText(translates)
 @connect(mapStateToProps, utils.bindActions(reducers.shell.actions))
 export class PipChild extends Component<PIPChildComponentProps> {
   playerContainerRef = createRef<HTMLDivElement>();
@@ -56,7 +74,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
         <Button
           className={styles.iconContainer}
           onClick={onSideBySideSwitch}
-          tooltip={{label: Labels.SideBySide, type: 'bottom'}}
+          tooltip={{label: this.props.sideBySide!, type: 'bottom-left'}}
           focusOnMount={focusOnButton === ButtonsEnum.SideBySide}>
           <Icon
             id="dualscreen-pip-side-by-side"
@@ -69,7 +87,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
         <Button
           className={styles.iconContainer}
           onClick={onInversePIP}
-          tooltip={{label: Labels.SwitchScreen, type: 'bottom-left'}}
+          tooltip={{label: this.props.switchScreen!, type: 'bottom-left'}}
           focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen}>
           <Icon
             id="dualscreen-pip-swap"
@@ -86,7 +104,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
   private _renderHideButton() {
     const {hide, focusOnButton} = this.props;
     return (
-      <Button className={styles.hideContainer} onClick={hide} ariaLabel={Labels.Hide} focusOnMount={focusOnButton === ButtonsEnum.Hide}>
+      <Button className={styles.hideContainer} onClick={hide} ariaLabel={this.props.hideAriaLabel} focusOnMount={focusOnButton === ButtonsEnum.Hide}>
         <Fragment>
           <div className={styles.iconContainer}>
             <Icon
@@ -97,7 +115,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
               path={icons.HIDE_ICON_PATH}
             />
           </div>
-          {Labels.Hide}
+          {this.props.hideLabel}
         </Fragment>
       </Button>
     );
