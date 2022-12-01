@@ -2,10 +2,19 @@ import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip-minimized.scss';
 import {icons} from '../../icons';
 import {Button} from './../button';
-import {Labels, ButtonsEnum} from '../../enums';
+import {ButtonsEnum} from '../../enums';
 const {
   components: {Icon}
 } = KalturaPlayer.ui;
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
+
+const translates = () => {
+  return {
+    showLabel: <Text id="dualScreen.show">Show</Text>,
+    showAriaLabel: <Text id="dualScreen.show_label">Show dual screen</Text>,
+    switchScreen: <Text id="dualScreen.switch_screen">Switch Screen</Text>
+  };
+};
 
 interface PIPMinimizedOwnProps {
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
@@ -17,9 +26,14 @@ interface PIPMinimizedOwnProps {
 interface PIPMinimizedConnectProps {
   playerSize?: string;
 }
+interface PIPMinimizedTranslates {
+  showLabel?: string;
+  showAriaLabel?: string;
+  switchScreen?: string;
+}
+type PIPMinimizedProps = PIPMinimizedOwnProps & PIPMinimizedConnectProps & PIPMinimizedTranslates;
 
-type PIPMinimizedProps = PIPMinimizedOwnProps & PIPMinimizedConnectProps;
-
+@withText(translates)
 export class PipMinimized extends Component<PIPMinimizedProps> {
   ref = createRef();
 
@@ -34,7 +48,11 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
     return (
       <Fragment>
         {!hideButtons && (
-          <Button onClick={show} className={styles.showContainer} ariaLabel={Labels.Show} focusOnMount={focusOnButton === ButtonsEnum.Show}>
+          <Button
+            onClick={show}
+            className={styles.showContainer}
+            ariaLabel={this.props.showAriaLabel}
+            focusOnMount={focusOnButton === ButtonsEnum.Show}>
             <Fragment>
               <div className={styles.iconContainer}>
                 <Icon
@@ -45,12 +63,12 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
                   path={icons.SHOW_ICON_PATH}
                 />
               </div>
-              {Labels.Show}
+              {this.props.showLabel}
             </Fragment>
           </Button>
         )}
         <div className={[styles.innerButtons, hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
-          <Button onClick={onInverse} focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen} ariaLabel={Labels.SwitchScreen}>
+          <Button onClick={onInverse} focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen} ariaLabel={this.props.switchScreen}>
             <div className={styles.iconContainer}>
               <Icon
                 id="dualscreen-pip-minimized-swap"

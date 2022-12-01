@@ -1,5 +1,13 @@
 {
   "en": {
-    "dualScreen": {}
+    "dualScreen": {
+      "show": "Show",
+      "show_label": "Show dual screen",
+      "hide": "Hide",
+      "hide_label": "Hide dual screen",
+      "side_by_side": "Side by side screens",
+      "switch_screen": "Switch Screen",
+      "expand_screen": "Expand Screen"
+    }
   }
 }
