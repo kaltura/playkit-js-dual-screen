@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.0.1...v3.0.2) (2022-12-12)
+
+
+### Bug Fixes
+
+* **FEV-1439:** a11y fixes ([#79](https://github.com/kaltura/playkit-js-dual-screen/issues/79)) ([96f11bd](https://github.com/kaltura/playkit-js-dual-screen/commit/96f11bd11b004c75e4ee4990ebdb2d62df41b86d))
+* **FEV-1590:** Mac voice over issues ([#82](https://github.com/kaltura/playkit-js-dual-screen/issues/82)) ([962af42](https://github.com/kaltura/playkit-js-dual-screen/commit/962af42d9dc4ab955d8a9df1a8651c99e078137d))
+* **FEV-956:** while dragging, the mouse cursor should be changed to 'hand' icon ([#80](https://github.com/kaltura/playkit-js-dual-screen/issues/80)) ([c381265](https://github.com/kaltura/playkit-js-dual-screen/commit/c38126510884a38bc0bd3a0e9150a8aa17c14e27))
+
 ### [3.0.1](https://github.com/kaltura/playkit-js-dual-screen/compare/v1.9.2...v3.0.1) (2022-10-26)
 
 
