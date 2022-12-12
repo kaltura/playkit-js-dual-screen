@@ -77,7 +77,9 @@ export class ImageSyncManager {
     if (externalLayout) {
       this._onSlideViewChanged(externalLayout);
     }
-    this._imagePlayer.setActive(externalLayout === ExternalLayout.Hidden ? null : activeSlide);
+    if (activeSlide) {
+      this._imagePlayer.setActive(externalLayout === ExternalLayout.Hidden ? null : activeSlide);
+    }
   };
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadataEvent) => {

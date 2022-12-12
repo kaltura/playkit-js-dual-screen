@@ -16,7 +16,7 @@ export class DualScreenEngineDecorator implements IEngineDecorator {
 
     plugin.eventManager.listen(plugin.player, EventType.SEEKING, () => {
       // activate decorator only if secondary entry is media, so decorator can handle SEEKED event from secondary player
-      this._isActive = !!this._plugin.secondaryKalturaPlayer.src;
+      this._isActive = !!this._plugin.secondaryKalturaPlayer?.src;
     });
     plugin.eventManager.listen(plugin.player, EventType.SEEKED, () => {
       this._isActive = false;
