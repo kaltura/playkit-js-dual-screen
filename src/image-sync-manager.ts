@@ -82,7 +82,7 @@ export class ImageSyncManager {
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadataEvent) => {
     const slides = payload.cues.map(cue => {
-      if (this._isCuePointValid(cue)) {
+      if (this._isSlideCuePoint(cue)) {
         this._imagePlayer.addImage({
           id: cue.id,
           imageUrl: cue.metadata!.assetUrl,
@@ -97,7 +97,7 @@ export class ImageSyncManager {
     }
   };
 
-  private _isCuePointValid(cue: any) {
+  private _isSlideCuePoint(cue: any) {
     return cue?.type === TimedMetadata.TYPE.CUE_POINT
         && cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB
         && cue.metadata?.subType === this._kalturaCuePointService.KalturaThumbCuePointSubType.SLIDE;
