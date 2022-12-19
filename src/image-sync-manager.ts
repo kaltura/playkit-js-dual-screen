@@ -2,6 +2,7 @@
 import {cuepoint, core} from 'kaltura-player-js';
 import {ExternalLayout, ViewModeLockState} from './enums';
 import {ImagePlayer} from './image-player';
+import {debounce} from "@playkit-js/common";
 
 const {TimedMetadata} = core;
 
@@ -16,6 +17,8 @@ export interface ViewChangeData {
   viewModeLockState?: string;
 }
 
+const DEBOUNCE_TIMEOUT = 200;
+
 export class ImageSyncManager {
   _eventManager: KalturaPlayerTypes.EventManager;
   _mainPlayer: KalturaPlayerTypes.Player;
@@ -25,6 +28,7 @@ export class ImageSyncManager {
   _kalturaCuePointService: any;
   _firstPlaying: boolean = false;
   _lock: boolean = false;
+  private _debouncedSetActive: (slideId: string | null) => void;
 
   constructor(
     eventManager: KalturaPlayerTypes.EventManager,
@@ -40,6 +44,7 @@ export class ImageSyncManager {
     this._onSlideViewChanged = onSlideViewChanged;
     this._syncEvents();
     this._kalturaCuePointService = this._mainPlayer.getService('kalturaCuepoints');
+    this._debouncedSetActive = debounce(this._imagePlayer.setActive, DEBOUNCE_TIMEOUT);
   }
 
   private _syncEvents = () => {
@@ -77,7 +82,7 @@ export class ImageSyncManager {
     if (externalLayout) {
       this._onSlideViewChanged(externalLayout);
     }
-    this._imagePlayer.setActive(externalLayout === ExternalLayout.Hidden ? null : activeSlide);
+    this._debouncedSetActive(externalLayout === ExternalLayout.Hidden ? null : activeSlide);
   };
 
   private _onTimedMetadataAdded = ({payload}: TimedMetadataEvent) => {

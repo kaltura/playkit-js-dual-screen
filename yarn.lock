@@ -262,10 +262,10 @@
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.3.tgz#e45e384e4b8ec16bce2fd903af78450f6bf7ec98"
   integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
 
-"@playkit-js/common@^1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.0.9.tgz#ac964805d6be8d31c0f14142013d645c001575e3"
-  integrity sha512-jrzkwFJiOUe1p0Yn1gQQ06QsSVq6ejlOVNBVbFbDh9AtpeVoi4S0PjNzul7UjTdKY7Msivccwj8R3Z3BQ1n+hg==
+"@playkit-js/common@^1.0.17":
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.0.17.tgz#4d0aee766e2839914df2adfe8e36b476e72ec16c"
+  integrity sha512-ENd2oOa5AMH3MZnaqe2MiNUUYz29KkN+fIeMWuIr0J4GpMsgyXk37slyBsNatb+M6M0irgAMvsbM7eCNDmYLPw==
   dependencies:
     linkify-it "^4.0.1"
 
