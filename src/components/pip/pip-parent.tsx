@@ -46,11 +46,6 @@ export class PipParent extends Component<PIPParentComponentProps> {
       }
     }
 
-    const videoContainerStyles = {
-      height: `${props.playerHeight + 'px'}`,
-      width: `${props.playerWidth + 'px'}`
-    };
-
-    return <div className={styleClass.join(' ')} style={videoContainerStyles} ref={this.videoContainerRef} />;
+    return <div className={styleClass.join(' ')}  ref={this.videoContainerRef} />;
   }
 }
