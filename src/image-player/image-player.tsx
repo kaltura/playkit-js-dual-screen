@@ -1,5 +1,4 @@
 import './image-player.scss';
-import {Labels} from '../enums';
 
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 2000;
@@ -113,7 +112,6 @@ export class ImagePlayer {
           if (this._activeImage?.id === item.id) {
             this._onActiveChange(item);
             (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', item.imageUrl);
-            (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('alt', `${Labels.Slide}: ${item.alt}`);
           }
         });
         return true;

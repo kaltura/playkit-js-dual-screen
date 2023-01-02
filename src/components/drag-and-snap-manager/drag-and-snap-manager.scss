@@ -12,7 +12,7 @@
   position: absolute;
   pointer-events: auto;
   &.dragging {
-    cursor: move;
+    cursor: grabbing;
   }
   &:not(.dragging) {
     transition: top $animation-duration ease-in, right $animation-duration ease-in, bottom $animation-duration ease-in;

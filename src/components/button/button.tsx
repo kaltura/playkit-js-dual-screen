@@ -1,7 +1,7 @@
 import {h, VNode} from 'preact';
 import {useCallback, useRef, useEffect} from 'preact/hooks';
+import {A11yWrapper, OnClickEvent} from '@playkit-js/common';
 const {Tooltip} = KalturaPlayer.ui.components;
-const {ENTER, SPACE} = KalturaPlayer.ui.utils.KeyMap;
 
 interface ButtonProps {
   onClick: (byKeyboard: boolean) => void;
@@ -22,23 +22,15 @@ export const Button = ({onClick, className, children, tooltip, ariaLabel, focusO
       button.current?.focus();
     }
   }, [focusOnMount]);
-  const _handleClick = useCallback(
-    (e: KeyboardEvent | MouseEvent, byKeyboard = false) => {
-      const {offsetX, offsetY} = e as MouseEvent;
-      const byNarrator = !offsetX && !offsetY;
-      e.stopPropagation();
-      onClick(byKeyboard || byNarrator);
+
+  const handleClick = useCallback(
+    (e: OnClickEvent, byKeyboard?: boolean) => {
+      onClick(Boolean(byKeyboard));
     },
     [onClick]
   );
-  const _handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if ([ENTER, SPACE].includes(e.keyCode)) {
-      _handleClick(e, true);
-    }
-  }, []);
+
   const buttonProps: Record<string, any> = {
-    onMouseUp: _handleClick,
-    onKeyDown: _handleKeyDown,
     ref: button,
     role: 'button',
     tabIndex: 0
@@ -49,15 +41,18 @@ export const Button = ({onClick, className, children, tooltip, ariaLabel, focusO
   if (ariaLabel || tooltip) {
     buttonProps['aria-label'] = ariaLabel || tooltip!.label;
   }
+
   return (
-    <div {...buttonProps}>
-      {tooltip ? (
-        <Tooltip label={tooltip.label} type={tooltip.type}>
-          {children}
-        </Tooltip>
-      ) : (
-        children
-      )}
-    </div>
+    <A11yWrapper onClick={handleClick}>
+      <div {...buttonProps}>
+        {tooltip ? (
+          <Tooltip label={tooltip.label} type={tooltip.type}>
+            {children}
+          </Tooltip>
+        ) : (
+          children
+        )}
+      </div>
+    </A11yWrapper>
   );
 };
