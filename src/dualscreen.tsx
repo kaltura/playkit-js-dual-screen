@@ -565,6 +565,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
             this._resolveReadyPromise();
           }
         }
+        else {
+          this.logger.warn('SecondaryMediaLoader does not exist');
+          this._resolveReadyPromise();
+        }
       })
       .catch((e: any) => {
         this.logger.error(e);
