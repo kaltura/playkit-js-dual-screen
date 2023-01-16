@@ -149,7 +149,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
     const width: number = (height * props.aspectRatio.width) / props.aspectRatio.height;
     const playerContainerStyles = {
       height: `${props.portrait ? width : height}px`,
-      width: 'auto'
+      width: `${props.portrait ? height : width}px`
     };
 
     return (

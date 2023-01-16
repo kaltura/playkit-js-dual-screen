@@ -13,6 +13,7 @@ $hide-container-gap: 5px;
   position: relative;
   video {
     position: relative;
+    object-fit: cover;
   }
   @include hideImagePlayer;
 
