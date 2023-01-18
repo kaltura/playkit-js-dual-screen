@@ -26,6 +26,9 @@ $show-container-gap: 5px;
       height: 34px;
       width: 60px;
     }
+    :global(img) {
+      width: auto;
+    }
   }
 
   .showContainer {
