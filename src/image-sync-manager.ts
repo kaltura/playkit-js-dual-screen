@@ -2,7 +2,7 @@
 import {cuepoint, core} from 'kaltura-player-js';
 import {ExternalLayout, ViewModeLockState} from './enums';
 import {ImagePlayer} from './image-player';
-import {debounce} from "@playkit-js/common";
+import {debounce} from '@playkit-js/common';
 
 const {TimedMetadata} = core;
 
@@ -62,7 +62,7 @@ export class ImageSyncManager {
     const {cues: activeCuePoints} = payload;
     const {activeSlide, externalLayout} = activeCuePoints.reduce<{activeSlide: string | null; externalLayout: ExternalLayout | null}>(
       (acc, cue) => {
-        if (cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB) {
+        if (this._isSlideCuePoint(cue)) {
           return {...acc, activeSlide: cue.id};
         }
         if (cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.CODE && cue.metadata?.tags === 'change-view-mode') {
@@ -103,9 +103,11 @@ export class ImageSyncManager {
   };
 
   private _isSlideCuePoint(cue: any) {
-    return cue?.type === TimedMetadata.TYPE.CUE_POINT
-        && cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB
-        && cue.metadata?.subType === this._kalturaCuePointService.KalturaThumbCuePointSubType.SLIDE;
+    return (
+      cue?.type === TimedMetadata.TYPE.CUE_POINT &&
+      cue.metadata?.cuePointType === this._kalturaCuePointService.KalturaCuePointType.THUMB &&
+      cue.metadata?.subType === this._kalturaCuePointService.KalturaThumbCuePointSubType.SLIDE
+    );
   }
 
   reset() {
