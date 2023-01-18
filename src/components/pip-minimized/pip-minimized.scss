@@ -26,6 +26,9 @@ $show-container-gap: 5px;
     &.tinyChildPlayer {
       height: 34px;
     }
+    :global(img) {
+      width: auto;
+    }
   }
 
   .showContainer {
