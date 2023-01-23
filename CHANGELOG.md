@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.1...v3.1.2) (2023-01-23)
+
+
+### Bug Fixes
+
+* **FEV-1649:** dualscreen expand button tooltip is cut if child player's width is small ([#94](https://github.com/kaltura/playkit-js-dual-screen/issues/94)) ([5a52531](https://github.com/kaltura/playkit-js-dual-screen/commit/5a525313d677b6d181c68a6ad48eb443bad3732a))
+
 ### [3.1.1](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.0...v3.1.1) (2023-01-18)
 
 ## [3.1.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.0.2...v3.1.0) (2023-01-18)
