@@ -70,7 +70,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
   private _renderInnerButtons() {
     const {onSideBySideSwitch, onInversePIP, focusOnButton} = this.props;
     return (
-      <div className={styles.innerButtons}>
+      <div className={[styles.innerButtons, this.props.portrait ? styles.verticalPlayer : ''].join(' ')}>
         <Button
           className={styles.iconContainer}
           onClick={onSideBySideSwitch}
