@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.1...v3.1.2) (2023-01-23)
+
+
+### Bug Fixes
+
+* **FEV-1649:** dualscreen expand button tooltip is cut if child player's width is small ([#94](https://github.com/kaltura/playkit-js-dual-screen/issues/94)) ([5a52531](https://github.com/kaltura/playkit-js-dual-screen/commit/5a525313d677b6d181c68a6ad48eb443bad3732a))
+
+### [3.1.1](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.0...v3.1.1) (2023-01-18)
+
+## [3.1.0](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.0.2...v3.1.0) (2023-01-18)
+
+
+### Features
+
+* **FEV-1575:** migrate style of plugin dual screen ([#81](https://github.com/kaltura/playkit-js-dual-screen/issues/81)) ([57bca61](https://github.com/kaltura/playkit-js-dual-screen/commit/57bca617aa67e874e305470a64a899e9e0051577))
+* **FEV-1612:** the ratio of the floating screen should fit the video itself ([#85](https://github.com/kaltura/playkit-js-dual-screen/issues/85)) ([83f8e9f](https://github.com/kaltura/playkit-js-dual-screen/commit/83f8e9f19a3b29e1914fc8c39ad0a5fe80d13550))
+
+
+### Bug Fixes
+
+* **FEV-1125:** when clicking on first slide in navigation the dual screen blinks ([#84](https://github.com/kaltura/playkit-js-dual-screen/issues/84)) ([6ffe4ac](https://github.com/kaltura/playkit-js-dual-screen/commit/6ffe4acdb7855f1c27472ac5bfefd0706ddd89b9))
+* **FEV-1602:** image player is displaying chapters ([#83](https://github.com/kaltura/playkit-js-dual-screen/issues/83)) ([9886283](https://github.com/kaltura/playkit-js-dual-screen/commit/988628308cde33ffc1b016e7acbb81ce9dd27fb1))
+* **FEV-1612:** fix safari issue ([#87](https://github.com/kaltura/playkit-js-dual-screen/issues/87)) ([fccd764](https://github.com/kaltura/playkit-js-dual-screen/commit/fccd764df6e9887a0073478355e103feeead7486))
+* **FEV-1612:** the ratio of the dualscreen should adjust to its content ([#89](https://github.com/kaltura/playkit-js-dual-screen/issues/89)) ([3e4734f](https://github.com/kaltura/playkit-js-dual-screen/commit/3e4734f8693587a73ddaa6a710d33e7f70f2329f))
+* **FEV-1616:** filter out chapter cues on timedMetadataChanged ([#91](https://github.com/kaltura/playkit-js-dual-screen/issues/91)) ([8d38a45](https://github.com/kaltura/playkit-js-dual-screen/commit/8d38a4562d75e282dc3a69276f867c95606feaf5))
+* **FEV-1638:** dualscreen plugin is causing the player to stuck on loading spinner ([#88](https://github.com/kaltura/playkit-js-dual-screen/issues/88)) ([1e6a782](https://github.com/kaltura/playkit-js-dual-screen/commit/1e6a78290533ead9dfc1c4efdd1c78f86288e075))
+* **FEV-1645:** for vertical or bad ratio slides in side by side and in parent, the content is cut ([#92](https://github.com/kaltura/playkit-js-dual-screen/issues/92)) ([04f5eca](https://github.com/kaltura/playkit-js-dual-screen/commit/04f5ecad57e9c4827b39d1e56ea2fcfef54e94da))
+* **FEV-1646:** minimized dual screen with bad ratio content doesn't fill the entire container ([#90](https://github.com/kaltura/playkit-js-dual-screen/issues/90)) ([ec94fd1](https://github.com/kaltura/playkit-js-dual-screen/commit/ec94fd1328c8ca1f0ffe6c9c0d3b37c5b47a778c))
+* **FEV-1647:** remove plugin listeners if media doesn't have dual-screen ([#93](https://github.com/kaltura/playkit-js-dual-screen/issues/93)) ([6e88020](https://github.com/kaltura/playkit-js-dual-screen/commit/6e88020606dfd5b70edd24a98262322aecee056c))
+
 ### [3.0.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.0.1...v3.0.2) (2022-12-12)
 
 

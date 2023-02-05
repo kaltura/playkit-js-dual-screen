@@ -230,7 +230,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     if (this._layout === Layout.PIP && this._removeActivesArr.length && this._imagePlayer.active?.portrait === this._pipPortraitMode) {
       return;
     }
-    this._pipPortraitMode = this._imagePlayer.active ? this._imagePlayer.active.portrait : this._pipPortraitMode;
+    this._setPipPortraitMode();
     this._layout = Layout.PIP;
 
     this._addActives(
@@ -564,6 +564,10 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
             }
             this._resolveReadyPromise();
           }
+        } else {
+          this.logger.warn('SecondaryMediaLoader does not exist');
+          this._resolveReadyPromise();
+          this.eventManager.removeAll();
         }
       })
       .catch((e: any) => {
@@ -607,5 +611,15 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
 
   destroy(): void {
     this.eventManager.destroy();
+  }
+
+  private _setPipPortraitMode() {
+    if (this._secondaryPlayerType === PlayerType.VIDEO && this.secondaryKalturaPlayer) {
+      const secondaryVideoWidth = this.secondaryKalturaPlayer.getVideoElement().videoWidth;
+      const secondaryVideoHeight = this.secondaryKalturaPlayer.getVideoElement().videoHeight;
+      this._pipPortraitMode =  secondaryVideoWidth < secondaryVideoHeight || this._pipPortraitMode;
+    } else {
+      this._pipPortraitMode = this._imagePlayer.active ? this._imagePlayer.active.portrait : this._pipPortraitMode;
+    }
   }
 }

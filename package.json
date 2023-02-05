@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/playkit-js-dual-screen",
-  "version": "3.0.2",
+  "version": "3.1.2",
   "main": "dist/playkit-dual-screen.js",
   "scripts": {
     "clean": "rm -rf ./dist",
@@ -78,10 +78,11 @@
   "kaltura": {
     "name": "dualscreen",
     "dependencies": {
-      "playkit-kaltura-cuepoints": "3.0.2"
+      "playkit-kaltura-cuepoints": "3.0.3"
     }
   },
   "dependencies": {
-    "@playkit-js/common": "^1.0.9"
+    "@playkit-js/common": "^1.0.17",
+    "@playkit-js/playkit-js-ui": "^0.73.0"
   }
 }

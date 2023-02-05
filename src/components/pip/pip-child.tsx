@@ -70,7 +70,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
   private _renderInnerButtons() {
     const {onSideBySideSwitch, onInversePIP, focusOnButton} = this.props;
     return (
-      <div className={styles.innerButtons}>
+      <div className={[styles.innerButtons, this.props.portrait ? styles.verticalPlayer : ''].join(' ')}>
         <Button
           className={styles.iconContainer}
           onClick={onSideBySideSwitch}
@@ -148,8 +148,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
     const height: number = (props.playerHeight! * props.playerSizePercentage) / 100;
     const width: number = (height * props.aspectRatio.width) / props.aspectRatio.height;
     const playerContainerStyles = {
-      height: `${props.portrait ? width : height}px`,
-      width: 'auto'
+      height: `${props.portrait ? width : height}px`
     };
 
     return (
