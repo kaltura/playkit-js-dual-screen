@@ -4,8 +4,6 @@ import {Animations} from '../../enums';
 const {connect} = KalturaPlayer.ui.redux;
 
 const mapStateToProps = (state: Record<string, any>) => ({
-  playerHeight: state.shell.guiClientRect.height,
-  playerWidth: state.shell.guiClientRect.width,
   prePlayback: state.engine.prePlayback
 });
 
@@ -14,8 +12,6 @@ interface PIPParentComponentOwnProps {
   animation: Animations;
 }
 interface PIPParentComponentConnectProps {
-  playerHeight?: number;
-  playerWidth?: number;
   prePlayback?: boolean;
 }
 
