@@ -406,7 +406,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-side-by-side',
         presets: PRESETS,
-        container: ReservedPresetAreas.InteractiveArea,
+        container: ReservedPresetAreas.VideoContainer,
         get: () => (
           <SideBySideWrapper
             leftSideProps={leftSideProps}
@@ -439,7 +439,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       this._player.ui.addComponent({
         label: 'kaltura-dual-screen-side-by-side',
         presets: PRESETS,
-        container: ReservedPresetAreas.InteractiveArea,
+        container: ReservedPresetAreas.VideoContainer,
         get: () => (
           <SideBySideWrapper
             leftSideProps={leftSideProps}
