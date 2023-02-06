@@ -37,8 +37,7 @@ $hide-container-gap: 5px;
     position: relative;
     width: 66px;
     height: $hide-container-height;
-    margin-bottom: $hide-container-gap;
-    margin-left: auto;
+    margin: 0px 0px $hide-container-gap auto;
 
     display: flex;
     flex-direction: row;
@@ -60,7 +59,7 @@ $hide-container-gap: 5px;
     }
 
     .iconContainer {
-      margin-right: 8px;
+      margin: 0px 8px 0px 0px;
       height: $smallBorderLessIconSize;
       width: $smallBorderLessIconSize;
     }
@@ -81,6 +80,7 @@ $hide-container-gap: 5px;
     .innerButtons {
       flex-direction: row;
       justify-content: flex-end;
+      align-items: flex-start;
       pointer-events: none;
       * {
         pointer-events: auto;
@@ -93,6 +93,7 @@ $hide-container-gap: 5px;
 
       .iconContainer {
         display: inline-block;
+        margin: 0px;
         padding: 2px;
         &:first-child {
           margin-right: 8px;
