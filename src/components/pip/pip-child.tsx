@@ -1,6 +1,6 @@
 import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip.scss';
-import {Animations, ButtonsEnum} from '../../enums';
+import {Animations, ButtonsEnum, Layout} from '../../enums';
 import {icons} from '../../icons';
 import {Button} from './../button';
 const {connect} = KalturaPlayer.ui.redux;
@@ -11,7 +11,8 @@ const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const translates = () => {
   return {
     sideBySide: <Text id="dualScreen.side_by_side">Side by side screens</Text>,
-    switchScreen: <Text id="dualScreen.switch_screen">Switch Screen</Text>,
+    switchToPrimaryScreen: <Text id="dualScreen.switch_to_primary_screen">Switch to primary screen</Text>,
+    switchToSecondaryScreen: <Text id="dualScreen.switch_to_secondary_screen">Switch to secondary screen</Text>,
     hideLabel: <Text id="dualScreen.hide">Hide</Text>,
     hideAriaLabel: <Text id="dualScreen.hide_label">Hide dual screen</Text>
   };
@@ -38,6 +39,7 @@ interface PIPChildComponentOwnProps {
     height: number;
   };
   focusOnButton?: ButtonsEnum;
+  layout: Layout;
 }
 interface PIPChildComponentConnectProps {
   playerHeight?: number;
@@ -46,7 +48,8 @@ interface PIPChildComponentConnectProps {
 }
 interface PIPChildComponentTranslates {
   sideBySide?: string;
-  switchScreen?: string;
+  switchToPrimaryScreen?: string;
+  switchToSecondaryScreen?:string;
   hideLabel?: string;
   hideAriaLabel?: string;
 }
@@ -87,7 +90,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
         <Button
           className={styles.iconContainer}
           onClick={onInversePIP}
-          tooltip={{label: this.props.switchScreen!, type: 'bottom-left'}}
+          tooltip={{label: this.props.layout === Layout.PIP ? this.props.switchToSecondaryScreen! : this.props.switchToPrimaryScreen!, type: 'bottom-left'}}
           focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen}>
           <Icon
             id="dualscreen-pip-swap"

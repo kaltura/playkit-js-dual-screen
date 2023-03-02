@@ -6,8 +6,10 @@
       "hide": "Hide",
       "hide_label": "Hide dual screen",
       "side_by_side": "Side by side screens",
-      "switch_screen": "Switch Screen",
-      "expand_screen": "Expand Screen"
+      "switch_to_primary_screen": "Switch to primary screen",
+      "switch_to_secondary_screen": "Switch to secondary screen",
+      "expand_primary_screen": "Expand primary screen",
+      "expand_secondary_screen": "Expand secondary screen"
     }
   }
 }

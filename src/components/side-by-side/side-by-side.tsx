@@ -2,14 +2,15 @@ import {h, createRef, Component} from 'preact';
 import * as styles from './side-by-side.scss';
 import {icons} from '../../icons';
 import {Button} from './../button';
-import {Animations} from './../../enums';
+import {Animations, StreamMode} from './../../enums';
 const {Icon} = KalturaPlayer.ui.components;
 const {connect} = KalturaPlayer.ui.redux;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
 const translates = () => {
   return {
-    expandScreen: <Text id="dualScreen.expand_screen">Expand Screen</Text>
+    expandPrimaryScreen: <Text id="dualScreen.expand_primary_screen">Expand primary screen</Text>,
+    expandSecondaryScreen: <Text id="dualScreen.expand_secondary_screen">Expand secondary screen</Text>
   };
 };
 
@@ -18,6 +19,7 @@ interface SideBySideComponentOwnProps {
   onExpand: (byKeyboard: boolean) => void;
   animation: Animations;
   focusOnButton?: boolean;
+  streamMode: StreamMode;
 }
 interface SideBySideComponentConnectProps {
   playerWidth?: number;
@@ -25,6 +27,9 @@ interface SideBySideComponentConnectProps {
 }
 interface SideBySideComponentTranslates {
   expandScreen?: string;
+  expandPrimaryScreen?: string;
+  expandSecondaryScreen?:string;
+
 }
 
 type SideBySideComponentProps = SideBySideComponentOwnProps & SideBySideComponentConnectProps & SideBySideComponentTranslates;
@@ -53,7 +58,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
           <Button
             className={styles.iconContainer}
             onClick={onExpand}
-            tooltip={{label: this.props.expandScreen!, type: 'bottom-left'}}
+            tooltip={{label: this.props.streamMode === StreamMode.Primary ? this.props.expandPrimaryScreen! : this.props.expandSecondaryScreen!, type: 'bottom-left'}}
             focusOnMount={focusOnButton}>
             <Icon
               id="dualscreen-side-by-side-pip"
