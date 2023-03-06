@@ -8,11 +8,13 @@ const {utils, reducers} = KalturaPlayer.ui;
 const {Icon} = KalturaPlayer.ui.components;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
-const translates = () => {
+const translates = ({layout}: PIPChildComponentOwnProps) => {
   return {
     sideBySide: <Text id="dualScreen.side_by_side">Side by side screens</Text>,
-    switchToPrimaryScreen: <Text id="dualScreen.switch_to_primary_screen">Switch to primary screen</Text>,
-    switchToSecondaryScreen: <Text id="dualScreen.switch_to_secondary_screen">Switch to secondary screen</Text>,
+    switchScreen:
+      layout === Layout.PIP ?
+        <Text id="dualScreen.switch_to_secondary_screen">Switch to secondary screen</Text> :
+        <Text id="dualScreen.switch_to_primary_screen">Switch to primary screen</Text>,
     hideLabel: <Text id="dualScreen.hide">Hide</Text>,
     hideAriaLabel: <Text id="dualScreen.hide_label">Hide dual screen</Text>
   };
@@ -48,8 +50,7 @@ interface PIPChildComponentConnectProps {
 }
 interface PIPChildComponentTranslates {
   sideBySide?: string;
-  switchToPrimaryScreen?: string;
-  switchToSecondaryScreen?:string;
+  switchScreen?: string;
   hideLabel?: string;
   hideAriaLabel?: string;
 }
@@ -90,7 +91,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
         <Button
           className={styles.iconContainer}
           onClick={onInversePIP}
-          tooltip={{label: this.props.layout === Layout.PIP ? this.props.switchToSecondaryScreen! : this.props.switchToPrimaryScreen!, type: 'bottom-left'}}
+          tooltip={{label: this.props.switchScreen!, type: 'bottom-left'}}
           focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen}>
           <Icon
             id="dualscreen-pip-swap"

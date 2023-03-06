@@ -26,8 +26,16 @@ export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps
         }}
         onDefaultSize={onSizeChange}>
         <div className={styles.sideBySideWrapper}>
-          <SideBySide {...leftSideProps} animation={Animations.ScaleLeft} streamMode={layout === Layout.SideBySide? StreamMode.Primary : StreamMode.Secondary}  />
-          <SideBySide {...rightSideProps} animation={Animations.Fade} streamMode={layout === Layout.SideBySide? StreamMode.Secondary : StreamMode.Primary} />
+          <SideBySide
+            {...leftSideProps}
+            animation={Animations.ScaleLeft}
+            streamMode={layout === Layout.SideBySide ? StreamMode.Primary : StreamMode.Secondary}
+          />
+          <SideBySide
+            {...rightSideProps}
+            animation={Animations.Fade}
+            streamMode={layout === Layout.SideBySide ? StreamMode.Secondary : StreamMode.Primary}
+          />
         </div>
       </ResponsiveManager>
     );
