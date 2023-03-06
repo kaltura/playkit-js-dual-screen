@@ -595,6 +595,12 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       provider: {
         ...this._player.config.provider,
         ignoreServerConfig: true
+      },
+      plugins: {
+        'kaltura-live': {
+          // @ts-ignore
+          ...(this._player.plugins['kaltura-live']?.config || {})
+        }
       }
     };
     return KalturaPlayer.setup(secondaryPlayerConfig);
@@ -617,7 +623,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
     if (this._secondaryPlayerType === PlayerType.VIDEO && this.secondaryKalturaPlayer) {
       const secondaryVideoWidth = this.secondaryKalturaPlayer.getVideoElement().videoWidth;
       const secondaryVideoHeight = this.secondaryKalturaPlayer.getVideoElement().videoHeight;
-      this._pipPortraitMode =  secondaryVideoWidth < secondaryVideoHeight || this._pipPortraitMode;
+      this._pipPortraitMode = secondaryVideoWidth < secondaryVideoHeight || this._pipPortraitMode;
     } else {
       this._pipPortraitMode = this._imagePlayer.active ? this._imagePlayer.active.portrait : this._pipPortraitMode;
     }
