@@ -22,3 +22,8 @@ export enum ViewModeLockState {
   Locked = 'locked',
   Unlocked = 'unlocked'
 }
+
+export enum StreamMode{
+  Primary = 'Primary',
+  Secondary = 'Secondary'
+}

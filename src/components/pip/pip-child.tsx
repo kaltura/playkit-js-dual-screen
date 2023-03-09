@@ -1,6 +1,6 @@
 import {h, createRef, Component, Fragment} from 'preact';
 import * as styles from './pip.scss';
-import {Animations, ButtonsEnum} from '../../enums';
+import {Animations, ButtonsEnum, Layout} from '../../enums';
 import {icons} from '../../icons';
 import {Button} from './../button';
 const {connect} = KalturaPlayer.ui.redux;
@@ -8,10 +8,13 @@ const {utils, reducers} = KalturaPlayer.ui;
 const {Icon} = KalturaPlayer.ui.components;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
-const translates = () => {
+const translates = ({layout}: PIPChildComponentOwnProps) => {
   return {
     sideBySide: <Text id="dualScreen.side_by_side">Side by side screens</Text>,
-    switchScreen: <Text id="dualScreen.switch_screen">Switch Screen</Text>,
+    switchScreen:
+      layout === Layout.PIP ?
+        <Text id="dualScreen.switch_to_secondary_screen">Switch to secondary screen</Text> :
+        <Text id="dualScreen.switch_to_primary_screen">Switch to primary screen</Text>,
     hideLabel: <Text id="dualScreen.hide">Hide</Text>,
     hideAriaLabel: <Text id="dualScreen.hide_label">Hide dual screen</Text>
   };
@@ -38,6 +41,7 @@ interface PIPChildComponentOwnProps {
     height: number;
   };
   focusOnButton?: ButtonsEnum;
+  layout: Layout;
 }
 interface PIPChildComponentConnectProps {
   playerHeight?: number;

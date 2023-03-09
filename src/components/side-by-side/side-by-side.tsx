@@ -2,14 +2,17 @@ import {h, createRef, Component} from 'preact';
 import * as styles from './side-by-side.scss';
 import {icons} from '../../icons';
 import {Button} from './../button';
-import {Animations} from './../../enums';
+import {Animations, StreamMode} from './../../enums';
 const {Icon} = KalturaPlayer.ui.components;
 const {connect} = KalturaPlayer.ui.redux;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
-const translates = () => {
+const translates = ({streamMode}: SideBySideComponentOwnProps) => {
   return {
-    expandScreen: <Text id="dualScreen.expand_screen">Expand Screen</Text>
+    expandScreen:
+      streamMode === StreamMode.Primary ?
+        <Text id="dualScreen.expand_primary_screen">Expand primary screen</Text> :
+        <Text id="dualScreen.expand_secondary_screen">Expand secondary screen</Text>
   };
 };
 
@@ -18,6 +21,7 @@ interface SideBySideComponentOwnProps {
   onExpand: (byKeyboard: boolean) => void;
   animation: Animations;
   focusOnButton?: boolean;
+  streamMode: StreamMode;
 }
 interface SideBySideComponentConnectProps {
   playerWidth?: number;

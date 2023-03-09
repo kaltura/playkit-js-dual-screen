@@ -267,6 +267,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
                 portrait={this._pipPortraitMode}
                 aspectRatio={this.config.childAspectRatio}
                 focusOnButton={focusOnButton}
+                layout={this._layout}
               />
             </DragAndSnapManager>
           </ResponsiveManager>
@@ -312,6 +313,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
                 onInversePIP={(byKeyboard: boolean) => this._switchToPIP(Animations.Fade, getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen))}
                 aspectRatio={this.config.childAspectRatio}
                 focusOnButton={focusOnButton}
+                layout={this._layout}
               />
             </DragAndSnapManager>
           </ResponsiveManager>
@@ -411,6 +413,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           <SideBySideWrapper
             leftSideProps={leftSideProps}
             rightSideProps={rightSideProps}
+            layout={this._layout}
             onSizeChange={this._setMode}
             onMinSize={this._switchToSingleMedia}
           />
@@ -444,6 +447,7 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           <SideBySideWrapper
             leftSideProps={leftSideProps}
             rightSideProps={rightSideProps}
+            layout={this._layout}
             onSizeChange={this._setMode}
             onMinSize={this._switchToSingleMedia}
           />
