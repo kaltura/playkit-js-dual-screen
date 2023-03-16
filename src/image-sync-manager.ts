@@ -1,8 +1,8 @@
 // @ts-ignore
-import {cuepoint, core} from 'kaltura-player-js';
+import {core} from 'kaltura-player-js';
 import {ExternalLayout, ViewModeLockState} from './enums';
 import {ImagePlayer} from './image-player';
-import {debounce} from '@playkit-js/common';
+import {debounce} from '@playkit-js/common/dist/utils-common/utils';
 
 const {TimedMetadata} = core;
 

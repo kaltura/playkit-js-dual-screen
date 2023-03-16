@@ -1,6 +1,6 @@
 import {h, VNode} from 'preact';
 import {useCallback, useRef, useEffect} from 'preact/hooks';
-import {A11yWrapper, OnClickEvent} from '@playkit-js/common';
+import {A11yWrapper, OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 const {Tooltip} = KalturaPlayer.ui.components;
 
 interface ButtonProps {
