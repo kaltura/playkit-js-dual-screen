@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.3](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.2...v3.1.3) (2023-03-22)
+
+
+### Bug Fixes
+
+* **FEC-12921:** [V7-Acc] [Dual Screen] Narrator Screen reader for windows ([51aca48](https://github.com/kaltura/playkit-js-dual-screen/commit/51aca48de27080f6cdc613f938770876e7e3074c))
+* **FEC-12968:** use live plugin for child media ([#98](https://github.com/kaltura/playkit-js-dual-screen/issues/98)) ([4e357ed](https://github.com/kaltura/playkit-js-dual-screen/commit/4e357edce1ebb9bc3f40bc39361a4487a0bfcf5b))
+* **FEC-12990:** sync media for live entries ([#99](https://github.com/kaltura/playkit-js-dual-screen/issues/99)) ([4effcd2](https://github.com/kaltura/playkit-js-dual-screen/commit/4effcd22c6ebd857bbf7eb42c5de6338a636c172))
+* **FEV-1377:** render side-by-side view in the video interactive area ([df62cac](https://github.com/kaltura/playkit-js-dual-screen/commit/df62cac615f675db4da82b89909ffa3194922928))
+* **FEV-1386:** Navigation panel is rendered 'alongSide' when set to 'over' when dual-screen plugin is active ([24210db](https://github.com/kaltura/playkit-js-dual-screen/commit/24210dbbcbc7462d6183ef1180afb075f54c6819))
+* **FEV-1537:** specify plugin styles for KMC page ([#95](https://github.com/kaltura/playkit-js-dual-screen/issues/95)) ([ecff68c](https://github.com/kaltura/playkit-js-dual-screen/commit/ecff68c1cc5a42c43b38ff6ac760acee0714788b))
+
 ### [3.1.2](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.1...v3.1.2) (2023-01-23)
 
 
