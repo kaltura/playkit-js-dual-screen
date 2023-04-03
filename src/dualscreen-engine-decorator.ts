@@ -1,6 +1,7 @@
 // @ts-ignore
 import {core} from 'kaltura-player-js';
 import {DualScreen} from './dualscreen';
+import {PlayerType, PlayerContainers} from './enums';
 
 const {FakeEvent, EventType} = core;
 
@@ -16,7 +17,8 @@ export class DualScreenEngineDecorator implements IEngineDecorator {
 
     plugin.eventManager.listen(plugin.player, EventType.SEEKING, () => {
       // activate decorator only if secondary entry is media, so decorator can handle SEEKED event from secondary player
-      this._isActive = !!this._plugin.secondaryKalturaPlayer?.src;
+      // @ts-ignore
+      this._isActive = !!this.secondaryPlayer?.src;
     });
     plugin.eventManager.listen(plugin.player, EventType.SEEKED, () => {
       this._isActive = false;
@@ -24,14 +26,21 @@ export class DualScreenEngineDecorator implements IEngineDecorator {
   }
 
   get active(): boolean {
-    return this._isActive && !this._plugin.secondaryKalturaPlayer.ended;
+    // @ts-ignore
+    return this._isActive && !this.secondaryPlayer.ended;
+  }
+
+  get secondaryPlayer() {
+    return this._plugin.getActiveDualScreenPlayer(PlayerContainers.secondary);
   }
 
   dispatchEvent(event: FakeEvent): boolean {
     if (event.type === EventType.SEEKED) {
-      this._plugin.eventManager.listenOnce(this._plugin.secondaryKalturaPlayer, EventType.SEEKED, () => {
-        this._dispatcher(event);
-      });
+      if (this.secondaryPlayer?.type === PlayerType.VIDEO)
+        // @ts-ignore
+        this._plugin.eventManager.listenOnce(secondaryPlayer.player, EventType.SEEKED, () => {
+          this._dispatcher(event);
+        });
       return true;
     }
     return this._dispatcher(event);

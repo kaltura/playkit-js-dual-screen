@@ -1,4 +1,4 @@
-import {h, createRef, Component, Fragment} from 'preact';
+import {h, createRef, Component, Fragment, VNode} from 'preact';
 import * as styles from './pip.scss';
 import {Animations, ButtonsEnum, Layout} from '../../enums';
 import {icons} from '../../icons';
@@ -27,6 +27,7 @@ const mapStateToProps = (state: Record<string, any>) => ({
 });
 
 interface PIPChildComponentOwnProps {
+  multiscreen: VNode;
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   playerSizePercentage: number;
   hide: (byKeyboard: boolean) => void;
@@ -156,11 +157,12 @@ export class PipChild extends Component<PIPChildComponentProps> {
     };
 
     return (
-      <div className={styleClass.join(' ')} ref={this.pipContainerRef}>
+      <div className={styleClass.join(' ')} ref={this.pipContainerRef}> 
         {this._renderHideButton()}
         <div className={styles.playerWrapper}>
           <div className={styles.playerContainer} style={playerContainerStyles} ref={this.playerContainerRef} />
           {this._renderInnerButtons()}
+          {props.multiscreen}
         </div>
       </div>
     );

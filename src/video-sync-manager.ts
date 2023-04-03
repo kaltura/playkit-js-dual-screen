@@ -1,6 +1,6 @@
 import {isInInterval} from './utils';
 // @ts-ignore
-import {core} from 'kaltura-player-js';
+import {core, PlaykitUI, Logger, KalturaPlayer} from 'kaltura-player-js';
 import {debounce} from '@playkit-js/common/dist/utils-common/utils';
 const {EventType, FakeEvent, Error, StateType} = core;
 
@@ -12,17 +12,12 @@ export class VideoSyncManager {
   private _isSyncDelay = false;
   private _debouncedSeekSecondaryPlayer: (aheadTime?: number) => void;
 
-  _eventManager: KalturaPlayerTypes.EventManager;
-  _mainPlayer: KalturaPlayerTypes.Player;
-  _secondaryPlayer: KalturaPlayerTypes.Player;
-  _logger: KalturaPlayerTypes.Logger;
+  _eventManager: PlaykitUI.EventManager;
+  _mainPlayer: KalturaPlayer;
+  _secondaryPlayer: KalturaPlayer;
+  _logger: Logger;
 
-  constructor(
-    eventManager: KalturaPlayerTypes.EventManager,
-    mainPlayer: KalturaPlayerTypes.Player,
-    secondaryPlayer: KalturaPlayerTypes.Player,
-    logger: KalturaPlayerTypes.Logger
-  ) {
+  constructor(eventManager: PlaykitUI.EventManager, mainPlayer: KalturaPlayer, secondaryPlayer: KalturaPlayer, logger: KalturaPlayerTypes.Logger) {
     this._eventManager = eventManager;
     this._mainPlayer = mainPlayer;
     this._secondaryPlayer = secondaryPlayer;
@@ -37,6 +32,7 @@ export class VideoSyncManager {
       this._logger.debug('errorHandling :: secondary player got error');
       const error = new Error(Error.Severity.CRITICAL, Error.Category.PLAYER, Error.Code.VIDEO_ERROR, e);
       this._mainPlayer.pause();
+      // @ts-ignore
       this._mainPlayer.dispatchEvent(new FakeEvent(EventType.ERROR, error));
     });
     this._eventManager.listen(this._mainPlayer, EventType.ERROR, () => {
@@ -96,6 +92,7 @@ export class VideoSyncManager {
       ({payload}: {payload: {newState: {type: typeof StateType}; oldState: {type: typeof StateType}}}) => {
         if (
           payload.newState.type === StateType.BUFFERING &&
+          // @ts-ignore
           !(this._mainPlayer.seeking || this._mainPlayer.paused) &&
           !this._secondaryPlayer.paused
         ) {
@@ -112,6 +109,7 @@ export class VideoSyncManager {
   };
 
   private _mediaSync = () => {
+    // @ts-ignore
     if (this._isSyncDelay || (this._mainPlayer.paused && !this._mainPlayer.seeking)) {
       return;
     }
@@ -133,16 +131,19 @@ export class VideoSyncManager {
       }
       if (playbackRateChange !== 0) {
         if (Math.abs(synchDelay) < maxGap) {
+          // @ts-ignore
           let newPlaybackRate = this._mainPlayer.playbackRate + playbackRateChange;
           if (newPlaybackRate < MIN_PLAYBACK_RATE) {
             newPlaybackRate = MIN_PLAYBACK_RATE;
           }
           this._logger.debug(`mediaSync :: Adjusting slave playbackRateChange = ${newPlaybackRate}`);
           // set a slower playback rate for the video to let the master video catch up
+          // @ts-ignore
           this._secondaryPlayer.playbackRate = newPlaybackRate;
         } else {
           this._logger.debug('mediaSync :: Adjusting secondary player playbackRateChange to main player and flagging for seek');
           // set playback rate back to normal
+          // @ts-ignore
           this._secondaryPlayer.playbackRate = this._mainPlayer.playbackRate;
           // mark for seeking
           doSeek = true;
@@ -150,9 +151,11 @@ export class VideoSyncManager {
       }
       // everything is fine
       else if (!this._mainPlayer.paused) {
+        // @ts-ignore
         if (this._secondaryPlayer.playbackRate !== this._mainPlayer.playbackRate) {
           this._logger.debug('mediaSync :: Main player and secondary player sync, adjusting secondary player playback rate to main player rate');
           // set playback rate back to normal
+          // @ts-ignore
           this._secondaryPlayer.playbackRate = this._mainPlayer.playbackRate;
         }
         if (this._secondaryPlayer.paused) {
@@ -163,6 +166,7 @@ export class VideoSyncManager {
 
       // if marked for seeking
       if (doSeek) {
+        // @ts-ignore
         this._logger.debug(`mediaSync :: Seeking secondary player to ${this._mainPlayer.currentTime + seekAhead}`);
         this._seekSecondaryPlayer(seekAhead);
       }
@@ -170,7 +174,9 @@ export class VideoSyncManager {
   };
 
   private _getSyncDelay = () => {
+    // @ts-ignore
     const ctMaster = this._mainPlayer.currentTime; // current time in seconds
+    // @ts-ignore
     const ct = this._secondaryPlayer.currentTime; // current time in seconds
     const syncGap = 0; // s
     if (ctMaster != -1 && ct != -1 && !isInInterval(ct, ctMaster - syncGap, ctMaster)) {
@@ -180,15 +186,19 @@ export class VideoSyncManager {
   };
 
   private _seekSecondaryPlayer = (aheadTime: number = 0) => {
+    // @ts-ignore
     const seekTime = this._mainPlayer.currentTime < 0 ? 0 : this._mainPlayer.currentTime;
+    // @ts-ignore
     if (this._secondaryPlayer.ended && this._secondaryPlayer.duration && Math.ceil(seekTime) > this._secondaryPlayer.duration) {
       // trying to seek out of bounds after secondary Player already ended
       // pause secondary Player
+      // @ts-ignore
       this._logger.debug(`seekSecondaryPlayer :: seekTime ${seekTime} is out of bounds 0..${this._secondaryPlayer.duration}. pause secondary player`);
       this._secondaryPlayer.pause();
       return;
     }
     this._logger.debug(`seekSecondaryPlayer :: seeking to=${seekTime}, ahead=${aheadTime}`);
+    // @ts-ignore
     this._secondaryPlayer.currentTime = seekTime + aheadTime;
     if (this._mainPlayer.paused) {
       this._secondaryPlayer.pause();
