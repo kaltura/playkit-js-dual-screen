@@ -1,0 +1,13 @@
+{
+  "ko": {
+    "dualScreen": {
+      "show": "표시",
+      "show_label": "듀얼스크린 보기",
+      "hide": "숨기기",
+      "hide_label": "듀얼스크린 숨기기",
+      "side_by_side": "화면 나란히 보기",
+      "switch_screen": "화면 전환",
+      "expand_screen": "화면 확장"
+    }
+  }
+}

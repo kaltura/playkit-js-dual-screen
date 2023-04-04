@@ -1,0 +1,13 @@
+{
+  "zh_tw": {
+    "dualScreen": {
+      "show": "顯示",
+      "show_label": "顯示雙螢幕",
+      "hide": "隱藏",
+      "hide_label": "隱藏雙螢幕",
+      "side_by_side": "並列螢幕",
+      "switch_screen": "切換螢幕",
+      "expand_screen": "展開螢幕"
+    }
+  }
+}

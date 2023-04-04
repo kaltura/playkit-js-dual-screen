@@ -1,0 +1,13 @@
+{
+  "nl": {
+    "dualScreen": {
+      "show": "Tonen",
+      "show_label": "Dubbel scherm tonen",
+      "hide": "Verbergen",
+      "hide_label": "Dubbel scherm verbergen",
+      "side_by_side": "Schermen naast elkaar",
+      "switch_screen": "Van scherm wisselen",
+      "expand_screen": "Scherm uitbreiden"
+    }
+  }
+}

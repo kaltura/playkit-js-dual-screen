@@ -1,0 +1,13 @@
+{
+  "de": {
+    "dualScreen": {
+      "show": "Anzeigen",
+      "show_label": "Doppelten Bildschirm anzeigen",
+      "hide": "Ausblenden",
+      "hide_label": "Doppelten Bildschirm ausblenden",
+      "side_by_side": "Bildschirme nebeneinander",
+      "switch_screen": "Bildschirm umschalten",
+      "expand_screen": "Bildschirm erweitern"
+    }
+  }
+}

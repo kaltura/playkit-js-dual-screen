@@ -1,0 +1,13 @@
+{
+  "ja": {
+    "dualScreen": {
+      "show": "表示",
+      "show_label": "デュアルスクリーンを表示",
+      "hide": "非表示",
+      "hide_label": "デュアルスクリーンを非表示",
+      "side_by_side": "サイドバイサイドスクリーン",
+      "switch_screen": "スクリーンを切換え",
+      "expand_screen": "スクリーンを拡大"
+    }
+  }
+}
