@@ -1,0 +1,13 @@
+{
+  "it": {
+    "dualScreen": {
+      "show": "Mostra",
+      "show_label": "Mostra doppio schermo",
+      "hide": "Nascondi",
+      "hide_label": "Nascondi doppio schermo",
+      "side_by_side": "Schermi affiancati",
+      "switch_screen": "Cambia schermo",
+      "expand_screen": "Espandi schermo"
+    }
+  }
+}
