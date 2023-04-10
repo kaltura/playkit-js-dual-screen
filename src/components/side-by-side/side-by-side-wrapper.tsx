@@ -1,4 +1,4 @@
-import {Component, h} from 'preact';
+import {Component, h, VNode} from 'preact';
 import {SideBySide} from './side-by-side';
 import {Animations, Layout, StreamMode} from '../../enums';
 import {ResponsiveManager} from '../responsive-manager';
@@ -8,6 +8,7 @@ interface SideProps {
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   onExpand: (byKeyboard: boolean) => void;
   focusOnButton?: boolean;
+  multiscreen: VNode;
 }
 
 interface SideBySideWrapperComponentProps {

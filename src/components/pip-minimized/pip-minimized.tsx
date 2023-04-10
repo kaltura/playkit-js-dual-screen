@@ -1,4 +1,4 @@
-import {h, createRef, Component, Fragment} from 'preact';
+import {h, createRef, Component, Fragment, VNode} from 'preact';
 import * as styles from './pip-minimized.scss';
 import {icons} from '../../icons';
 import {Button} from './../button';
@@ -22,6 +22,7 @@ interface PIPMinimizedOwnProps {
   onInverse: (byKeyboard: boolean) => void;
   hideButtons?: boolean;
   focusOnButton?: ButtonsEnum;
+  multiscreen: VNode;
 }
 interface PIPMinimizedConnectProps {
   playerSize?: string;
@@ -88,6 +89,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
     return (
       <div className={styles.childPlayerContainer}>
         <div ref={this.ref} className={[styles.childPlayer, props.hideButtons ? styles.tinyChildPlayer : ''].join(' ')} />
+        <div className={styles.multiscreenContainer}>{props.multiscreen}</div>
         {this._renderHoverButton()}
       </div>
     );

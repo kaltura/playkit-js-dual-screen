@@ -75,6 +75,12 @@ $show-container-gap: 5px;
       background: transparent;
     }
   }
+
+  .multiscreenContainer {
+    position: absolute;
+    right: 108px;
+    top: 0;
+  }
 }
 
 @keyframes fading {

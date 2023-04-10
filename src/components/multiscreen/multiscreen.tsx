@@ -1,28 +1,27 @@
-import {h, Component, Ref, createRef} from 'preact';
+import {h, Component, RefObject, createRef} from 'preact';
 import {KalturaPlayer} from 'kaltura-player-js';
-import {ImagePlayer} from "../../image-player";
+import {ImagePlayer} from '../../image-player';
 import * as styles from './multiscreen.scss';
 
 export interface MultiscreenPlayer {
-  player:  KalturaPlayer | ImagePlayer;
-  setSecondary: () => void | null;
-  setPrimary: () => void | null;
+  player: KalturaPlayer | ImagePlayer;
+  setSecondary: (() => void) | null;
+  setPrimary: () => void;
 }
 
 interface MultiscreenProps {
-  players: Array<MultiscreenPlayer>
+  players: Array<MultiscreenPlayer>;
 }
 
 export class Multiscreen extends Component<MultiscreenProps> {
-  _multiscreenPlayersRefMap: Array<Ref<HTMLDivElement>> = [];
+  _multiscreenPlayersRefs: Array<RefObject<HTMLDivElement>> = [];
 
   componentDidMount(): void {
-    this._multiscreenPlayersRefMap.forEach((ref, index) => {
+    this._multiscreenPlayersRefs.forEach((ref, index) => {
       const videoElement = this.props.players[index].player.getVideoElement();
       videoElement.tabIndex = -1;
-      // @ts-ignore
       ref.current!.prepend(videoElement);
-    })
+    });
   }
 
   render(props: MultiscreenProps) {
@@ -30,16 +29,20 @@ export class Multiscreen extends Component<MultiscreenProps> {
       return null;
     }
     return (
-    <div className={styles.multiscreenContainer} style={{height: '66px', position: "absolute", top: "60px", right: 0}}>
-      {props.players.map(player => {
-        const ref = createRef<HTMLDivElement>();
-        this._multiscreenPlayersRefMap.push(ref);
-        return (<div ref={ref} style={{ position: "relative", margin: "10px" }}>
-          <div onClick={player.setSecondary} style={{ width: "10px", height: "10px", background: "red", position: "absolute", top: "18px", left: "20px"}}></div>
-          <div onClick={player.setPrimary} style={{ width: "10px", height: "10px", background: "green", position: "absolute", top: "18px", left: "40px"}}></div>
-        </div>)
-      })}
-    </div>
-    )
+      <div className={styles.multiscreenWrapper}>
+        {props.players.map(player => {
+          const ref = createRef<HTMLDivElement>();
+          this._multiscreenPlayersRefs.push(ref);
+          return (
+            <div ref={ref} className={styles.multiscreenPlayer}>
+              <div className={styles.multiscreenButtonsWrapper}>
+                <div onClick={player.setPrimary} className={player.setSecondary ? styles.setPrimary : styles.switch}></div>
+                {player.setSecondary && <div onClick={player.setSecondary} className={styles.setSecondary}></div>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
   }
 }

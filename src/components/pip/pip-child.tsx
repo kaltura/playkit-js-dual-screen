@@ -12,9 +12,11 @@ const translates = ({layout}: PIPChildComponentOwnProps) => {
   return {
     sideBySide: <Text id="dualScreen.side_by_side">Side by side screens</Text>,
     switchScreen:
-      layout === Layout.PIP ?
-        <Text id="dualScreen.switch_to_secondary_screen">Switch to secondary screen</Text> :
-        <Text id="dualScreen.switch_to_primary_screen">Switch to primary screen</Text>,
+      layout === Layout.PIP ? (
+        <Text id="dualScreen.switch_to_secondary_screen">Switch to secondary screen</Text>
+      ) : (
+        <Text id="dualScreen.switch_to_primary_screen">Switch to primary screen</Text>
+      ),
     hideLabel: <Text id="dualScreen.hide">Hide</Text>,
     hideAriaLabel: <Text id="dualScreen.hide_label">Hide dual screen</Text>
   };
@@ -157,12 +159,12 @@ export class PipChild extends Component<PIPChildComponentProps> {
     };
 
     return (
-      <div className={styleClass.join(' ')} ref={this.pipContainerRef}> 
+      <div className={styleClass.join(' ')} ref={this.pipContainerRef}>
         {this._renderHideButton()}
         <div className={styles.playerWrapper}>
           <div className={styles.playerContainer} style={playerContainerStyles} ref={this.playerContainerRef} />
           {this._renderInnerButtons()}
-          {props.multiscreen}
+          <div className={styles.multiscreenContainer}>{props.multiscreen}</div>
         </div>
       </div>
     );

@@ -1,4 +1,4 @@
-import {h, createRef, Component} from 'preact';
+import {h, createRef, Component, VNode, Fragment} from 'preact';
 import * as styles from './side-by-side.scss';
 import {icons} from '../../icons';
 import {Button} from './../button';
@@ -10,9 +10,11 @@ const {withText, Text} = KalturaPlayer.ui.preacti18n;
 const translates = ({streamMode}: SideBySideComponentOwnProps) => {
   return {
     expandScreen:
-      streamMode === StreamMode.Primary ?
-        <Text id="dualScreen.expand_primary_screen">Expand primary screen</Text> :
+      streamMode === StreamMode.Primary ? (
+        <Text id="dualScreen.expand_primary_screen">Expand primary screen</Text>
+      ) : (
         <Text id="dualScreen.expand_secondary_screen">Expand secondary screen</Text>
+      )
   };
 };
 
@@ -22,6 +24,7 @@ interface SideBySideComponentOwnProps {
   animation: Animations;
   focusOnButton?: boolean;
   streamMode: StreamMode;
+  multiscreen: VNode;
 }
 interface SideBySideComponentConnectProps {
   playerWidth?: number;
@@ -50,24 +53,27 @@ export class SideBySide extends Component<SideBySideComponentProps> {
   }
 
   private _renderHoverButton() {
-    const {onExpand, showUi, focusOnButton} = this.props;
+    const {onExpand, showUi, focusOnButton, multiscreen} = this.props;
     if (showUi) {
       return (
-        <div className={styles.innerButtons}>
-          <Button
-            className={styles.iconContainer}
-            onClick={onExpand}
-            tooltip={{label: this.props.expandScreen!, type: 'bottom-left'}}
-            focusOnMount={focusOnButton}>
-            <Icon
-              id="dualscreen-side-by-side-pip"
-              height={icons.MediumSize}
-              width={icons.MediumSize}
-              viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
-              path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH}
-            />
-          </Button>
-        </div>
+        <Fragment>
+          <div className={styles.innerButtons}>
+            <Button
+              className={styles.iconContainer}
+              onClick={onExpand}
+              tooltip={{label: this.props.expandScreen!, type: 'bottom-left'}}
+              focusOnMount={focusOnButton}>
+              <Icon
+                id="dualscreen-side-by-side-pip"
+                height={icons.MediumSize}
+                width={icons.MediumSize}
+                viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
+                path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH}
+              />
+            </Button>
+          </div>
+          <div className={styles.multiscreenContainer}>{multiscreen}</div>
+        </Fragment>
       );
     }
     return null;
