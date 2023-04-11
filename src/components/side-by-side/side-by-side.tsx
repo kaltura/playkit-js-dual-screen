@@ -71,8 +71,8 @@ export class SideBySide extends Component<SideBySideComponentProps> {
                 path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH}
               />
             </Button>
+            {multiscreen}
           </div>
-          <div className={styles.multiscreenContainer}>{multiscreen}</div>
         </Fragment>
       );
     }

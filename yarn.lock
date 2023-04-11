@@ -262,10 +262,10 @@
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.3.tgz#e45e384e4b8ec16bce2fd903af78450f6bf7ec98"
   integrity sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA==
 
-"@playkit-js/common@^1.1.4":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.1.4.tgz#84362ee927c253425d351c7d2f1070a016772f8c"
-  integrity sha512-J7BGxBeScncmB+RJM7LHhtLndV+9slZCDLDvFD+grYhXuVdaEv8/Tq9MVHuAhuRnnqEWpOHOgriWQrD2ozaF1g==
+"@playkit-js/common@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@playkit-js/common/-/common-1.2.0.tgz#edaa7cb483bb509b12f468fb424fabeca6dc607c"
+  integrity sha512-8Q0oIV+BFGZIXK2yTCph6c8C0wVa1JAp72U8cyVhUcXOS8KQfA2HeMxRhGhd4DycNkqMJZ0feSgwH5x2X7ImEw==
   dependencies:
     "@playkit-js/playkit-js-ui" "^0.74.0"
     classnames "^2.3.2"

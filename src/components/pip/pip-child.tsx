@@ -75,7 +75,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
   }
 
   private _renderInnerButtons() {
-    const {onSideBySideSwitch, onInversePIP, focusOnButton} = this.props;
+    const {onSideBySideSwitch, onInversePIP, focusOnButton, multiscreen} = this.props;
     return (
       <div className={[styles.innerButtons, this.props.portrait ? styles.verticalPlayer : ''].join(' ')}>
         <Button
@@ -104,6 +104,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
             path={icons.SWAP_ICON_PATH}
           />
         </Button>
+        {multiscreen}
       </div>
     );
   }
@@ -164,7 +165,6 @@ export class PipChild extends Component<PIPChildComponentProps> {
         <div className={styles.playerWrapper}>
           <div className={styles.playerContainer} style={playerContainerStyles} ref={this.playerContainerRef} />
           {this._renderInnerButtons()}
-          <div className={styles.multiscreenContainer}>{props.multiscreen}</div>
         </div>
       </div>
     );

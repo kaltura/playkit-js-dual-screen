@@ -379,13 +379,14 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 }
                 onInversePIP={(byKeyboard: boolean) => {
                   this._applyInverse();
+                  this._layout = Layout.PIPInverse; // toggle layout change
                   this._switchToPIP({animation: Animations.Fade, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen)});
                 }}
                 portrait={this._pipPortraitMode}
                 aspectRatio={this.config.childAspectRatio}
                 focusOnButton={focusOnButton}
                 layout={this._layout}
-                multiscreen={<Multiscreen players={this._makeMultiscreenPlayers()} />}
+                multiscreen={<Multiscreen players={this._makeMultiscreenPlayers()} icon="switch" />}
               />
             </DragAndSnapManager>
           </ResponsiveManager>
@@ -419,7 +420,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
               }
               player={this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.player as any}
               onInverse={(byKeyboard: boolean) => {
-                this._layout = Layout.SingleMediaInverse;
+                this._layout = Layout.SingleMediaInverse; // toggle layout change
                 this._applyInverse();
                 this._switchToSingleMedia({
                   animation: Animations.Fade,
@@ -427,7 +428,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 });
               }}
               focusOnButton={focusOnButton}
-              multiscreen={<Multiscreen players={this._makeMultiscreenPlayers()} />}
+              multiscreen={<Multiscreen players={this._makeMultiscreenPlayers()} icon="switch" />}
             />
           </ResponsiveManager>
         )
@@ -446,7 +447,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       onExpand: (byKeyboard: boolean) =>
         this._switchToPIP({animation: Animations.ScaleRight, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)}),
       focusOnButton: Boolean(focusOnButton),
-      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers()} />
+      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers()} icon="switch" />
     };
     const rightSideProps = {
       player: this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.player as any,
@@ -454,7 +455,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         this._applyInverse();
         this._switchToPIP({animation: Animations.ScaleLeft, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)});
       },
-      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(true)} />
+      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(true)} icon="switch" />
     };
 
     this._addActives(

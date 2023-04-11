@@ -1,48 +1,43 @@
 @import '~styles/variables';
 
+$multiscreen-player-height: 58px;
+
 .multiscreenWrapper {
-  display: flex;
-  justify-content: flex-end;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-  padding-right: 4px;
-  .multiscreenPlayer {
+  position: relative;
+  height: 24px;
+
+  .multiscreenPlayersWrapper {
+    position: absolute;
     display: flex;
-    flex-direction: column;
-    position: relative;
-    width: 104px;
-    height: 58px;
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 0px 4px;
-    .multiscreenButtonsWrapper {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
+    flex-direction: row;
+    right: 0px;
+    bottom: calc(-1 * (10px + #{$multiscreen-player-height}));
+
+    .multiscreenPlayer {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
-      .setSecondary {
-        margin: 0px 12px;
-        height: 24px;
-        width: 24px;
-        background-color: red;
-      }
-      .setPrimary {
-        margin: 0px 12px;
-        height: 24px;
-        width: 24px;
-        background-color: green;
-      }
-      .switch {
-        margin: 0px 12px;
-        height: 24px;
-        width: 24px;
-        background-color: blue;
+      flex-direction: column;
+      position: relative;
+      width: 104px;
+      height: $multiscreen-player-height;
+      border-radius: $roundness-1;
+      overflow: hidden;
+      margin: 0px 4px;
+
+      .multiscreenButtonsWrapper {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        padding: 0px 16px;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
+
+        & > button:nth-child(2) {
+          margin-left: auto;
+        }
       }
     }
   }
