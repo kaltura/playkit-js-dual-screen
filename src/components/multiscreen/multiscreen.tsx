@@ -1,14 +1,7 @@
 import {h, Component, RefObject, createRef} from 'preact';
-import {KalturaPlayer} from 'kaltura-player-js';
 import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
-import {ImagePlayer} from '../../image-player';
+import {MultiscreenPlayer} from '../../types';
 import * as styles from './multiscreen.scss';
-
-export interface MultiscreenPlayer {
-  player: KalturaPlayer | ImagePlayer;
-  setSecondary: (() => void) | null;
-  setPrimary: () => void;
-}
 
 interface MultiscreenProps {
   players: Array<MultiscreenPlayer>;
@@ -24,8 +17,8 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
     open: false
   };
 
-  componentDidUpdate(previousProps: Readonly<MultiscreenProps>, previousState: Readonly<MultiscreenState>): void {
-    if (!previousState.open && this.state.open) {
+  componentDidUpdate(): void {
+    if (this.state.open) {
       this._multiscreenPlayersRefs.forEach((ref, index) => {
         const videoElement = this.props.players[index].player.getVideoElement();
         videoElement.tabIndex = -1;
@@ -33,15 +26,6 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
       });
     }
   }
-
-  handleClick = () => {
-    if (this.state.open) {
-      this._multiscreenPlayersRefs = [];
-      this.setState({open: false});
-    } else {
-      this.setState({open: true});
-    }
-  };
 
   render(props: MultiscreenProps) {
     if (!props.players.length) {
@@ -57,13 +41,13 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
           type={ButtonType.borderless}
           size={ButtonSize.medium}
           icon={this.props.icon}
-          onClick={this.handleClick}
+          onClick={() => this.setState({open: !this.state.open})}
         />
         {this.state.open && (
           <div className={styles.multiscreenPlayersWrapper}>
-            {props.players.map(player => {
+            {props.players.map((player, index) => {
               const ref = createRef<HTMLDivElement>();
-              this._multiscreenPlayersRefs.push(ref);
+              this._multiscreenPlayersRefs[index] = ref;
               return (
                 <div ref={ref} className={styles.multiscreenPlayer}>
                   <div className={styles.multiscreenButtonsWrapper}>

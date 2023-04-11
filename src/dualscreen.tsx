@@ -1,7 +1,7 @@
 import {h} from 'preact';
-import {DualScreenConfig} from './types/DualScreenConfig';
+import {DualScreenConfig, DualScreenPlayer, MultiscreenPlayer} from './types';
 import {PipChild, PipParent} from './components/pip';
-import {Multiscreen, MultiscreenPlayer} from './components/multiscreen';
+import {Multiscreen} from './components/multiscreen';
 import {PipMinimized} from './components/pip-minimized';
 import {
   Animations,
@@ -37,13 +37,6 @@ const PRESETS = ['Playback', 'Live', 'Ads'];
 const IMAGE_PLAYER_ID = 'imagePlayer';
 const MAIN_PLAYER_ID = 'mainPlayer';
 
-interface DualScreenPlayer {
-  id: string;
-  type: PlayerType;
-  container: PlayerContainers;
-  player: KalturaPlayer | ImagePlayer;
-}
-
 export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineDecoratorProvider {
   private _layout: Layout;
   private _externalLayout: ExternalLayout | null = null;
@@ -54,7 +47,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   private _resolveReadyPromise = () => {};
   private _readyPromise: Promise<void>;
   private _pipPortraitMode = false;
-  private _originalVideoElementParent?: HTMLElement;
   private _undoRemoveSettings?: Function | null = null;
   private _dualScreenPlayers: Array<DualScreenPlayer> = [];
 
@@ -171,9 +163,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this.eventManager.listen(this.player, EventType.PLAYBACK_ENDED, () => {
       this._playbackEnded = true;
     });
-    this.eventManager.listenOnce(this.player, EventType.FIRST_PLAY, () => {
-      this._originalVideoElementParent = this.player.getVideoElement().parentElement!;
-    });
     this.eventManager.listen(this.player, EventType.PLAY, () => {
       if (this._playbackEnded) {
         // reset mode and pip-position on replay
@@ -221,29 +210,44 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     return this._dualScreenPlayers.filter(dualScreenPlayer => dualScreenPlayer.container === PlayerContainers.none);
   };
 
-  private _makeMultiscreenPlayers = (invert = false) => {
-    return this._getMultiscreenPlayers().map(dualScreenPlayer => {
-      const multiScreenPlayerProps: MultiscreenPlayer = {
-        player: dualScreenPlayer.player,
-        setPrimary: () => {},
-        setSecondary: null
-      };
+  private _makeMultiscreenPlayers = (multiscreenPlayers: DualScreenPlayer[], invert = false): MultiscreenPlayer[] => {
+    return multiscreenPlayers.map(dualScreenPlayer => {
       if (this._layout === Layout.PIP) {
-        multiScreenPlayerProps['setSecondary'] = () => {
-          this._setActiveDualScreenPlayer(dualScreenPlayer.id, PlayerContainers.secondary);
-          this._setMode(true);
+        return {
+          player: dualScreenPlayer.player,
+          setSecondary: () => {
+            this._setActiveDualScreenPlayer(dualScreenPlayer.id, PlayerContainers.secondary);
+            this._setMode(true);
+          },
+          setPrimary: () => {
+            this._setActiveDualScreenPlayer(dualScreenPlayer.id, PlayerContainers.primary);
+            this._setMode(true);
+          }
         };
-        multiScreenPlayerProps['setPrimary'] = () => {
-          this._setActiveDualScreenPlayer(dualScreenPlayer.id, PlayerContainers.primary);
-          this._setMode(true);
+      } else if (this._layout === Layout.SideBySide) {
+        return {
+          player: dualScreenPlayer.player,
+          setSecondary: null,
+          setPrimary: () => {
+            this._setActiveDualScreenPlayer(dualScreenPlayer.id, invert ? PlayerContainers.secondary : PlayerContainers.primary);
+            this._setMode(true);
+          }
         };
       } else {
-        multiScreenPlayerProps['setPrimary'] = () => {
-          this._setActiveDualScreenPlayer(dualScreenPlayer.id, invert ? PlayerContainers.secondary : PlayerContainers.primary);
-          this._setMode(true);
+        return {
+          player: dualScreenPlayer.player,
+          setSecondary: null,
+          setPrimary: () => {
+            const secondaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.secondary)!;
+            if (secondaryPlayer.id === dualScreenPlayer.id) {
+              this._applyInverse();
+            } else {
+              this._setActiveDualScreenPlayer(dualScreenPlayer.id, PlayerContainers.primary);
+            }
+            this._setMode(true);
+          }
         };
       }
-      return multiScreenPlayerProps;
     });
   };
 
@@ -302,9 +306,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       value();
     });
     this._removeActivesArr = [];
-    if (this._originalVideoElementParent) {
-      this._originalVideoElementParent.prepend(this.player.getVideoElement());
-    }
   }
 
   private _setPipPosition = (position: Position) => {
@@ -386,7 +387,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 aspectRatio={this.config.childAspectRatio}
                 focusOnButton={focusOnButton}
                 layout={this._layout}
-                multiscreen={<Multiscreen players={this._makeMultiscreenPlayers()} icon="switch" />}
+                multiscreen={<Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} icon="switch" />}
               />
             </DragAndSnapManager>
           </ResponsiveManager>
@@ -418,17 +419,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
               show={(byKeyboard: boolean) =>
                 this._switchToPIP({animation: Animations.None, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.Hide)})
               }
-              player={this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.player as any}
-              onInverse={(byKeyboard: boolean) => {
-                this._layout = Layout.SingleMediaInverse; // toggle layout change
-                this._applyInverse();
-                this._switchToSingleMedia({
-                  animation: Animations.Fade,
-                  focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen)
-                });
-              }}
+              players={this._makeMultiscreenPlayers([...this._getMultiscreenPlayers(), this.getActiveDualScreenPlayer(PlayerContainers.secondary)!])}
               focusOnButton={focusOnButton}
-              multiscreen={<Multiscreen players={this._makeMultiscreenPlayers()} icon="switch" />}
             />
           </ResponsiveManager>
         )
@@ -447,7 +439,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       onExpand: (byKeyboard: boolean) =>
         this._switchToPIP({animation: Animations.ScaleRight, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)}),
       focusOnButton: Boolean(focusOnButton),
-      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers()} icon="switch" />
+      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} icon="switch" />
     };
     const rightSideProps = {
       player: this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.player as any,
@@ -455,7 +447,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         this._applyInverse();
         this._switchToPIP({animation: Animations.ScaleLeft, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)});
       },
-      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(true)} icon="switch" />
+      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers(), true)} icon="switch" />
     };
 
     this._addActives(
