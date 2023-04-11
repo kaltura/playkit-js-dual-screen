@@ -376,7 +376,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                   this._switchToSingleMedia({animation: Animations.None, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.Show)})
                 }
                 onSideBySideSwitch={(byKeyboard: boolean) =>
-                  this._switchToSideBySide({focusOnButton: byKeyboard ? ButtonsEnum.SideBySide : undefined})
+                  this._switchToSideBySide({focusOnButton: byKeyboard ? ButtonsEnum.SideBySide : undefined, animation: Animations.ScaleLeft})
                 }
                 onInversePIP={(byKeyboard: boolean) => {
                   this._applyInverse();
@@ -428,7 +428,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     );
   };
 
-  private _switchToSideBySide = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}) => {
+  private _switchToSideBySide = ({animation = Animations.Fade, focusOnButton, force}: LayoutChangeProps = {}) => {
     if (!force && this._layout === Layout.SideBySide && this._removeActivesArr.length) {
       return;
     }
@@ -439,6 +439,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       onExpand: (byKeyboard: boolean) =>
         this._switchToPIP({animation: Animations.ScaleRight, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)}),
       focusOnButton: Boolean(focusOnButton),
+      animation,
       multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} icon="switch" />
     };
     const rightSideProps = {
@@ -447,6 +448,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         this._applyInverse();
         this._switchToPIP({animation: Animations.ScaleLeft, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)});
       },
+      animation: Animations.Fade,
       multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers(), true)} icon="switch" />
     };
 

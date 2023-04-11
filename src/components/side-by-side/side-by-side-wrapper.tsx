@@ -9,6 +9,7 @@ interface SideProps {
   onExpand: (byKeyboard: boolean) => void;
   focusOnButton?: boolean;
   multiscreen: VNode;
+  animation: Animations;
 }
 
 interface SideBySideWrapperComponentProps {
@@ -29,12 +30,10 @@ export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps
         <div className={styles.sideBySideWrapper}>
           <SideBySide
             {...leftSideProps}
-            animation={Animations.ScaleLeft}
             streamMode={layout === Layout.SideBySide ? StreamMode.Primary : StreamMode.Secondary}
           />
           <SideBySide
             {...rightSideProps}
-            animation={Animations.Fade}
             streamMode={layout === Layout.SideBySide ? StreamMode.Secondary : StreamMode.Primary}
           />
         </div>
