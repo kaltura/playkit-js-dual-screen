@@ -1,7 +1,8 @@
 import {h, createRef, Component, Fragment, RefObject} from 'preact';
 import * as styles from './pip-minimized.scss';
 import {icons} from '../../icons';
-import {Button} from './../button';
+import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
+import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {ButtonsEnum} from '../../enums';
 import {MultiscreenPlayer} from '../../types';
 const {
@@ -19,7 +20,7 @@ const translates = () => {
 
 interface PIPMinimizedOwnProps {
   players: MultiscreenPlayer[];
-  show: (byKeyboard: boolean) => void;
+  show: OnClick;
   hideButtons?: boolean;
   focusOnButton?: ButtonsEnum;
 }
@@ -54,7 +55,8 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
             onClick={show}
             className={styles.showContainer}
             ariaLabel={this.props.showAriaLabel}
-            focusOnMount={focusOnButton === ButtonsEnum.Show}>
+            focusOnMount={focusOnButton === ButtonsEnum.Show}
+            type={ButtonType.translucent}>
             <Fragment>
               <div className={styles.iconContainer}>
                 <Icon
@@ -85,17 +87,11 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
                 <Button
                   onClick={player.setPrimary}
                   focusOnMount={this.props.focusOnButton === ButtonsEnum.SwitchScreen}
-                  ariaLabel={this.props.switchScreen}>
-                  <div className={styles.iconContainer}>
-                    <Icon
-                      id="dualscreen-pip-minimized-swap"
-                      height={icons.MediumSize}
-                      width={icons.MediumSize}
-                      viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
-                      path={icons.SWAP_ICON_PATH}
-                    />
-                  </div>
-                </Button>
+                  ariaLabel={this.props.switchScreen}
+                  type={ButtonType.borderless}
+                  size={ButtonSize.medium}
+                  icon={'switch'}
+                />
               </div>
             </div>
           );

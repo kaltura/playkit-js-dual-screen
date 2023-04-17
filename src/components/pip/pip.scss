@@ -36,32 +36,22 @@ $hide-container-gap: 5px;
   .hideContainer {
     position: relative;
     width: 66px;
-    height: $hide-container-height;
     margin: 0px 0px $hide-container-gap auto;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-
-    cursor: pointer;
-    color: white;
     font-style: normal;
     font-weight: 400;
-    font-size: 14px;
-    line-height: 18px;
-
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: $roundness-1;
 
     &:hover {
       background: rgba(0, 0, 0, 0.7);
     }
 
-    .iconContainer {
-      margin: 0px 8px 0px 0px;
-      height: $smallBorderLessIconSize;
-      width: $smallBorderLessIconSize;
+    span {
+      display: flex;
+
+      .iconContainer {
+        margin: 0px 6px 0px 0px;
+        height: $smallBorderLessIconSize;
+        width: $smallBorderLessIconSize;
+      }
     }
   }
 
@@ -84,19 +74,17 @@ $hide-container-gap: 5px;
       * {
         pointer-events: auto;
       }
+      :global(.playkit-tooltip) {
+        width: auto;
+      }
       &.verticalPlayer {
         :global(.playkit-tooltip span) {
           max-width: 100px !important;
         }
       }
 
-      .iconContainer {
-        display: inline-block;
-        margin: 0px;
-        padding: 2px;
-        &:first-child {
-          margin-right: 8px;
-        }
+      .buttonWrapper {
+        margin-left: 8px;
       }
     }
   }

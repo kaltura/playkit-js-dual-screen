@@ -2,7 +2,8 @@ import {h, createRef, Component, Fragment, VNode} from 'preact';
 import * as styles from './pip.scss';
 import {Animations, ButtonsEnum, Layout} from '../../enums';
 import {icons} from '../../icons';
-import {Button} from './../button';
+import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
+import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 const {connect} = KalturaPlayer.ui.redux;
 const {utils, reducers} = KalturaPlayer.ui;
 const {Icon} = KalturaPlayer.ui.components;
@@ -32,9 +33,9 @@ interface PIPChildComponentOwnProps {
   multiscreen: VNode;
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   playerSizePercentage: number;
-  hide: (byKeyboard: boolean) => void;
-  onSideBySideSwitch: (byKeyboard: boolean) => void;
-  onInversePIP: (byKeyboard: boolean) => void;
+  hide: OnClick;
+  onSideBySideSwitch: OnClick;
+  onInversePIP: OnClick;
   animation: Animations;
   isDragging?: boolean;
   setDraggableTarget?: (targetEl: HTMLDivElement) => void;
@@ -78,33 +79,27 @@ export class PipChild extends Component<PIPChildComponentProps> {
     const {onSideBySideSwitch, onInversePIP, focusOnButton, multiscreen} = this.props;
     return (
       <div className={[styles.innerButtons, this.props.portrait ? styles.verticalPlayer : ''].join(' ')}>
-        <Button
-          className={styles.iconContainer}
-          onClick={onSideBySideSwitch}
-          tooltip={{label: this.props.sideBySide!, type: 'bottom-left'}}
-          focusOnMount={focusOnButton === ButtonsEnum.SideBySide}>
-          <Icon
-            id="dualscreen-pip-side-by-side"
-            height={icons.MediumSize}
-            width={icons.MediumSize}
-            viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
-            path={icons.SIDE_BY_SIDE_ICON_PATH}
+        <div className={styles.buttonWrapper}>
+          <Button
+            icon={'add'}
+            onClick={onSideBySideSwitch}
+            tooltip={{label: this.props.sideBySide!, type: 'bottom-left'}}
+            type={ButtonType.borderless}
+            size={ButtonSize.medium}
+            focusOnMount={focusOnButton === ButtonsEnum.SideBySide}
           />
-        </Button>
-        <Button
-          className={styles.iconContainer}
-          onClick={onInversePIP}
-          tooltip={{label: this.props.switchScreen!, type: 'bottom-left'}}
-          focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen}>
-          <Icon
-            id="dualscreen-pip-swap"
-            height={icons.MediumSize}
-            width={icons.MediumSize}
-            viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
-            path={icons.SWAP_ICON_PATH}
+        </div>
+        <div className={styles.buttonWrapper}>
+          <Button
+            onClick={onInversePIP}
+            tooltip={{label: this.props.switchScreen!, type: 'bottom-left'}}
+            focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen}
+            type={ButtonType.borderless}
+            size={ButtonSize.medium}
+            icon={'switch'}
           />
-        </Button>
-        {multiscreen}
+        </div>
+        <div className={styles.buttonWrapper}>{multiscreen}</div>
       </div>
     );
   }
@@ -112,7 +107,12 @@ export class PipChild extends Component<PIPChildComponentProps> {
   private _renderHideButton() {
     const {hide, focusOnButton} = this.props;
     return (
-      <Button className={styles.hideContainer} onClick={hide} ariaLabel={this.props.hideAriaLabel} focusOnMount={focusOnButton === ButtonsEnum.Hide}>
+      <Button
+        className={styles.hideContainer}
+        onClick={hide}
+        ariaLabel={this.props.hideAriaLabel}
+        focusOnMount={focusOnButton === ButtonsEnum.Hide}
+        type={ButtonType.translucent}>
         <Fragment>
           <div className={styles.iconContainer}>
             <Icon

@@ -25,6 +25,7 @@ import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
 import {ImagePlayer, SlideItem} from './image-player';
 // @ts-ignore
 import {core, ui, BasePlugin, IEngineDecoratorProvider, KalturaPlayer} from 'kaltura-player-js';
+import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import './styles/global.scss';
 
 const {
@@ -372,13 +373,13 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.player as any}
-                hide={(byKeyboard: boolean) =>
+                hide={(event: OnClickEvent, byKeyboard: boolean) =>
                   this._switchToSingleMedia({animation: Animations.None, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.Show)})
                 }
-                onSideBySideSwitch={(byKeyboard: boolean) =>
+                onSideBySideSwitch={(event: OnClickEvent, byKeyboard: boolean) =>
                   this._switchToSideBySide({focusOnButton: byKeyboard ? ButtonsEnum.SideBySide : undefined, animation: Animations.ScaleLeft})
                 }
-                onInversePIP={(byKeyboard: boolean) => {
+                onInversePIP={(event: OnClickEvent, byKeyboard: boolean) => {
                   this._applyInverse();
                   this._layout = Layout.PIPInverse; // toggle layout change
                   this._switchToPIP({animation: Animations.Fade, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen)});
@@ -387,7 +388,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 aspectRatio={this.config.childAspectRatio}
                 focusOnButton={focusOnButton}
                 layout={this._layout}
-                multiscreen={<Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} icon="switch" />}
+                multiscreen={<Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} />}
               />
             </DragAndSnapManager>
           </ResponsiveManager>
@@ -416,7 +417,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         get: () => (
           <ResponsiveManager onDefaultSize={this._setMode}>
             <PipMinimized
-              show={(byKeyboard: boolean) =>
+              show={(event: OnClickEvent, byKeyboard: boolean) =>
                 this._switchToPIP({animation: Animations.None, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.Hide)})
               }
               players={this._makeMultiscreenPlayers([...this._getMultiscreenPlayers(), this.getActiveDualScreenPlayer(PlayerContainers.secondary)!])}
@@ -436,20 +437,20 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
     const leftSideProps = {
       player: this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any,
-      onExpand: (byKeyboard: boolean) =>
+      onExpand: (event: OnClickEvent, byKeyboard: boolean) =>
         this._switchToPIP({animation: Animations.ScaleRight, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)}),
       focusOnButton: Boolean(focusOnButton),
       animation,
-      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} icon="switch" />
+      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} />
     };
     const rightSideProps = {
       player: this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.player as any,
-      onExpand: (byKeyboard: boolean) => {
+      onExpand: (event: OnClickEvent, byKeyboard: boolean) => {
         this._applyInverse();
         this._switchToPIP({animation: Animations.ScaleLeft, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)});
       },
       animation: Animations.Fade,
-      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers(), true)} icon="switch" />
+      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers(), true)} />
     };
 
     this._addActives(

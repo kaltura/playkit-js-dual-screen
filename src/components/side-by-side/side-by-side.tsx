@@ -1,9 +1,8 @@
 import {h, createRef, Component, VNode, Fragment} from 'preact';
 import * as styles from './side-by-side.scss';
-import {icons} from '../../icons';
-import {Button} from './../button';
+import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
+import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {Animations, StreamMode} from './../../enums';
-const {Icon} = KalturaPlayer.ui.components;
 const {connect} = KalturaPlayer.ui.redux;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
@@ -20,7 +19,7 @@ const translates = ({streamMode}: SideBySideComponentOwnProps) => {
 
 interface SideBySideComponentOwnProps {
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
-  onExpand: (byKeyboard: boolean) => void;
+  onExpand: OnClick;
   animation: Animations;
   focusOnButton?: boolean;
   streamMode: StreamMode;
@@ -58,20 +57,18 @@ export class SideBySide extends Component<SideBySideComponentProps> {
       return (
         <Fragment>
           <div className={styles.innerButtons}>
-            <Button
-              className={styles.iconContainer}
-              onClick={onExpand}
-              tooltip={{label: this.props.expandScreen!, type: 'bottom-left'}}
-              focusOnMount={focusOnButton}>
-              <Icon
-                id="dualscreen-side-by-side-pip"
-                height={icons.MediumSize}
-                width={icons.MediumSize}
-                viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
-                path={icons.SWITCH_TO_SIDE_BY_SIDE_ICON_PATH}
+            <div className={styles.buttonWrapper}>{multiscreen}</div>
+            <div className={styles.buttonWrapper}>
+              <Button
+                className={styles.iconContainer}
+                onClick={onExpand}
+                tooltip={{label: this.props.expandScreen!, type: 'bottom-left'}}
+                focusOnMount={focusOnButton}
+                type={ButtonType.borderless}
+                size={ButtonSize.medium}
+                icon={'switch'}
               />
-            </Button>
-            {multiscreen}
+            </div>
           </div>
         </Fragment>
       );
