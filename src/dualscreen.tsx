@@ -192,9 +192,9 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   };
 
   private _setActiveDualScreenPlayer = (id: string, container: PlayerContainers) => {
-    const resetPlayer = this._dualScreenPlayers.find(dualScreenPlayer => dualScreenPlayer.container === container)!;
+    const resetPlayer = this._dualScreenPlayers.find(dualScreenPlayer => dualScreenPlayer.container === container);
     this._dualScreenPlayers = this._dualScreenPlayers.map(dualScreenPlayer => {
-      if (dualScreenPlayer.id === resetPlayer.id) {
+      if (resetPlayer && dualScreenPlayer.id === resetPlayer.id) {
         return {
           ...dualScreenPlayer,
           container: PlayerContainers.none
@@ -562,7 +562,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       .then((data: Map<string, any>) => {
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
-          secondaryMediaLoader?.response?.entries?.forEach((mediaEntry: any, index: number) => {
+          const secondaryMedias = secondaryMediaLoader?.response?.entries || [];
+          secondaryMedias.forEach((mediaEntry: any, index: number) => {
             const kalturaPlayer = this._createSecondaryPlayer(mediaEntry.id);
             this._dualScreenPlayers.push({
               id: mediaEntry.id,
@@ -572,7 +573,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
             });
             new VideoSyncManager(this.eventManager, this.player, kalturaPlayer, this.logger);
           });
-          if (this._dualScreenPlayers.length) {
+          if (secondaryMedias.length) {
             this._removeSettingsComponent();
             const secondaryPlayer: any = this.getActiveDualScreenPlayer(PlayerContainers.secondary)?.player;
             this.eventManager.listenOnce(secondaryPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
@@ -584,6 +585,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
               this._setMode();
             });
           } else {
+            this._setActiveDualScreenPlayer(IMAGE_PLAYER_ID, PlayerContainers.secondary);
             this.logger.trace('child media not found');
             this._resolveReadyPromise();
           }
