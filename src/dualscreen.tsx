@@ -212,7 +212,14 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   };
 
   private _getMultiscreenPlayers = () => {
-    return this._dualScreenPlayers.filter(dualScreenPlayer => dualScreenPlayer.container === PlayerContainers.none);
+    return this._dualScreenPlayers.filter(dualScreenPlayer => {
+      if (dualScreenPlayer.container === PlayerContainers.none) {
+        if (dualScreenPlayer.type === PlayerType.IMAGE && !(dualScreenPlayer.player as ImagePlayer).active) {
+          return false;
+        }
+        return true;
+      }
+    });
   };
 
   private _makeMultiscreenPlayers = (multiscreenPlayers: DualScreenPlayer[], invert = false): MultiscreenPlayer[] => {
