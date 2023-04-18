@@ -57,11 +57,10 @@ $hide-container-gap: 5px;
 
   .playerWrapper {
     position: relative;
-    border-radius: $roundness-2;
-    overflow: hidden;
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
     .playerContainer {
       box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.3);
+      border-radius: $roundness-2;
+      overflow: hidden;
       :global(.playkit-image-player img) {
         width: auto;
       }
@@ -71,6 +70,8 @@ $hide-container-gap: 5px;
       justify-content: flex-end;
       align-items: flex-start;
       pointer-events: none;
+      border-top-left-radius: $roundness-2;
+      border-top-right-radius: $roundness-2;
       * {
         pointer-events: auto;
       }

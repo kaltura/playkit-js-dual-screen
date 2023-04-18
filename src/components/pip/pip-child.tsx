@@ -79,6 +79,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
     const {onSideBySideSwitch, onInversePIP, focusOnButton, multiscreen} = this.props;
     return (
       <div className={[styles.innerButtons, this.props.portrait ? styles.verticalPlayer : ''].join(' ')}>
+        <div className={styles.buttonWrapper}>{multiscreen}</div>
         <div className={styles.buttonWrapper}>
           <Button
             icon={'add'}
@@ -99,7 +100,6 @@ export class PipChild extends Component<PIPChildComponentProps> {
             icon={'switch'}
           />
         </div>
-        <div className={styles.buttonWrapper}>{multiscreen}</div>
       </div>
     );
   }
