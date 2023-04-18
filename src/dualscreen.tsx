@@ -448,7 +448,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         this._switchToPIP({animation: Animations.ScaleRight, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)}),
       focusOnButton: Boolean(focusOnButton),
       animation,
-      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} />
+      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} updateOnStateChanged />
     };
     const rightSideProps = {
       player: this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.player as any,
@@ -457,7 +457,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         this._switchToPIP({animation: Animations.ScaleLeft, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SideBySide)});
       },
       animation: Animations.Fade,
-      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers(), true)} />
+      multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers(), true)} updateOnStateChanged />
     };
 
     this._addActives(

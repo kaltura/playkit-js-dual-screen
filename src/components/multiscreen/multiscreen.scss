@@ -10,6 +10,11 @@ $multiscreen-player-height: 58px;
     flex-direction: row;
     right: 0px;
     bottom: calc(-1 * (10px + #{$multiscreen-player-height}));
+    visibility: hidden;
+
+    &.visible {
+      visibility: visible;
+    }
 
     .multiscreenPlayer {
       display: flex;

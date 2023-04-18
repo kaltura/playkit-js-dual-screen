@@ -10,6 +10,7 @@ const {withEventManager} = KalturaPlayer.ui.Event;
 
 interface MultiscreenProps {
   players: Array<MultiscreenPlayer>;
+  updateOnStateChanged?: boolean;
   eventManager?: PlaykitUI.EventManager;
 }
 interface MultiscreenState {
@@ -24,19 +25,27 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
 
   state = {isOpen: false};
 
-  componentDidUpdate(): void {
-    if (this.state.isOpen) {
-      this._multiscreenPlayersRefs.forEach((ref, index) => {
-        const videoElement = this.props.players[index].player.getVideoElement();
-        videoElement.tabIndex = -1;
-        ref.current!.prepend(videoElement);
-      });
+  componentDidMount(): void {
+    this._attachVideoElements();
+  }
+
+  componentDidUpdate(previousProps: Readonly<MultiscreenProps>, previousState: Readonly<MultiscreenState>): void {
+    if (this.props.updateOnStateChanged && !previousState.isOpen && this.state.isOpen) {
+      this._attachVideoElements();
     }
   }
 
   componentWillUnmount() {
     this._multiscreenPlayersRefs = [];
   }
+
+  private _attachVideoElements = () => {
+    this._multiscreenPlayersRefs.forEach((ref, index) => {
+      const videoElement = this.props.players[index].player.getVideoElement();
+      videoElement.tabIndex = -1;
+      ref.current!.prepend(videoElement);
+    });
+  };
 
   private _togglePopover = (event: OnClickEvent, byKeyboard = false) => {
     // a11y wrapper prevent propagation of click event, so 'click' have to be triggered manually
@@ -81,34 +90,32 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
           </Tooltip>
         )}
 
-        {this.state.isOpen && (
-          <div className={styles.multiscreenPlayersWrapper}>
-            {props.players.map((player, index) => {
-              const ref = createRef<HTMLDivElement>();
-              this._multiscreenPlayersRefs[index] = ref;
-              return (
-                <div ref={ref} className={styles.multiscreenPlayer}>
-                  <div className={styles.multiscreenButtonsWrapper}>
+        <div className={[styles.multiscreenPlayersWrapper, this.state.isOpen ? styles.visible : ''].join(' ')}>
+          {props.players.map((player, index) => {
+            const ref = createRef<HTMLDivElement>();
+            this._multiscreenPlayersRefs[index] = ref;
+            return (
+              <div ref={ref} className={styles.multiscreenPlayer}>
+                <div className={styles.multiscreenButtonsWrapper}>
+                  <Button
+                    onClick={(event: OnClickEvent, byKeyboard = false) => this._handleClick(byKeyboard, player.setPrimary)}
+                    type={ButtonType.borderless}
+                    size={ButtonSize.medium}
+                    icon={player.setSecondary ? 'pictureInPicture' : 'switch'}
+                  />
+                  {player.setSecondary && (
                     <Button
-                      onClick={(event: OnClickEvent, byKeyboard = false) => this._handleClick(byKeyboard, player.setPrimary)}
+                      onClick={(event: OnClickEvent, byKeyboard = false) => this._handleClick(byKeyboard, player.setSecondary!)}
                       type={ButtonType.borderless}
                       size={ButtonSize.medium}
-                      icon={player.setSecondary ? 'pictureInPicture' : 'switch'}
+                      icon={'minimizedVideo'}
                     />
-                    {player.setSecondary && (
-                      <Button
-                        onClick={(event: OnClickEvent, byKeyboard = false) => this._handleClick(byKeyboard, player.setSecondary!)}
-                        type={ButtonType.borderless}
-                        size={ButtonSize.medium}
-                        icon={'minimizedVideo'}
-                      />
-                    )}
-                  </div>
+                  )}
                 </div>
-              );
-            })}
-          </div>
-        )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
