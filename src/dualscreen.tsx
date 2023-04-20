@@ -117,7 +117,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     const kalturaCuePointService: any = this.player.getService('kalturaCuepoints');
     this._getSecondaryMedia();
     if (kalturaCuePointService) {
-      this._getThumbs(kalturaCuePointService);
+      kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE, kalturaCuePointService.CuepointType.VIEW_CHANGE]);
       const imagePlayer = this.getDualScreenPlayer(IMAGE_PLAYER_ID)?.player as ImagePlayer;
       this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, imagePlayer as any, this.logger, this._onSlideViewChanged);
     } else {
@@ -195,7 +195,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     });
   };
 
-  private _setActiveDualScreenPlayer = (id: string, container: PlayerContainers) => {
+  private _setActiveDualScreenPlayer = (id: string, container: PlayerContainers.primary | PlayerContainers.secondary) => {
+    if (this.getActiveDualScreenPlayer(container)?.id === id) {
+      // prevent set player to the same container
+      return;
+    }
     const resetPlayer = this._dualScreenPlayers.find(dualScreenPlayer => dualScreenPlayer.container === container);
     this._dualScreenPlayers = this._dualScreenPlayers.map(dualScreenPlayer => {
       if (resetPlayer && dualScreenPlayer.id === resetPlayer.id) {
@@ -515,10 +519,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this._removeSettingsComponent();
   };
 
-  private _getThumbs(kalturaCuePointService: any) {
-    kalturaCuePointService?.registerTypes([kalturaCuePointService.CuepointType.SLIDE, kalturaCuePointService.CuepointType.VIEW_CHANGE]);
-  }
-
   private _onSlideViewChanged = (viewChange: ExternalLayout) => {
     if (this._externalLayout === viewChange) {
       return;
@@ -528,41 +528,53 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   };
 
   private _applyExternalLayout = () => {
+    const primaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.primary);
+    const secondaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.secondary);
+    const _checkPlayerContainers = (inverse?: boolean) => {
+      return primaryPlayer?.id === inverse ? IMAGE_PLAYER_ID : MAIN_PLAYER_ID && secondaryPlayer?.id === inverse ? MAIN_PLAYER_ID : IMAGE_PLAYER_ID;
+    };
+    const _applyPlayerContainers = (inverse?: boolean) => {
+      this._setActiveDualScreenPlayer(MAIN_PLAYER_ID, inverse ? PlayerContainers.secondary : PlayerContainers.primary);
+      this._setActiveDualScreenPlayer(IMAGE_PLAYER_ID, inverse ? PlayerContainers.primary : PlayerContainers.secondary);
+    };
     switch (this._externalLayout) {
       case ExternalLayout.Hidden:
         this._switchToHidden();
         break;
       case ExternalLayout.SingleMedia:
-        if (this._layout !== Layout.SingleMedia) {
-          this._switchToSingleMedia();
+        if (this._layout !== Layout.SingleMedia || !_checkPlayerContainers()) {
+          _applyPlayerContainers();
+          this._switchToSingleMedia({force: true});
         }
         break;
       case ExternalLayout.SingleMediaInverse:
-        if (this._layout !== Layout.SingleMediaInverse) {
-          this._applyInverse();
-          this._switchToSingleMedia();
+        if (this._layout !== Layout.SingleMediaInverse || !_checkPlayerContainers(true)) {
+          _applyPlayerContainers(true);
+          this._switchToSingleMedia({force: true});
         }
         break;
       case ExternalLayout.PIP:
-        if (this._layout !== Layout.PIP) {
-          this._switchToPIP();
+        if (this._layout !== Layout.PIP || !_checkPlayerContainers()) {
+          _applyPlayerContainers();
+          this._switchToPIP({force: true});
         }
         break;
       case ExternalLayout.PIPInverse:
-        if (this._layout !== Layout.PIPInverse) {
-          this._applyInverse();
-          this._switchToPIP();
+        if (this._layout !== Layout.PIPInverse || !_checkPlayerContainers(true)) {
+          _applyPlayerContainers(true);
+          this._switchToPIP({force: true});
         }
         break;
       case ExternalLayout.SideBySide:
-        if (this._layout !== Layout.SideBySide) {
-          this._switchToSideBySide();
+        if (this._layout !== Layout.SideBySide || !_checkPlayerContainers()) {
+          _applyPlayerContainers();
+          this._switchToSideBySide({force: true});
         }
         break;
       case ExternalLayout.SideBySideInverse:
-        if (this._layout !== Layout.SideBySideInverse) {
-          this._applyInverse();
-          this._switchToSideBySide();
+        if (this._layout !== Layout.SideBySideInverse || !_checkPlayerContainers(true)) {
+          _applyPlayerContainers(true);
+          this._switchToSideBySide({force: true});
         }
         break;
     }
