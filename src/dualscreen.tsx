@@ -406,7 +406,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 aspectRatio={this.config.childAspectRatio}
                 focusOnButton={focusOnButton}
                 layout={this._layout}
-                multiscreen={<Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} />}
+                multiscreen={<Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} getPosition={this.getPipPosition} />}
               />
             </DragAndSnapManager>
           </ResponsiveManager>

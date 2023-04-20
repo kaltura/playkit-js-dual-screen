@@ -1,6 +1,7 @@
 import {h, Component, RefObject, createRef} from 'preact';
 import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
+import {Position} from '../../enums';
 import {PlaykitUI} from 'kaltura-player-js';
 import {MultiscreenPlayer} from '../../types';
 import * as styles from './multiscreen.scss';
@@ -17,9 +18,12 @@ interface MultiscreenProps {
   updateOnStateChanged?: boolean;
   eventManager?: PlaykitUI.EventManager;
   multiscreenLabel?: string;
+  getParentRef?: () => RefObject<HTMLDivElement>;
+  getPosition?: () => Position;
 }
 interface MultiscreenState {
   isOpen: boolean;
+  xPosition: number;
 }
 
 let focusOnMultiscreenButton = false;
@@ -28,16 +32,33 @@ let focusOnMultiscreenButton = false;
 @withEventManager
 export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
   private _multiscreenPlayersRefs: Array<RefObject<HTMLDivElement>> = [];
+  private _multiscreenPlayersWrapperRef = createRef<HTMLDivElement>();
 
-  state = {isOpen: false};
+  state = {isOpen: false, xPosition: 0};
 
   componentDidMount(): void {
     this._attachVideoElements();
   }
 
   componentDidUpdate(previousProps: Readonly<MultiscreenProps>, previousState: Readonly<MultiscreenState>): void {
-    if (this.props.updateOnStateChanged && !previousState.isOpen && this.state.isOpen) {
-      this._attachVideoElements();
+    if (!previousState.isOpen && this.state.isOpen) {
+      if (this.props.updateOnStateChanged) {
+        // re-attach video elements for SbS layout
+        this._attachVideoElements();
+      }
+      if (this.props.getParentRef && this.props.getPosition) {
+        // check if multiscreen container inside PiP container for left positons
+        if ([Position.TopLeft, Position.BottomLeft].includes(this.props.getPosition())) {
+          const parentLeftPostion = this.props.getParentRef().current?.getBoundingClientRect().left || 0;
+          const multiscreenLeftPostion = this._multiscreenPlayersWrapperRef.current?.getBoundingClientRect().left || 0;
+          const rightShift = multiscreenLeftPostion - parentLeftPostion;
+          if (rightShift < 0) {
+            this.setState({xPosition: rightShift});
+          }
+        } else if (this.state.xPosition !== 0) {
+          this.setState({xPosition: 0});
+        }
+      }
     }
   }
 
@@ -97,7 +118,10 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
           </Tooltip>
         )}
 
-        <div className={[styles.multiscreenPlayersWrapper, this.state.isOpen ? styles.visible : ''].join(' ')}>
+        <div
+          style={{right: `${this.state.xPosition}px`}}
+          className={[styles.multiscreenPlayersWrapper, this.state.isOpen ? styles.visible : ''].join(' ')}
+          ref={this._multiscreenPlayersWrapperRef}>
           {props.players.map((player, index) => {
             const ref = createRef<HTMLDivElement>();
             this._multiscreenPlayersRefs[index] = ref;

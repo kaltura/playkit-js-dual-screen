@@ -1,4 +1,4 @@
-import {h, createRef, Component, Fragment, VNode} from 'preact';
+import {h, createRef, Component, Fragment, VNode, cloneElement} from 'preact';
 import * as styles from './pip.scss';
 import {Animations, ButtonsEnum, Layout} from '../../enums';
 import {icons} from '../../icons';
@@ -79,7 +79,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
     const {onSideBySideSwitch, onInversePIP, focusOnButton, multiscreen} = this.props;
     return (
       <div className={[styles.innerButtons, this.props.portrait ? styles.verticalPlayer : ''].join(' ')}>
-        <div className={styles.buttonWrapper}>{multiscreen}</div>
+        <div className={styles.buttonWrapper}>{cloneElement(multiscreen, {getParentRef: () => this.pipContainerRef})}</div>
         <div className={styles.buttonWrapper}>
           <Button
             icon={'add'}
