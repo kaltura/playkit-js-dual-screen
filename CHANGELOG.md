@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.4](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.3...v3.1.4) (2023-04-19)
+
+
+### Bug Fixes
+
+* **FEC-13084:** add translations folder ([225c4b2](https://github.com/kaltura/playkit-js-dual-screen/commit/225c4b2df55cfa36f88c8616479f81ab1c2e3aab))
+
 ### [3.1.3](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.2...v3.1.3) (2023-03-22)
 
 

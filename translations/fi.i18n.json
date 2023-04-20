@@ -1,0 +1,13 @@
+{
+  "fi": {
+    "dualScreen": {
+      "show": "Näytä",
+      "show_label": "Näytä kaksoisnäyttö",
+      "hide": "Piilota",
+      "hide_label": "Piilota kaksoisnäyttö",
+      "side_by_side": "Rinnakkaisnäytöt",
+      "switch_screen": "Vaihda näyttöä",
+      "expand_screen": "Laajenna näyttö"
+    }
+  }
+}

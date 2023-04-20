@@ -1,0 +1,13 @@
+{
+  "fr_ca": {
+    "dualScreen": {
+      "show": "Afficher",
+      "show_label": "Afficher le double écran",
+      "hide": "Masquer",
+      "hide_label": "Masquer le double écran",
+      "side_by_side": "Écrans juxtaposés",
+      "switch_screen": "Écran de commutation",
+      "expand_screen": "Agrandir l'écran"
+    }
+  }
+}

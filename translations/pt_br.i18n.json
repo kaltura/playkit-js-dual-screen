@@ -1,0 +1,13 @@
+{
+  "pt_br": {
+    "dualScreen": {
+      "show": "Exibir",
+      "show_label": "Mostrar tela dupla",
+      "hide": "Ocultar",
+      "hide_label": "Ocultar tela dupla",
+      "side_by_side": "Telas lado a lado",
+      "switch_screen": "Trocar tela",
+      "expand_screen": "Expandir tela"
+    }
+  }
+}
