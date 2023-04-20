@@ -7,11 +7,16 @@ import * as styles from './multiscreen.scss';
 
 const {Tooltip} = KalturaPlayer.ui.components;
 const {withEventManager} = KalturaPlayer.ui.Event;
+const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
+const translates = {
+  multiscreenLabel: <Text id="dualScreen.multiscreen">Show more screens</Text>
+};
 interface MultiscreenProps {
   players: Array<MultiscreenPlayer>;
   updateOnStateChanged?: boolean;
   eventManager?: PlaykitUI.EventManager;
+  multiscreenLabel?: string;
 }
 interface MultiscreenState {
   isOpen: boolean;
@@ -19,6 +24,7 @@ interface MultiscreenState {
 
 let focusOnMultiscreenButton = false;
 
+@withText(translates)
 @withEventManager
 export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
   private _multiscreenPlayersRefs: Array<RefObject<HTMLDivElement>> = [];
@@ -86,7 +92,7 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
         {this.state.isOpen ? (
           popoverMenuButton
         ) : (
-          <Tooltip type="bottom-left" label={'Show more screens'}>
+          <Tooltip type="bottom-left" label={this.props.multiscreenLabel}>
             {popoverMenuButton}
           </Tooltip>
         )}

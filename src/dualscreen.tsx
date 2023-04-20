@@ -528,6 +528,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   };
 
   private _applyExternalLayout = () => {
+    // external layout applies by Kaltura Webcast Studion app, that support only 1 media and slides
     const primaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.primary);
     const secondaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.secondary);
     const _checkPlayerContainers = (inverse?: boolean) => {
