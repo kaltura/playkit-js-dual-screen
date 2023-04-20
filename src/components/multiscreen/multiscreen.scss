@@ -4,6 +4,10 @@ $multiscreen-player-height: 58px;
 
 .multiscreenWrapper {
   position: relative;
+
+  .active {
+    background-color: $tone-6-color;
+  }
   .multiscreenPlayersWrapper {
     position: absolute;
     display: flex;

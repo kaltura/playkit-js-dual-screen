@@ -72,6 +72,7 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
     }
     const popoverMenuButton = (
       <Button
+        className={this.state.isOpen ? styles.active : ''}
         type={ButtonType.borderless}
         size={ButtonSize.medium}
         icon={'more'}
