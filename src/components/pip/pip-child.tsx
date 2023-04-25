@@ -88,6 +88,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
             type={ButtonType.borderless}
             size={ButtonSize.medium}
             focusOnMount={focusOnButton === ButtonsEnum.SideBySide}
+            ariaLabel={this.props.sideBySide!}
           />
         </div>
         <div className={styles.buttonWrapper}>
@@ -98,6 +99,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
             type={ButtonType.borderless}
             size={ButtonSize.medium}
             icon={'switch'}
+            ariaLabel={this.props.switchScreen!}
           />
         </div>
       </div>

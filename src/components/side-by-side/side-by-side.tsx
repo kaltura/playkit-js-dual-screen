@@ -1,4 +1,4 @@
-import {h, createRef, Component, VNode, Fragment} from 'preact';
+import {h, createRef, Component, VNode, Fragment, RefObject, cloneElement} from 'preact';
 import * as styles from './side-by-side.scss';
 import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
 import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
@@ -24,6 +24,7 @@ interface SideBySideComponentOwnProps {
   focusOnButton?: boolean;
   streamMode: StreamMode;
   multiscreen: VNode;
+  getParentRef: () => RefObject<HTMLDivElement>;
 }
 interface SideBySideComponentConnectProps {
   playerWidth?: number;
@@ -57,7 +58,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
       return (
         <Fragment>
           <div className={styles.innerButtons}>
-            <div className={styles.buttonWrapper}>{multiscreen}</div>
+            <div className={styles.buttonWrapper}>{cloneElement(multiscreen, {getParentRef: this.props.getParentRef, sbsLayout: true})}</div>
             <div className={styles.buttonWrapper}>
               <Button
                 className={styles.iconContainer}

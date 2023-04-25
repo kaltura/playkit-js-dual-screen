@@ -10,14 +10,22 @@ const {Tooltip} = KalturaPlayer.ui.components;
 const {withEventManager} = KalturaPlayer.ui.Event;
 const {withText, Text} = KalturaPlayer.ui.preacti18n;
 
+const CLOSE_EVENT = 'closeMultiScreenPopup';
+
 const translates = {
-  multiscreenLabel: <Text id="dualScreen.multiscreen">Show more screens</Text>
+  multiscreenLabel: <Text id="dualScreen.multiscreen">Show more screens</Text>,
+  switchScreen: <Text id="dualScreen.switch_screen">Switch Screen</Text>,
+  switchToSecondary: <Text id="dualScreen.switch_to_secondary_screen">Switch to secondary screen</Text>,
+  switchToPrimary: <Text id="dualScreen.switch_to_primary_screen">Switch to primary screen</Text>
 };
 interface MultiscreenProps {
   players: Array<MultiscreenPlayer>;
-  updateOnStateChanged?: boolean;
+  sbsLayout?: boolean;
   eventManager?: PlaykitUI.EventManager;
   multiscreenLabel?: string;
+  switchScreen?: string;
+  switchToSecondary?: string;
+  switchToPrimary?: string;
   getParentRef?: () => RefObject<HTMLDivElement>;
   getPosition?: () => Position;
 }
@@ -38,11 +46,15 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
 
   componentDidMount(): void {
     this._attachVideoElements();
+    if (this.props.getParentRef) {
+      const parentRef = this.props.getParentRef().current!;
+      this.props.eventManager?.listen(parentRef, CLOSE_EVENT, this._closePupup);
+    }
   }
 
   componentDidUpdate(previousProps: Readonly<MultiscreenProps>, previousState: Readonly<MultiscreenState>): void {
     if (!previousState.isOpen && this.state.isOpen) {
-      if (this.props.updateOnStateChanged) {
+      if (this.props.sbsLayout) {
         // re-attach video elements for SbS layout
         this._attachVideoElements();
       }
@@ -74,19 +86,28 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
     });
   };
 
-  private _togglePopover = (event: OnClickEvent, byKeyboard = false) => {
-    // a11y wrapper prevent propagation of click event, so 'click' have to be triggered manually
+  private _closePupup = () => {
+    this.setState({isOpen: false});
+    this.props.eventManager?.unlisten(document, 'click', this._closePupup);
+  };
+
+  private _openPopup = () => {
+    this.props.eventManager?.listenOnce(document, 'click', this._closePupup);
+    this.setState({isOpen: true});
+  };
+
+  private _handleClick = (event: OnClickEvent, byKeyboard = false) => {
     focusOnMultiscreenButton = byKeyboard;
-    document.dispatchEvent(new Event('click'));
+    if (this.props.getParentRef) {
+      // a11y wrapper prevents propagation of click event, so parent node uses to handle close
+      this.props.getParentRef().current?.dispatchEvent(new Event(CLOSE_EVENT));
+    }
     if (!this.state.isOpen) {
-      this.props.eventManager?.listenOnce(document, 'click', () => {
-        this.setState({isOpen: false});
-      });
-      this.setState({isOpen: true});
+      this._openPopup();
     }
   };
 
-  private _handleClick = (byKeyboard: boolean, cb: () => void) => {
+  private _handleLayoutChange = (byKeyboard: boolean, cb: () => void) => {
     if (byKeyboard) {
       focusOnMultiscreenButton = byKeyboard;
     }
@@ -103,7 +124,7 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
         type={ButtonType.borderless}
         size={ButtonSize.medium}
         icon={'more'}
-        onClick={this._togglePopover}
+        onClick={this._handleClick}
         focusOnMount={focusOnMultiscreenButton}
       />
     );
@@ -129,17 +150,19 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
               <div ref={ref} className={styles.multiscreenPlayer}>
                 <div className={styles.multiscreenButtonsWrapper}>
                   <Button
-                    onClick={(event: OnClickEvent, byKeyboard = false) => this._handleClick(byKeyboard, player.setPrimary)}
+                    onClick={(event: OnClickEvent, byKeyboard = false) => this._handleLayoutChange(byKeyboard, player.setPrimary)}
                     type={ButtonType.borderless}
                     size={ButtonSize.medium}
                     icon={player.setSecondary ? 'pictureInPicture' : 'switch'}
+                    ariaLabel={player.setSecondary ? this.props.switchToPrimary : this.props.switchScreen}
                   />
                   {player.setSecondary && (
                     <Button
-                      onClick={(event: OnClickEvent, byKeyboard = false) => this._handleClick(byKeyboard, player.setSecondary!)}
+                      onClick={(event: OnClickEvent, byKeyboard = false) => this._handleLayoutChange(byKeyboard, player.setSecondary!)}
                       type={ButtonType.borderless}
                       size={ButtonSize.medium}
                       icon={'minimizedVideo'}
+                      ariaLabel={this.props.switchToSecondary}
                     />
                   )}
                 </div>

@@ -1,4 +1,4 @@
-import {Component, h, VNode} from 'preact';
+import {Component, h, VNode, createRef} from 'preact';
 import {SideBySide} from './side-by-side';
 import {Animations, Layout, StreamMode} from '../../enums';
 import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
@@ -21,6 +21,8 @@ interface SideBySideWrapperComponentProps {
   onMinSize: () => void;
 }
 export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps> {
+  sbsWrapperRef = createRef<HTMLDivElement>();
+
   render({leftSideProps, rightSideProps, layout, onSizeChange, onMinSize}: SideBySideWrapperComponentProps) {
     return (
       <ResponsiveManager
@@ -28,9 +30,17 @@ export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps
           onMinSize();
         }}
         onDefaultSize={onSizeChange}>
-        <div className={styles.sideBySideWrapper}>
-          <SideBySide {...leftSideProps} streamMode={layout === Layout.SideBySide ? StreamMode.Primary : StreamMode.Secondary} />
-          <SideBySide {...rightSideProps} streamMode={layout === Layout.SideBySide ? StreamMode.Secondary : StreamMode.Primary} />
+        <div className={styles.sideBySideWrapper} ref={this.sbsWrapperRef}>
+          <SideBySide
+            {...leftSideProps}
+            streamMode={layout === Layout.SideBySide ? StreamMode.Primary : StreamMode.Secondary}
+            getParentRef={() => this.sbsWrapperRef}
+          />
+          <SideBySide
+            {...rightSideProps}
+            streamMode={layout === Layout.SideBySide ? StreamMode.Secondary : StreamMode.Primary}
+            getParentRef={() => this.sbsWrapperRef}
+          />
         </div>
       </ResponsiveManager>
     );
