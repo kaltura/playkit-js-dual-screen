@@ -1,4 +1,4 @@
-import {Layout, Position, PlayerType} from '../enums';
+import {Layout, Position} from '../enums';
 
 export interface DualScreenConfig {
   layout: Layout;
@@ -9,4 +9,5 @@ export interface DualScreenConfig {
     height: number;
   };
   slidesPreloadEnabled: boolean;
+  removePlayerSettings: boolean;
 }
