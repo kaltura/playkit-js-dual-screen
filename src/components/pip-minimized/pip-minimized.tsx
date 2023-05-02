@@ -1,8 +1,10 @@
-import {h, createRef, Component, Fragment} from 'preact';
+import {h, createRef, Component, Fragment, RefObject} from 'preact';
 import * as styles from './pip-minimized.scss';
 import {icons} from '../../icons';
-import {Button} from './../button';
+import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
+import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {ButtonsEnum} from '../../enums';
+import {MultiscreenPlayer} from '../../types';
 const {
   components: {Icon}
 } = KalturaPlayer.ui;
@@ -17,9 +19,8 @@ const translates = () => {
 };
 
 interface PIPMinimizedOwnProps {
-  player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
-  show: (byKeyboard: boolean) => void;
-  onInverse: (byKeyboard: boolean) => void;
+  players: MultiscreenPlayer[];
+  show: OnClick;
   hideButtons?: boolean;
   focusOnButton?: ButtonsEnum;
 }
@@ -35,16 +36,18 @@ type PIPMinimizedProps = PIPMinimizedOwnProps & PIPMinimizedConnectProps & PIPMi
 
 @withText(translates)
 export class PipMinimized extends Component<PIPMinimizedProps> {
-  ref = createRef();
+  _multiscreenPlayersRefs: Array<RefObject<HTMLDivElement>> = [];
 
   componentDidMount() {
-    const videoElement = this.props.player.getVideoElement();
-    videoElement.tabIndex = -1;
-    this.ref.current.appendChild(videoElement);
+    this._multiscreenPlayersRefs.forEach((ref, index) => {
+      const videoElement = this.props.players[index].player.getVideoElement();
+      videoElement.tabIndex = -1;
+      ref.current!.prepend(videoElement);
+    });
   }
 
   private _renderHoverButton = () => {
-    const {show, onInverse, hideButtons, focusOnButton} = this.props;
+    const {show, hideButtons, focusOnButton} = this.props;
     return (
       <Fragment>
         {!hideButtons && (
@@ -52,7 +55,8 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
             onClick={show}
             className={styles.showContainer}
             ariaLabel={this.props.showAriaLabel}
-            focusOnMount={focusOnButton === ButtonsEnum.Show}>
+            focusOnMount={focusOnButton === ButtonsEnum.Show}
+            type={ButtonType.translucent}>
             <Fragment>
               <div className={styles.iconContainer}>
                 <Icon
@@ -67,19 +71,6 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
             </Fragment>
           </Button>
         )}
-        <div className={[styles.innerButtons, hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
-          <Button onClick={onInverse} focusOnMount={focusOnButton === ButtonsEnum.SwitchScreen} ariaLabel={this.props.switchScreen}>
-            <div className={styles.iconContainer}>
-              <Icon
-                id="dualscreen-pip-minimized-swap"
-                height={icons.MediumSize}
-                width={icons.MediumSize}
-                viewBox={`0 0 ${icons.MediumSize} ${icons.MediumSize}`}
-                path={icons.SWAP_ICON_PATH}
-              />
-            </div>
-          </Button>
-        </div>
       </Fragment>
     );
   };
@@ -87,7 +78,24 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
   render(props: PIPMinimizedProps) {
     return (
       <div className={styles.childPlayerContainer}>
-        <div ref={this.ref} className={[styles.childPlayer, props.hideButtons ? styles.tinyChildPlayer : ''].join(' ')} />
+        {this.props.players.map((player, index) => {
+          const ref = createRef<HTMLDivElement>();
+          this._multiscreenPlayersRefs[index] = ref;
+          return (
+            <div ref={ref} className={[styles.childPlayer, props.hideButtons ? styles.tinyChildPlayer : ''].join(' ')}>
+              <div className={[styles.innerButtons, this.props.hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
+                <Button
+                  onClick={player.setPrimary}
+                  focusOnMount={this.props.focusOnButton === ButtonsEnum.SwitchScreen}
+                  ariaLabel={this.props.switchScreen}
+                  type={ButtonType.borderless}
+                  size={ButtonSize.medium}
+                  icon={'switch'}
+                />
+              </div>
+            </div>
+          );
+        })}
         {this._renderHoverButton()}
       </div>
     );

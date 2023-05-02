@@ -168,4 +168,8 @@ export class ImagePlayer {
     this._images = [];
     clearTimeout(this._retryTimeout);
   };
+
+  public destroy = () => {
+    this.reset();
+  };
 }

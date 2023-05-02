@@ -9,7 +9,8 @@
       "switch_to_primary_screen": "Switch to primary screen",
       "switch_to_secondary_screen": "Switch to secondary screen",
       "expand_primary_screen": "Expand primary screen",
-      "expand_secondary_screen": "Expand secondary screen"
+      "expand_secondary_screen": "Expand secondary screen",
+      "multiscreen": "Show more screens"
     }
   }
 }

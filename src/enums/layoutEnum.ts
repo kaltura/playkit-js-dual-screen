@@ -1,3 +1,6 @@
+import {Animations} from './animation';
+import {ButtonsEnum} from './buttons';
+
 export enum Layout {
   PIP = 'PIP',
   PIPInverse = 'PIPInverse',
@@ -6,6 +9,13 @@ export enum Layout {
   SideBySide = 'SideBySide',
   SideBySideInverse = 'SideBySideInverse',
   Hidden = 'Hidden'
+}
+
+export enum Position {
+  BottomLeft = 'bottom-left',
+  BottomRight = 'bottom-right',
+  TopLeft = 'top-left',
+  TopRight = 'top-right'
 }
 
 export enum ExternalLayout {
@@ -23,7 +33,19 @@ export enum ViewModeLockState {
   Unlocked = 'unlocked'
 }
 
-export enum StreamMode{
+export enum StreamMode {
   Primary = 'Primary',
   Secondary = 'Secondary'
+}
+
+export enum PlayerContainers {
+  none = 'none',
+  primary = 'primary',
+  secondary = 'secondary'
+}
+
+export interface LayoutChangeProps {
+  animation?: Animations;
+  focusOnButton?: ButtonsEnum;
+  force?: boolean;
 }
