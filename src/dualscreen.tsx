@@ -606,6 +606,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
             if (this.config.removePlayerSettings) {
               this._removeSettingsComponent();
             }
+            
             const secondaryPlayer: any = this.getActiveDualScreenPlayer(PlayerContainers.secondary)?.player;
             this.eventManager.listenOnce(secondaryPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
               this._resolveReadyPromise();
