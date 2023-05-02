@@ -65,7 +65,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       height: 9
     },
     position: Position.BottomRight,
-    slidesPreloadEnabled: true
+    slidesPreloadEnabled: true,
+    removePlayerSettings: false
   };
 
   constructor(name: string, player: KalturaPlayer, config: DualScreenConfig) {
@@ -515,8 +516,9 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       // update PIP component
       this._setMode();
     }
-
-    this._removeSettingsComponent();
+    if (this.config.removePlayerSettings) {
+      this._removeSettingsComponent();
+    }
   };
 
   private _onSlideViewChanged = (viewChange: ExternalLayout) => {
@@ -601,7 +603,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
             new VideoSyncManager(this.eventManager, this.player, kalturaPlayer, this.logger);
           });
           if (secondaryMedias.length) {
-            this._removeSettingsComponent();
+            if (this.config.removePlayerSettings) {
+              this._removeSettingsComponent();
+            }
+            
             const secondaryPlayer: any = this.getActiveDualScreenPlayer(PlayerContainers.secondary)?.player;
             this.eventManager.listenOnce(secondaryPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
               this._resolveReadyPromise();
