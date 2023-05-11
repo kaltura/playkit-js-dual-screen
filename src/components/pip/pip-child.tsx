@@ -162,7 +162,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
     };
 
     return (
-      <div className={styleClass.join(' ')} ref={this.pipContainerRef}>
+      <div className={styleClass.join(' ')} ref={this.pipContainerRef} data-testid="dualscreen_pipChildren">
         {this._renderHideButton()}
         <div className={styles.playerWrapper}>
           <div className={styles.playerContainer} style={playerContainerStyles} ref={this.playerContainerRef} />

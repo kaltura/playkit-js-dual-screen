@@ -24,7 +24,7 @@ import {getValueOrUndefined} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
 import {ImagePlayer, SlideItem} from './image-player';
 // @ts-ignore
-import {core, ui, BasePlugin, IEngineDecoratorProvider, KalturaPlayer} from 'kaltura-player-js';
+import {core, ui, BasePlugin, IEngineDecoratorProvider, KalturaPlayer} from '@playkit-js/kaltura-player-js';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import './styles/global.scss';
 

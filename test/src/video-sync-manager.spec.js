@@ -1,8 +1,8 @@
-import {setup} from 'kaltura-player-js';
+import {setup} from '@playkit-js/kaltura-player-js';
 import {EventManager} from '@playkit-js/playkit-js';
 import * as TestUtils from './utils/test-utils';
 import {VideoSyncManager} from '../../src/video-sync-manager';
-import {core} from 'kaltura-player-js';
+import {core} from '@playkit-js/kaltura-player-js';
 const {EventType, FakeEvent, Error, StateType} = core;
 
 describe('KDualscreenPlugin', function () {

@@ -88,7 +88,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
       classNames.push(styles.animatedFade);
     }
     return (
-      <div ref={this.ref} className={classNames.join(' ')} style={playerContainerStyles}>
+      <div ref={this.ref} className={classNames.join(' ')} style={playerContainerStyles} data-testid="dualscreen_sbs">
         {this._renderHoverButton()}
       </div>
     );

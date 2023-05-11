@@ -2,7 +2,7 @@ import {h, Component, RefObject, createRef} from 'preact';
 import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {Position} from '../../enums';
-import {PlaykitUI} from 'kaltura-player-js';
+import {PlaykitUI} from '@playkit-js/kaltura-player-js';
 import {MultiscreenPlayer} from '../../types';
 import * as styles from './multiscreen.scss';
 

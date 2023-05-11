@@ -30,7 +30,7 @@ export class SideBySideWrapper extends Component<SideBySideWrapperComponentProps
           onMinSize();
         }}
         onDefaultSize={onSizeChange}>
-        <div className={styles.sideBySideWrapper} ref={this.sbsWrapperRef}>
+        <div className={styles.sideBySideWrapper} ref={this.sbsWrapperRef} data-testid="dualscreen_sideBySide">
           <SideBySide
             {...leftSideProps}
             streamMode={layout === Layout.SideBySide ? StreamMode.Primary : StreamMode.Secondary}

@@ -77,7 +77,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
 
   render(props: PIPMinimizedProps) {
     return (
-      <div className={styles.childPlayerContainer}>
+      <div className={styles.childPlayerContainer} data-testid="dualscreen_pipMinimized">
         {this.props.players.map((player, index) => {
           const ref = createRef<HTMLDivElement>();
           this._multiscreenPlayersRefs[index] = ref;
