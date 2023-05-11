@@ -68,6 +68,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
                 type={ButtonType.borderless}
                 size={ButtonSize.medium}
                 icon={'switch'}
+                testId="dualscreen_switchToPIP"
               />
             </div>
           </div>

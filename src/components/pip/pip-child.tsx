@@ -89,6 +89,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
             size={ButtonSize.medium}
             focusOnMount={focusOnButton === ButtonsEnum.SideBySide}
             ariaLabel={this.props.sideBySide!}
+            testId="dualscreen_switchToSideBySide"
           />
         </div>
         <div className={styles.buttonWrapper}>
@@ -100,6 +101,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
             size={ButtonSize.medium}
             icon={'switch'}
             ariaLabel={this.props.switchScreen!}
+            testId="dualscreen_inversePIP"
           />
         </div>
       </div>
@@ -111,6 +113,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
     return (
       <Button
         className={styles.hideContainer}
+        testId="dualscreen_switchToSingleMedia"
         onClick={hide}
         ariaLabel={this.props.hideAriaLabel}
         focusOnMount={focusOnButton === ButtonsEnum.Hide}

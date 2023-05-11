@@ -8,9 +8,9 @@ export const MANIFEST_SAFARI = `#EXTM3U
 #EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=504265,RESOLUTION=480x272,AUDIO="audio",SUBTITLES="subs"
 ${location.origin}/media/index.m3u8`;
 
-export const getPlayer = () => {
+export const getPlayer = (id = 'player-placeholder') => {
   // @ts-ignore
-  return cy.window().then($win => $win.KalturaPlayer.getPlayers()['player-placeholder']);
+  return cy.window().then($win => $win.KalturaPlayer.getPlayers()[id]);
 };
 
 export const preparePage = (puginConf = {}, playbackConf = {}) => {
@@ -55,7 +55,7 @@ export const loadPlayer = (puginConf = {}, playbackConf: Record<string, any> = {
   );
 };
 
-export const mockKalturaBe = (dualScreenFixture = 'dual-screen-1-media.json', cuesFixture = 'cue-points.json') => {
+export const mockKalturaBe = (dualScreenFixture: string, cuesFixture: string) => {
   cy.intercept('http://mock-api/service/multirequest', req => {
     if (checkRequest(req.body[2], 'baseEntry', 'list')) {
       if (req.body[2].filter.parentEntryIdEqual) {

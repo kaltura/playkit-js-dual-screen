@@ -126,11 +126,12 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
         icon={'more'}
         onClick={this._handleClick}
         focusOnMount={focusOnMultiscreenButton}
+        testId="dualscreen_multiscreenButton"
       />
     );
 
     return (
-      <div className={styles.multiscreenWrapper}>
+      <div className={styles.multiscreenWrapper} data-testid="dualscreen_multiscreenWrapper">
         {this.state.isOpen ? (
           popoverMenuButton
         ) : (
@@ -142,12 +143,13 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
         <div
           style={{right: `${this.state.xPosition}px`}}
           className={[styles.multiscreenPlayersWrapper, this.state.isOpen ? styles.visible : ''].join(' ')}
-          ref={this._multiscreenPlayersWrapperRef}>
+          ref={this._multiscreenPlayersWrapperRef}
+          data-testid="dualscreen_multiscreen">
           {props.players.map((player, index) => {
             const ref = createRef<HTMLDivElement>();
             this._multiscreenPlayersRefs[index] = ref;
             return (
-              <div ref={ref} className={styles.multiscreenPlayer}>
+              <div ref={ref} className={styles.multiscreenPlayer} data-testid="dualscreen_multiscreenPlayer">
                 <div className={styles.multiscreenButtonsWrapper}>
                   <Button
                     onClick={(event: OnClickEvent, byKeyboard = false) => this._handleLayoutChange(byKeyboard, player.setPrimary)}
@@ -155,6 +157,7 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
                     size={ButtonSize.medium}
                     icon={player.setSecondary ? 'pictureInPicture' : 'switch'}
                     ariaLabel={player.setSecondary ? this.props.switchToPrimary : this.props.switchScreen}
+                    testId="dualscreen_multiscreenSwitchScreen"
                   />
                   {player.setSecondary && (
                     <Button
@@ -163,6 +166,7 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
                       size={ButtonSize.medium}
                       icon={'minimizedVideo'}
                       ariaLabel={this.props.switchToSecondary}
+                      testId="dualscreen_multiscreenSetSecondary"
                     />
                   )}
                 </div>
