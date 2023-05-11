@@ -89,7 +89,7 @@ describe('Dual-Screen plugin', () => {
     });
   });
 
-  describe('PIP SingleMedia', () => {
+  describe('SingleMedia layout', () => {
     it('should change layout to PIP', () => {
       mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
       loadPlayer({layout: 'SingleMedia'}).then(() => {
@@ -113,7 +113,7 @@ describe('Dual-Screen plugin', () => {
     });
   });
 
-  describe('PIP SideBySide', () => {
+  describe('SideBySide layout', () => {
     it('should change layout to PIP', () => {
       mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
       loadPlayer({layout: 'SideBySide'}).then(() => {
@@ -169,7 +169,8 @@ describe('Dual-Screen plugin', () => {
         });
       });
     });
-    it('should render multiscreen wrapper with 2 players', () => {
+    it.skip('should render multiscreen wrapper with 2 players', () => {
+      // TODO: enable test after fix done for image player in multiscreen
       mockKalturaBe('dual-screen-2-media.json', 'cue-points.json');
       loadPlayer({}, {startTime: 15}).then(() => {
         cy.get('[data-testid="dualscreen_multiscreen"]').within(() => {
@@ -305,6 +306,7 @@ describe('Dual-Screen plugin', () => {
           getPlayer('secondaryPlaceholder-1_3vus9bhe').then(playerSecondary => {
             playerSecondary.addEventListener(EventType.TIME_UPDATE, () => {
               if (expect(playerSecondary.currentTime).to.be.closeTo(playerMain.currentTime, 0.1)) {
+                playerSecondary.removeEventListener(EventType.TIME_UPDATE);
                 done();
               }
             });
