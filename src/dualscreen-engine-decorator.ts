@@ -1,5 +1,5 @@
 // @ts-ignore
-import {core} from 'kaltura-player-js';
+import {core} from '@playkit-js/kaltura-player-js';
 import {DualScreen} from './dualscreen';
 
 const {FakeEvent, EventType} = core;

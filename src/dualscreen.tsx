@@ -13,7 +13,7 @@ import {getValueOrUndefined} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
 import {ImagePlayer, SlideItem} from './image-player';
 // @ts-ignore
-import {core} from 'kaltura-player-js';
+import {core} from '@playkit-js/kaltura-player-js';
 import './styles/global.scss';
 
 const {

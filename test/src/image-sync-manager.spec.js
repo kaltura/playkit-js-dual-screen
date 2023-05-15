@@ -1,6 +1,6 @@
-import {setup} from 'kaltura-player-js';
+import {setup} from '@playkit-js/kaltura-player-js';
 import * as TestUtils from './utils/test-utils';
-import {core} from 'kaltura-player-js';
+import {core} from '@playkit-js/kaltura-player-js';
 const {EventType} = core;
 
 describe('KDualscreenPlugin', function () {
