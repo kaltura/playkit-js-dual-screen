@@ -1,6 +1,5 @@
 import {h, Component, cloneElement, VNode, createRef} from 'preact';
-import {PlaykitUI, Logger} from 'kaltura-player-js';
-import {Position} from '../../enums';
+import {Position} from '../../enums/positionEnum';
 import {getClientX, getClientY, dimensionStyleToString} from '../../utils';
 import * as styles from './drag-and-snap-manager.scss';
 
@@ -25,8 +24,8 @@ interface DragAndSnapManagerOwnProps {
   children: VNode;
   onPositionChanged: OnPositionChangedCallback;
   getPosition: () => Position;
-  eventManager: PlaykitUI.EventManager;
-  logger: Logger;
+  eventManager: KalturaPlayerTypes.EventManager;
+  logger: KalturaPlayerTypes.Logger;
 }
 interface DragAndSnapManagerConnectProps {
   prePlayback?: boolean;
