@@ -1,5 +1,5 @@
 import {h, Component, cloneElement, VNode, createRef} from 'preact';
-import {PlaykitUI, Logger} from '@playkit-js/kaltura-player-js';
+import {PlaykitUI, Logger} from 'kaltura-player-js';
 import {Position} from '../../enums';
 import {getClientX, getClientY, dimensionStyleToString} from '../../utils';
 import * as styles from './drag-and-snap-manager.scss';

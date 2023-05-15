@@ -68,7 +68,6 @@ export class SideBySide extends Component<SideBySideComponentProps> {
                 type={ButtonType.borderless}
                 size={ButtonSize.medium}
                 icon={'switch'}
-                testId="dualscreen_switchToPIP"
               />
             </div>
           </div>
@@ -89,7 +88,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
       classNames.push(styles.animatedFade);
     }
     return (
-      <div ref={this.ref} className={classNames.join(' ')} style={playerContainerStyles} data-testid="dualscreen_sbs">
+      <div ref={this.ref} className={classNames.join(' ')} style={playerContainerStyles}>
         {this._renderHoverButton()}
       </div>
     );

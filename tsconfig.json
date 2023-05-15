@@ -10,13 +10,12 @@
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "Node",
-    "baseUrl": "..",
+    "baseUrl": "./src",
     "preserveSymlinks": true,
     "paths": {
-      "*": ["../node_modules/*", "./src", "cypress.config.ts"]
+      "*": ["../node_modules/*"]
     },
-    "types": ["cypress", "node"],
-    "lib": ["es2015", "dom"]
+    "types": ["node"]
   },
-  "include": ["cypress/e2e/*.ts", "src/**/*.tsx", "src/**/*.ts", "custom.d.ts", "node_modules/@playkit-js/kaltura-player-js/ts-typed"]
+  "include": ["src/**/*.tsx", "src/**/*.ts", "custom.d.ts", "node_modules/kaltura-player-js/ts-typed"]
 }

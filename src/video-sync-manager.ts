@@ -1,6 +1,6 @@
 import {isInInterval} from './utils';
 // @ts-ignore
-import {core, PlaykitUI, Logger, KalturaPlayer} from '@playkit-js/kaltura-player-js';
+import {core, PlaykitUI, Logger, KalturaPlayer} from 'kaltura-player-js';
 import {debounce} from '@playkit-js/common/dist/utils-common/utils';
 const {EventType, FakeEvent, Error, StateType} = core;
 

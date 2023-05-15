@@ -1,5 +1,5 @@
 // @ts-ignore
-import {core, PlaykitUI, Logger, KalturaPlayer} from '@playkit-js/kaltura-player-js';
+import {core, PlaykitUI, Logger, KalturaPlayer} from 'kaltura-player-js';
 import {ExternalLayout, ViewModeLockState} from './enums';
 import {ImagePlayer} from './image-player';
 import {debounce} from '@playkit-js/common/dist/utils-common/utils';

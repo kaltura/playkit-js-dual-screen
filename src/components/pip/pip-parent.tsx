@@ -42,6 +42,6 @@ export class PipParent extends Component<PIPParentComponentProps> {
       }
     }
 
-    return <div className={styleClass.join(' ')} ref={this.videoContainerRef} data-testid="dualscreen_pipParent" />;
+    return <div className={styleClass.join(' ')}  ref={this.videoContainerRef} />;
   }
 }

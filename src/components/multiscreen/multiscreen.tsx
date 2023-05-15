@@ -2,7 +2,7 @@ import {h, Component, RefObject, createRef} from 'preact';
 import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import {Position} from '../../enums';
-import {PlaykitUI} from '@playkit-js/kaltura-player-js';
+import {PlaykitUI} from 'kaltura-player-js';
 import {MultiscreenPlayer} from '../../types';
 import * as styles from './multiscreen.scss';
 
@@ -126,12 +126,11 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
         icon={'more'}
         onClick={this._handleClick}
         focusOnMount={focusOnMultiscreenButton}
-        testId="dualscreen_multiscreenButton"
       />
     );
 
     return (
-      <div className={styles.multiscreenWrapper} data-testid="dualscreen_multiscreenWrapper">
+      <div className={styles.multiscreenWrapper}>
         {this.state.isOpen ? (
           popoverMenuButton
         ) : (
@@ -143,13 +142,12 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
         <div
           style={{right: `${this.state.xPosition}px`}}
           className={[styles.multiscreenPlayersWrapper, this.state.isOpen ? styles.visible : ''].join(' ')}
-          ref={this._multiscreenPlayersWrapperRef}
-          data-testid="dualscreen_multiscreen">
+          ref={this._multiscreenPlayersWrapperRef}>
           {props.players.map((player, index) => {
             const ref = createRef<HTMLDivElement>();
             this._multiscreenPlayersRefs[index] = ref;
             return (
-              <div ref={ref} className={styles.multiscreenPlayer} data-testid="dualscreen_multiscreenPlayer">
+              <div ref={ref} className={styles.multiscreenPlayer}>
                 <div className={styles.multiscreenButtonsWrapper}>
                   <Button
                     onClick={(event: OnClickEvent, byKeyboard = false) => this._handleLayoutChange(byKeyboard, player.setPrimary)}
@@ -157,7 +155,6 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
                     size={ButtonSize.medium}
                     icon={player.setSecondary ? 'pictureInPicture' : 'switch'}
                     ariaLabel={player.setSecondary ? this.props.switchToPrimary : this.props.switchScreen}
-                    testId="dualscreen_multiscreenSwitchScreen"
                   />
                   {player.setSecondary && (
                     <Button
@@ -166,7 +163,6 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
                       size={ButtonSize.medium}
                       icon={'minimizedVideo'}
                       ariaLabel={this.props.switchToSecondary}
-                      testId="dualscreen_multiscreenSetSecondary"
                     />
                   )}
                 </div>

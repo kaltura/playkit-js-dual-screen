@@ -57,7 +57,7 @@ module.exports = {
     ]
   },
   devServer: {
-    static: __dirname + '/src'
+    contentBase: __dirname + '/src'
     // host: '192.168.68.107'
   },
   resolve: {
@@ -65,7 +65,7 @@ module.exports = {
     modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
   externals: {
-    '@playkit-js/kaltura-player-js': 'root KalturaPlayer',
-    preact: 'root KalturaPlayer.ui.preact'
+    preact: 'root KalturaPlayer.ui.preact',
+    'kaltura-player-js': ['KalturaPlayer']
   }
 };
