@@ -1,5 +1,5 @@
 import {ImagePlayer} from '../image-player';
-import {KalturaPlayer} from 'kaltura-player-js';
+import {KalturaPlayer} from '@playkit-js/kaltura-player-js';
 import {PlayerType, PlayerContainers} from '../enums';
 
 export interface DualScreenPlayer {

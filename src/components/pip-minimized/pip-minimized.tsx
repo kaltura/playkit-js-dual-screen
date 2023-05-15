@@ -56,6 +56,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
             className={styles.showContainer}
             ariaLabel={this.props.showAriaLabel}
             focusOnMount={focusOnButton === ButtonsEnum.Show}
+            testId="dualscreen_switchToPIP"
             type={ButtonType.translucent}>
             <Fragment>
               <div className={styles.iconContainer}>
@@ -77,12 +78,15 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
 
   render(props: PIPMinimizedProps) {
     return (
-      <div className={styles.childPlayerContainer}>
+      <div className={styles.childPlayerContainer} data-testid="dualscreen_pipMinimized">
         {this.props.players.map((player, index) => {
           const ref = createRef<HTMLDivElement>();
           this._multiscreenPlayersRefs[index] = ref;
           return (
-            <div ref={ref} className={[styles.childPlayer, props.hideButtons ? styles.tinyChildPlayer : ''].join(' ')}>
+            <div
+              ref={ref}
+              className={[styles.childPlayer, props.hideButtons ? styles.tinyChildPlayer : ''].join(' ')}
+              data-testid="dualscreen_pipMinimizedPlayer">
               <div className={[styles.innerButtons, this.props.hideButtons ? styles.tinyInnerButtons : ''].join(' ')}>
                 <Button
                   onClick={player.setPrimary}
@@ -91,6 +95,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
                   type={ButtonType.borderless}
                   size={ButtonSize.medium}
                   icon={'switch'}
+                  testId="dualscreen_switchToPrimary"
                 />
               </div>
             </div>

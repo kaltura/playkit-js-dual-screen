@@ -1,0 +1,34 @@
+[
+  {
+    "partnerId": 1091,
+    "ks": "",
+    "userId": 0,
+    "objectType": "KalturaStartWidgetSessionResponse"
+  },
+  {
+    "objects": [
+      {
+        "assetId": "1_2l76qxkd",
+        "description": "",
+        "title": "Slide 1",
+        "subType": 1,
+        "id": "1_0h1uf07a",
+        "cuePointType": "thumbCuePoint.Thumb",
+        "startTime": 10000,
+        "objectType": "KalturaThumbCuePoint"
+      },
+      {
+        "assetId": "1_ri4o1mvs",
+        "description": "",
+        "title": "Slide 2",
+        "subType": 1,
+        "id": "1_ine3l8m5",
+        "cuePointType": "thumbCuePoint.Thumb",
+        "startTime": 15000,
+        "objectType": "KalturaThumbCuePoint"
+      }
+    ],
+    "totalCount": 2,
+    "objectType": "KalturaCuePointListResponse"
+  }
+]
