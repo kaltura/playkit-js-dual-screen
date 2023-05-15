@@ -13,7 +13,7 @@ import {getValueOrUndefined} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
 import {ImagePlayer, SlideItem} from './image-player';
 // @ts-ignore
-import {core} from 'kaltura-player-js';
+import {core} from '@playkit-js/kaltura-player-js';
 import './styles/global.scss';
 
 const {
@@ -56,7 +56,8 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       height: 9
     },
     position: Position.BottomRight,
-    slidesPreloadEnabled: true
+    slidesPreloadEnabled: true,
+    removePlayerSettings: false
   };
 
   constructor(name: string, player: any, config: DualScreenConfig) {
@@ -482,8 +483,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
       // update PIP component
       this._setMode();
     }
-
-    this._removeSettingsComponent();
+    if (this.config.removePlayerSettings) {
+      this._removeSettingsComponent();
+    }
   };
 
   private _getThumbs(kalturaCuePointService: any) {
@@ -546,7 +548,9 @@ export class DualScreen extends KalturaPlayer.core.BasePlugin implements IEngine
           if (entryId) {
             // subscribe on secondary player readiness
             this._secondaryPlayerType = PlayerType.VIDEO;
-            this._removeSettingsComponent();
+            if (this.config.removePlayerSettings) {
+              this._removeSettingsComponent();
+            }
             this.secondaryKalturaPlayer = this._createSecondaryPlayer();
             this.eventManager.listenOnce(this.secondaryKalturaPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
               this._resolveReadyPromise();
