@@ -177,17 +177,6 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
 >
 > ##### Description: set aspect ration for PIP container
 
-##
-
-> ### config.removePlayerSettings
->
-> ##### Type: `boolean`
->
-> ##### Default: `false`
->
-> ##### Description: removes media settings from player if dual-screen layout active
-
-
 <a name="dependencies"></a>
 
 ## Dependencies
