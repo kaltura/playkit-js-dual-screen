@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.5](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.4...v3.1.5) (2023-05-15)
+
+
+### Features
+
+* **FEC-12946:** multiscreen ([#103](https://github.com/kaltura/playkit-js-dual-screen/issues/103)) ([5d973b8](https://github.com/kaltura/playkit-js-dual-screen/commit/5d973b8632ac6136335418abcbc61f06863dc3a7))
+
+
+### Bug Fixes
+
+* **FEC-13121:** add configuration that allow control if settings component should be removed from player ([#104](https://github.com/kaltura/playkit-js-dual-screen/issues/104)) ([0bddc2f](https://github.com/kaltura/playkit-js-dual-screen/commit/0bddc2f66c0e6a88a10f9e0e1253ff6c07195780))
+* **FEC-13145:** upgrade dependancies for common and ui-managers etc  ([#105](https://github.com/kaltura/playkit-js-dual-screen/issues/105)) ([780c36d](https://github.com/kaltura/playkit-js-dual-screen/commit/780c36d85555ae24143b76283af55ca6656d7596))
+
 ### [3.1.4](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.3...v3.1.4) (2023-04-19)
 
 
