@@ -304,12 +304,13 @@ describe('Dual-Screen plugin', () => {
       loadPlayer({layout: 'PIP'}).then(playerMain => {
         cy.get('[data-testid="dualscreen_pipChildren"]').then(() => {
           getPlayer('secondaryPlaceholder-1_3vus9bhe').then(playerSecondary => {
-            playerSecondary.addEventListener(EventType.TIME_UPDATE, () => {
+            const listener = () => {
               if (expect(playerSecondary.currentTime).to.be.closeTo(playerMain.currentTime, 0.1)) {
-                playerSecondary.removeEventListener(EventType.TIME_UPDATE);
+                playerSecondary.removeEventListener(EventType.TIME_UPDATE, listener);
                 done();
               }
-            });
+            };
+            playerSecondary.addEventListener(EventType.TIME_UPDATE, listener);
             playerMain.currentTime = 10;
           });
         });
