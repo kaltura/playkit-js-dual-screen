@@ -237,9 +237,11 @@ describe('Dual-Screen plugin', () => {
         playerMain.pause();
         cy.get('[data-testid="dualscreen_pipChildren"]').then(() => {
           getPlayer('secondaryPlaceholder-1_3vus9bhe').then(playerSecondary => {
-            playerSecondary.addEventListener(EventType.SEEKED, () => {
+            const listener = () => {
+              playerSecondary.removeEventListener(EventType.SEEKED, listener);
               done();
-            });
+            };
+            playerSecondary.addEventListener(EventType.SEEKED, listener);
             playerMain.currentTime = 5;
           });
         });
@@ -289,10 +291,13 @@ describe('Dual-Screen plugin', () => {
       loadPlayer({layout: 'PIP'}).then(playerMain => {
         cy.get('[data-testid="dualscreen_pipChildren"]').then(() => {
           getPlayer('secondaryPlaceholder-1_3vus9bhe').then(playerSecondary => {
-            playerSecondary.addEventListener(EventType.SEEKED, () => {
-              expect(playerSecondary.currentTime).to.be.closeTo(playerMain.currentTime, 0.5);
-              done();
-            });
+            const listener = () => {
+              if (expect(playerSecondary.currentTime).to.be.closeTo(playerMain.currentTime, 0.5)) {
+                playerSecondary.removeEventListener(EventType.SEEKED, listener);
+                done();
+              }
+            };
+            playerSecondary.addEventListener(EventType.SEEKED, listener);
             playerMain.currentTime = 5;
           });
         });
