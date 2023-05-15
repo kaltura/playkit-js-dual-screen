@@ -135,6 +135,7 @@ export class ImagePlayer {
     img.alt = '';
     imagePlayer.appendChild(img);
     imagePlayer.classList.add('playkit-image-player');
+    imagePlayer.dataset.testid = 'dualscreen_imagePlayer';
     return imagePlayer;
   };
 
@@ -167,5 +168,9 @@ export class ImagePlayer {
     this._activeImage = null;
     this._images = [];
     clearTimeout(this._retryTimeout);
+  };
+
+  public destroy = () => {
+    this.reset();
   };
 }

@@ -1,10 +1,10 @@
 // @ts-ignore
-import {core} from '@playkit-js/kaltura-player-js';
+import {core, PlaykitUI, Logger, KalturaPlayer} from '@playkit-js/kaltura-player-js';
 import {ExternalLayout, ViewModeLockState} from './enums';
 import {ImagePlayer} from './image-player';
 import {debounce} from '@playkit-js/common/dist/utils-common/utils';
 
-const {TimedMetadata} = core;
+const {TimedMetadata, EventType} = core;
 
 interface TimedMetadataEvent {
   payload: {
@@ -20,10 +20,10 @@ export interface ViewChangeData {
 const DEBOUNCE_TIMEOUT = 200;
 
 export class ImageSyncManager {
-  _eventManager: KalturaPlayerTypes.EventManager;
-  _mainPlayer: KalturaPlayerTypes.Player;
+  _eventManager: PlaykitUI.EventManager;
+  _mainPlayer: KalturaPlayer;
   _imagePlayer: ImagePlayer;
-  _logger: KalturaPlayerTypes.Logger;
+  _logger: Logger;
   _onSlideViewChanged: (viewChangeData: ExternalLayout) => void;
   _kalturaCuePointService: any;
   _firstPlaying: boolean = false;
@@ -31,10 +31,10 @@ export class ImageSyncManager {
   private _debouncedSetActive: (slideId: string | null) => void;
 
   constructor(
-    eventManager: KalturaPlayerTypes.EventManager,
-    mainPlayer: KalturaPlayerTypes.Player,
+    eventManager: PlaykitUI.EventManager,
+    mainPlayer: KalturaPlayer,
     imagePlayer: ImagePlayer,
-    logger: KalturaPlayerTypes.Logger,
+    logger: Logger,
     onSlideViewChanged: (viewChangeData: ExternalLayout) => void
   ) {
     this._eventManager = eventManager;
@@ -48,9 +48,9 @@ export class ImageSyncManager {
   }
 
   private _syncEvents = () => {
-    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_CHANGE, this._onTimedMetadataChange);
-    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
-    this._eventManager.listen(this._mainPlayer, this._mainPlayer.Event.FIRST_PLAYING, this._onFirstPlaying);
+    this._eventManager.listen(this._mainPlayer, EventType.TIMED_METADATA_CHANGE, this._onTimedMetadataChange);
+    this._eventManager.listen(this._mainPlayer, EventType.TIMED_METADATA_ADDED, this._onTimedMetadataAdded);
+    this._eventManager.listen(this._mainPlayer, EventType.FIRST_PLAYING, this._onFirstPlaying);
   };
 
   private _onFirstPlaying = () => {

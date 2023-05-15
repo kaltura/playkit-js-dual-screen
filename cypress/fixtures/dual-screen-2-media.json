@@ -1,0 +1,16 @@
+[
+  {
+    "partnerId": 1091,
+    "ks": "",
+    "userId": 0,
+    "objectType": "KalturaStartWidgetSessionResponse"
+  },
+  {
+    "objects": [
+      {"id": "1_3vus9bhe", "type": 1, "objectType": "KalturaMediaEntry"},
+      {"id": "1_j52619oq", "type": 1, "objectType": "KalturaMediaEntry"}
+    ],
+    "totalCount": 2,
+    "objectType": "KalturaBaseEntryListResponse"
+  }
+]

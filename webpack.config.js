@@ -57,7 +57,7 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: __dirname + '/src'
+    static: __dirname + '/src'
     // host: '192.168.68.107'
   },
   resolve: {
