@@ -130,13 +130,13 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this._setDefaultMode();
     this._layout = Layout.Hidden;
     this._dualScreenPlayers.forEach(dualScreenPlayer => {
-      if (dualScreenPlayer.type === PlayerType.VIDEO && dualScreenPlayer.id !== MAIN_PLAYER_ID) {
-        // @ts-ignore
-        this._removeSecondaryPlaceholder(dualScreenPlayer.player.config?.targetId);
+      if (dualScreenPlayer.id !== MAIN_PLAYER_ID) {
+        const player = dualScreenPlayer.player as any;
+        player.destroy();
+        if (dualScreenPlayer.type === PlayerType.VIDEO) {
+          this._removeSecondaryPlaceholder(player.config?.targetId);
+        }
       }
-      // this._removeSecondaryPlaceholder();
-      // @ts-ignore
-      dualScreenPlayer.player.destroy();
     });
     this._imageSyncManager?.reset();
     this._imageSyncManager = undefined;
@@ -606,7 +606,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
             if (this.config.removePlayerSettings) {
               this._removeSettingsComponent();
             }
-            
+
             const secondaryPlayer: any = this.getActiveDualScreenPlayer(PlayerContainers.secondary)?.player;
             this.eventManager.listenOnce(secondaryPlayer, EventType.CHANGE_SOURCE_ENDED, () => {
               this._resolveReadyPromise();
