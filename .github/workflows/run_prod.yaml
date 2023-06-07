@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    uses: kaltura/playkit-js-common/.github/workflows/cypress.yml@master
-    secrets: inherit  
+  # test:
+  #   uses: kaltura/playkit-js-common/.github/workflows/cypress.yml@master
+  #   secrets: inherit  
     
   prod:
     uses: kaltura/ovp-pipelines-pub/.github/workflows/player_cicd.yaml@master

@@ -78,7 +78,7 @@
   "kaltura": {
     "name": "dualscreen",
     "dependencies": {
-      "playkit-kaltura-cuepoints": "3.0.5"
+      "playkit-kaltura-cuepoints": "3.0.6"
     }
   },
   "dependencies": {
