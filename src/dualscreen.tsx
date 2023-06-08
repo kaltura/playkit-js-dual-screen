@@ -51,6 +51,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   private _originalVideoElementParent?: HTMLElement;
   private _undoRemoveSettings?: Function | null = null;
   private _dualScreenPlayers: Array<DualScreenPlayer> = [];
+  private _currentMultiscreenPlayers: MultiscreenPlayer[] = [];
 
   /**
    * The default configuration of the plugin.
@@ -146,6 +147,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       this._undoRemoveSettings = null;
     }
     this._dualScreenPlayers = [];
+    this._currentMultiscreenPlayers = [];
     this.eventManager.removeAll();
   }
 
@@ -228,7 +230,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   };
 
   private _makeMultiscreenPlayers = (multiscreenPlayers: DualScreenPlayer[], invert = false): MultiscreenPlayer[] => {
-    return multiscreenPlayers.map(dualScreenPlayer => {
+    this._currentMultiscreenPlayers = multiscreenPlayers.map(dualScreenPlayer => {
       if (this._layout === Layout.PIP) {
         return {
           player: dualScreenPlayer.player,
@@ -266,6 +268,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         };
       }
     });
+    return this._currentMultiscreenPlayers;
   };
 
   private _setMode = (force?: boolean) => {
@@ -512,9 +515,18 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       portraitModeChanged = true;
     }
 
-    if (originalHiddenLayout || (portraitModeChanged && this._layout === Layout.PIP)) {
-      // update PIP component
-      this._setMode();
+    let refreshMultiscreen = true;
+    if (
+      this.getDualScreenPlayer(IMAGE_PLAYER_ID)?.container !== PlayerContainers.none ||
+      this._currentMultiscreenPlayers.find(multiscreenPlayer => multiscreenPlayer.player instanceof ImagePlayer)
+    ) {
+      // no needs to update multiscreen layout, image player already visible
+      refreshMultiscreen = false;
+    }
+
+    if (originalHiddenLayout || (portraitModeChanged && this._layout === Layout.PIP) || refreshMultiscreen) {
+      // refresh dual-screen layouts
+      this._setMode(true);
     }
     if (this.config.removePlayerSettings) {
       this._removeSettingsComponent();
