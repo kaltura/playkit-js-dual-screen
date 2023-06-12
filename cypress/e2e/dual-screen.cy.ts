@@ -169,8 +169,7 @@ describe('Dual-Screen plugin', () => {
         });
       });
     });
-    it.skip('should render multiscreen wrapper with 2 players', () => {
-      // TODO: enable test after fix done for image player in multiscreen
+    it('should render multiscreen wrapper with 2 players', () => {
       mockKalturaBe('dual-screen-2-media.json', 'cue-points.json');
       loadPlayer({}, {startTime: 15}).then(() => {
         cy.get('[data-testid="dualscreen_multiscreen"]').within(() => {
