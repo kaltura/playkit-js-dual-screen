@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.1.7 (2023-06-27)
+
+
+### Bug Fixes
+
+* **FEC-13224:** fix race condition for image player ([#111](https://github.com/kaltura/playkit-js-dual-screen/issues/111)) ([c6ccb69](https://github.com/kaltura/playkit-js-dual-screen/commit/c6ccb69))
+
+
+
 ### 3.1.6 (2023-06-07)
 
 ### [3.1.5](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.1.4...v3.1.5) (2023-05-15)
