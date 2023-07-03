@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.1.8 (2023-07-03)
+
+
+### Bug Fixes
+
+* **FEC-13257:** invalid icon in sbs mode ([#113](https://github.com/kaltura/playkit-js-dual-screen/issues/113)) ([1c3580e](https://github.com/kaltura/playkit-js-dual-screen/commit/1c3580e))
+
+
+
 ### 3.1.7 (2023-06-27)
 
 
