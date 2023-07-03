@@ -67,7 +67,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
                 focusOnMount={focusOnButton}
                 type={ButtonType.borderless}
                 size={ButtonSize.medium}
-                icon={'switch'}
+                icon={'expand'}
                 testId="dualscreen_switchToPIP"
               />
             </div>
