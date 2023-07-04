@@ -20,6 +20,9 @@
     padding: 16px;
     justify-content: flex-end;
     animation: appears $animation-duration linear;
+    &.hideButtons {
+      display: none;
+    }
     .buttonWrapper {
       margin-left: 8px;
     }

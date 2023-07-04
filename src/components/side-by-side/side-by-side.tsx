@@ -54,28 +54,29 @@ export class SideBySide extends Component<SideBySideComponentProps> {
 
   private _renderHoverButton() {
     const {onExpand, showUi, focusOnButton, multiscreen} = this.props;
-    if (showUi) {
-      return (
-        <Fragment>
-          <div className={styles.innerButtons}>
-            <div className={styles.buttonWrapper}>{cloneElement(multiscreen, {getParentRef: this.props.getParentRef, sbsLayout: true})}</div>
-            <div className={styles.buttonWrapper}>
-              <Button
-                className={styles.iconContainer}
-                onClick={onExpand}
-                tooltip={{label: this.props.expandScreen!, type: 'bottom-left'}}
-                focusOnMount={focusOnButton}
-                type={ButtonType.borderless}
-                size={ButtonSize.medium}
-                icon={'expand'}
-                testId="dualscreen_switchToPIP"
-              />
-            </div>
-          </div>
-        </Fragment>
-      );
+    const styleClass = [styles.innerButtons];
+    if (!showUi) {
+      styleClass.push(styles.hideButtons);
     }
-    return null;
+    return (
+      <Fragment>
+        <div className={styleClass.join(' ')}>
+          <div className={styles.buttonWrapper}>{cloneElement(multiscreen, {getParentRef: this.props.getParentRef, sbsLayout: true})}</div>
+          <div className={styles.buttonWrapper}>
+            <Button
+              className={styles.iconContainer}
+              onClick={onExpand}
+              tooltip={{label: this.props.expandScreen!, type: 'bottom-left'}}
+              focusOnMount={focusOnButton}
+              type={ButtonType.borderless}
+              size={ButtonSize.medium}
+              icon={'expand'}
+              testId="dualscreen_switchToPIP"
+            />
+          </div>
+        </div>
+      </Fragment>
+    );
   }
 
   render({playerWidth, animation}: SideBySideComponentProps) {
