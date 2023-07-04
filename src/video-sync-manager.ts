@@ -117,6 +117,11 @@ export class VideoSyncManager {
     const synchDelayThresholdNegative = -0.03;
     const maxGap = 4;
     const seekAhead = 0.25; // s
+    //on safari without it the video get stuck on every rate change
+    // @ts-ignore
+    const synchDelayDefaultThreshold = this._secondaryPlayer._localPlayer._env.browser.name == "Safari" ? 0 : 0;
+    // @ts-ignore
+    const synchDelayThreshold = synchDelayDefaultThreshold * this._mainPlayer.playbackRate
 
     if (this._secondaryPlayer) {
       let doSeek = false;
@@ -124,9 +129,9 @@ export class VideoSyncManager {
       this._logger.debug(`mediaSync :: synchDelay is ${synchDelay}`);
       let playbackRateChange = 0;
       const adaptivePlaybackRate = Math.round(Math.abs(synchDelay) * 100) / 100;
-      if (synchDelay > synchDelayThresholdPositive) {
+      if (synchDelay - synchDelayThreshold > synchDelayThresholdPositive) {
         playbackRateChange = -1 * adaptivePlaybackRate;
-      } else if (synchDelay < synchDelayThresholdNegative) {
+      } else if (synchDelay + synchDelayThreshold  < synchDelayThresholdNegative) {
         playbackRateChange = adaptivePlaybackRate;
       }
       if (playbackRateChange !== 0) {
