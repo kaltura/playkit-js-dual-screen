@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.1.9 (2023-07-05)
+
+
+### Bug Fixes
+
+* **FEC-13260:** player pauses if video el absent ([#115](https://github.com/kaltura/playkit-js-dual-screen/issues/115)) ([f780a66](https://github.com/kaltura/playkit-js-dual-screen/commit/f780a66))
+
+
+
 ### 3.1.8 (2023-07-03)
 
 
