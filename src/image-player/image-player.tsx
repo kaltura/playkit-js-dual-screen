@@ -92,8 +92,9 @@ export class ImagePlayer {
         return;
       }
       // remove active image
-      (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', '');
-      (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('alt', '');
+      const imageElement = this._imagePlayer.firstChild! as HTMLImageElement;
+      imageElement.setAttribute('src', '');
+      imageElement.removeAttribute('alt');
       this._activeImage = null;
       this._onActiveChange(null);
       return;
@@ -111,7 +112,9 @@ export class ImagePlayer {
           // check that during loading active image haven't changed
           if (this._activeImage?.id === item.id) {
             this._onActiveChange(item);
-            (this._imagePlayer.firstChild! as HTMLImageElement).setAttribute('src', item.imageUrl);
+            const imageElement = this._imagePlayer.firstChild! as HTMLImageElement;
+            imageElement.setAttribute('src', item.imageUrl);
+            imageElement.setAttribute('alt', item.alt || 'Slide');
           }
         });
         return true;
