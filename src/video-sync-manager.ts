@@ -117,7 +117,8 @@ export class VideoSyncManager {
     const synchDelayThresholdNegative = -0.03;
     const maxGap = 4;
     const seekAhead = 0.25; // s
-    //on safari without it the video get stuck on every rate change
+    //relevant for safari only - the video get stuck on every rate change (safari known issue) so it reduce the number of changes.
+    //value of 0.5 is the lowest value that helps with the "jumps" and less harm the video synchronization
     // @ts-ignore
     const synchDelayDefaultThreshold = this._secondaryPlayer._localPlayer.env.isSafari ? 0.5 : 0;
     // @ts-ignore
