@@ -14,3 +14,11 @@ export interface MultiscreenPlayer {
   setSecondary: (() => void) | null;
   setPrimary: () => void;
 }
+
+export interface PreviewThumbnail {
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+  url: string;
+}
