@@ -1,3 +1,4 @@
+import {PreviewThumbnail} from '../types';
 import './image-player.scss';
 
 const MAX_RETRY_ATTEMPTS = 3;
@@ -9,6 +10,7 @@ export interface RawSlideItem {
   id: string;
   imageUrl: string;
   alt: string;
+  startTime: number;
 }
 
 export interface SlideItem extends RawSlideItem {
@@ -16,9 +18,15 @@ export interface SlideItem extends RawSlideItem {
   loading: boolean;
   loaded: boolean;
   portrait: boolean;
+  height: number;
+  width: number;
   ready: Promise<void>;
   setReady: () => void;
   retryAttempts: number;
+}
+
+export interface SlideThumbnail extends PreviewThumbnail {
+  slide: true;
 }
 
 export class ImagePlayer {
@@ -38,6 +46,21 @@ export class ImagePlayer {
   get active() {
     return this._activeImage;
   }
+
+  public getThumbnail = (time: number): SlideThumbnail | undefined => {
+    for (let i = this._images.length - 1; i >= 0; i--) {
+      if (this._images[i].startTime <= time) {
+        return {
+          height: this._images[i].height,
+          width: this._images[i].width,
+          x: 0,
+          y: 0,
+          url: this._images[i].imageUrl,
+          slide: true
+        };
+      }
+    }
+  };
 
   public preLoadImages = () => {
     const isPreloadingActive = this._images.some(slide => slide.loading);
@@ -75,6 +98,8 @@ export class ImagePlayer {
     const slideItem: SlideItem = {
       ...item,
       index: this._images.length,
+      height: 0,
+      width: 0,
       loading: false,
       loaded: false,
       portrait: false,
@@ -154,6 +179,8 @@ export class ImagePlayer {
     img.onload = () => {
       item.loading = false;
       item.loaded = true;
+      item.width = img.width;
+      item.height = img.height;
       item.portrait = img.width < img.height;
       item.setReady();
       this.preLoadImages();

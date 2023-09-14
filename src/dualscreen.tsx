@@ -1,5 +1,5 @@
 import {h} from 'preact';
-import {DualScreenConfig, DualScreenPlayer, MultiscreenPlayer} from './types';
+import {DualScreenConfig, DualScreenPlayer, MultiscreenPlayer, PreviewThumbnail} from './types';
 import {PipChild, PipParent} from './components/pip';
 import {Multiscreen} from './components/multiscreen';
 import {PipMinimized} from './components/pip-minimized';
@@ -22,7 +22,7 @@ import {DragAndSnapManager} from './components/drag-and-snap-manager';
 import {SideBySideWrapper} from './components/side-by-side/side-by-side-wrapper';
 import {getValueOrUndefined} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
-import {ImagePlayer, SlideItem} from './image-player';
+import {ImagePlayer, SlideItem, SlideThumbnail} from './image-player';
 // @ts-ignore
 import {core, ui, BasePlugin, IEngineDecoratorProvider, KalturaPlayer} from '@playkit-js/kaltura-player-js';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
@@ -75,6 +75,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this._readyPromise = this._makeReadyPromise();
     this._layout = Layout.Hidden;
     this._pipPosition = this.config.position;
+    const dualScreenApi = {
+      getDualScreenThumbs: this.getDualScreenThumbs
+    };
+    this.player.registerService('dualScreen', dualScreenApi);
   }
 
   getEngineDecorator(engine: any, dispatcher: Function) {
@@ -195,6 +199,23 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   public getActiveDualScreenPlayer = (container: PlayerContainers.primary | PlayerContainers.secondary) => {
     return this._dualScreenPlayers.find(dualScreenPlayer => {
       return dualScreenPlayer.container === container;
+    });
+  };
+
+  public getDualScreenThumbs = (time: number): SlideThumbnail | PreviewThumbnail | Array<SlideThumbnail | PreviewThumbnail> => {
+    if (this._layout === Layout.Hidden) {
+      // @ts-ignore
+      return this.player.getThumbnail(time);
+    }
+    const primaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.primary);
+    if ([Layout.SingleMedia, Layout.SingleMediaInverse].includes(this._layout)) {
+      // @ts-ignore
+      return primaryPlayer?.player.getThumbnail(time);
+    }
+    const secondaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.secondary);
+    return [primaryPlayer, secondaryPlayer].map(dualScreenPlayer => {
+      // @ts-ignore
+      return dualScreenPlayer?.player.getThumbnail(time);
     });
   };
 

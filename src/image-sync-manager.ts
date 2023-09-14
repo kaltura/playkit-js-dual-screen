@@ -91,7 +91,8 @@ export class ImageSyncManager {
         this._imagePlayer.addImage({
           id: cue.id,
           imageUrl: cue.metadata!.assetUrl,
-          alt: cue.metadata!.title || cue.metadata!.description
+          alt: cue.metadata!.title || cue.metadata!.description,
+          startTime: cue.startTime
         });
         return cue;
       }
