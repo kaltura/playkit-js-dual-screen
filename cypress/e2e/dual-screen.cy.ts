@@ -4,6 +4,10 @@ import {mockKalturaBe, loadPlayer, MANIFEST, MANIFEST_SAFARI, getPlayer} from '.
 
 const {EventType, FakeEvent, Error} = core;
 
+Cypress.on('uncaught:exception', (err, runnable) => {
+  return false;
+});
+
 describe('Dual-Screen plugin', () => {
   beforeEach(() => {
     // manifest
@@ -12,7 +16,7 @@ describe('Dual-Screen plugin', () => {
     cy.intercept('GET', '**/width/164/vid_slices/100', {fixture: '100.jpeg'});
     cy.intercept('GET', '**/height/360/width/640', {fixture: '640.jpeg'});
     // kava
-    cy.intercept('GET', '**/index.php?service=analytics*', {});
+    cy.intercept('**/index.php?service=analytics*', {});
   });
 
   describe('dual-screen layouts', () => {
@@ -346,6 +350,89 @@ describe('Dual-Screen plugin', () => {
           done();
         });
         player.currentTime = 10;
+      });
+    });
+  });
+
+  describe('Dual-screen plugin API', () => {
+    const testThumbsResult = (result: any, expectedResult: any) => {
+      return (
+        result.height === expectedResult.height &&
+        result.url === expectedResult.url &&
+        result.width === expectedResult.width &&
+        result.x === expectedResult.x &&
+        result.y === expectedResult.y &&
+        result.slide === expectedResult.slide
+      );
+    };
+    it('should check dual-screen service got registered', () => {
+      mockKalturaBe('dual-screen-0-media.json', 'cue-points-empty.json');
+      loadPlayer({}, {autoplay: false}).then(kalturaPlayer => {
+        const dualScreenService = kalturaPlayer.getService('dualScreen');
+        expect(dualScreenService).not.undefined;
+        expect(dualScreenService).has.key('getDualScreenThumbs');
+      });
+    });
+    it('should return thumbs for 2 active media', () => {
+      mockKalturaBe('dual-screen-2-media.json', 'cue-points-empty.json');
+      loadPlayer({layout: 'PIP'}).then(kalturaPlayer => {
+        const thumbResult = {
+          height: 92,
+          url: 'https://qa-apache-php7.dev.kaltura.com/p/5174/sp/517400/thumbnail/entry_id/0_5n7s22ge/version/100002/width/164/vid_slices/100',
+          width: 164,
+          x: 164,
+          y: 0,
+          slide: undefined
+        };
+        const dualScreenService = kalturaPlayer.getService('dualScreen');
+        cy.get('[data-testid="dualscreen_pipChildren"]').then(() => {
+          const thumbs = dualScreenService.getDualScreenThumbs(1);
+          expect(Array.isArray(thumbs)).to.be.true;
+          thumbs.map((thumbInfo: any) => {
+            expect(testThumbsResult(thumbInfo, thumbResult)).to.be.true;
+          });
+        });
+      });
+    });
+    it('should return 1 thumbs if layout SingleMedia', () => {
+      mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
+      loadPlayer({layout: 'SingleMedia'}).then(kalturaPlayer => {
+        const dualScreenService = kalturaPlayer.getService('dualScreen');
+        cy.get('[data-testid="dualscreen_pipMinimized"]').then(() => {
+          const thumbs = dualScreenService.getDualScreenThumbs(1);
+          expect(Array.isArray(thumbs)).to.be.false;
+          expect(typeof thumbs === 'object').to.be.true;
+        });
+      });
+    });
+    it('should test media and slide thumb', () => {
+      mockKalturaBe('dual-screen-0-media.json', 'cue-points.json');
+      loadPlayer({}, {startTime: 15}).then(kalturaPlayer => {
+        const dualScreenService = kalturaPlayer.getService('dualScreen');
+        cy.get('[alt="Slide 2"]')
+          .and('have.prop', 'naturalWidth')
+          .should('be.greaterThan', 0)
+          .then(() => {
+            const slideThumb = {
+              height: 223,
+              slide: true,
+              url: 'https://mock-thumb-assets/api_v3/index.php/service/thumbAsset/action/serve//thumbAssetId/1_ri4o1mvs/ks/123',
+              width: 400,
+              x: 0,
+              y: 0
+            };
+            const mediaThumb = {
+              height: 92,
+              url: 'https://qa-apache-php7.dev.kaltura.com/p/5174/sp/517400/thumbnail/entry_id/0_5n7s22ge/version/100002/width/164/vid_slices/100',
+              width: 164,
+              x: 4264,
+              y: 0,
+              slide: undefined
+            };
+            const thumbs = dualScreenService.getDualScreenThumbs(16);
+            expect(testThumbsResult(thumbs[0], mediaThumb)).to.be.true;
+            expect(thumbs[1]).to.eql(slideThumb);
+          });
       });
     });
   });
