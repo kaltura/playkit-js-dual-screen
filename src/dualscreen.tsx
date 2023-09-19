@@ -213,10 +213,12 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       return primaryPlayer?.player.getThumbnail(time);
     }
     const secondaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.secondary);
-    return [primaryPlayer, secondaryPlayer].map(dualScreenPlayer => {
+    const thumbs = [primaryPlayer, secondaryPlayer].map(dualScreenPlayer => {
       // @ts-ignore
       return dualScreenPlayer?.player.getThumbnail(time);
     });
+    // protection for edge-cases when layout already changed but slides doesn't ready
+    return thumbs[0] && thumbs[1] ? thumbs : thumbs[0] ?? thumbs[1];
   };
 
   private _setActiveDualScreenPlayer = (id: string, container: PlayerContainers.primary | PlayerContainers.secondary) => {
