@@ -203,10 +203,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   };
 
   public getDualScreenThumbs = (time: number): SlideThumbnail | PreviewThumbnail | Array<SlideThumbnail | PreviewThumbnail> => {
-    if (this._layout === Layout.Hidden) {
-      // @ts-ignore
-      return this.player.getThumbnail(time);
-    }
     const primaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.primary);
     if ([Layout.SingleMedia, Layout.SingleMediaInverse].includes(this._layout)) {
       // @ts-ignore
