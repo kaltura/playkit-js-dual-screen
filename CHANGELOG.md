@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.1.13 (2023-11-12)
+
+
+### Bug Fixes
+
+* **FEC-13421:** Future slides thumbnail are not shown on timline when hovering on timeline ([#121](https://github.com/kaltura/playkit-js-dual-screen/issues/121)) ([ed0fafb](https://github.com/kaltura/playkit-js-dual-screen/commit/ed0fafb))
+
+
+
 ### 3.1.12 (2023-10-16)
 
 
