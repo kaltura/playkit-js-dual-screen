@@ -71,6 +71,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
     const {player} = this.props;
     const videoElement = player.getVideoElement();
     videoElement.tabIndex = -1;
+    videoElement.setAttribute('disablePictureInPicture', 'true');
     this.playerContainerRef.current!.prepend(videoElement);
     this.props.setDraggableTarget!(this.playerContainerRef.current!);
   }
