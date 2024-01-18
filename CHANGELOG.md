@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.1.20 (2024-01-18)
+
+
+### Bug Fixes
+
+* **FEC-13591:** disable FF native PiP for dualscreen player ([#128](https://github.com/kaltura/playkit-js-dual-screen/issues/128)) ([d1a041d](https://github.com/kaltura/playkit-js-dual-screen/commit/d1a041d))
+
+
+
 ### 3.1.19 (2024-01-07)
 
 
