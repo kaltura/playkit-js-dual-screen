@@ -87,9 +87,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   }
 
   set _layout(layout: Layout) {
-    this.layout = layout;
-    // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
-    this.player.dispatchEvent(new FakeEvent(DualscreenEvents.CHANGE_LAYOUT, {layout: this._layout}));
+    if(layout !== this.layout) {
+      this.layout = layout;
+      // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
+      this.player.dispatchEvent(new FakeEvent(DualscreenEvents.CHANGE_LAYOUT, {layout: this._layout}));
+    }
   }
 
   get _layout(): Layout {
