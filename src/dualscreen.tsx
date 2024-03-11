@@ -27,7 +27,7 @@ import {ImagePlayer, SlideItem, SlideThumbnail} from './image-player';
 import {core, ui, BasePlugin, IEngineDecoratorProvider, KalturaPlayer} from '@playkit-js/kaltura-player-js';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import './styles/global.scss';
-import { DualscreenEvents } from "./events";
+import {DualscreenEvents} from './events';
 
 const {
   reducers: {shell}
@@ -87,10 +87,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   }
 
   set _layout(layout: Layout) {
-    if(layout !== this.layout) {
+    if (layout !== this.layout) {
       this.layout = layout;
       // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
-      this.player.dispatchEvent(new FakeEvent(DualscreenEvents.CHANGE_LAYOUT, {layout: this._layout}));
+      this.player.dispatchEvent(new FakeEvent(DualscreenEvents.CHANGE_LAYOUT, {layout}));
     }
   }
 
