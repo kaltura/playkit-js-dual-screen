@@ -27,11 +27,12 @@ import {ImagePlayer, SlideItem, SlideThumbnail} from './image-player';
 import {core, ui, BasePlugin, IEngineDecoratorProvider, KalturaPlayer} from '@playkit-js/kaltura-player-js';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import './styles/global.scss';
+import {DualscreenEvents} from './events';
 
 const {
   reducers: {shell}
 } = ui;
-const {EventType} = core;
+const {EventType, FakeEvent} = core;
 
 const HAS_DUAL_SCREEN_PLUGIN_OVERLAY = 'has-dual-screen-plugin-overlay';
 const PRESETS = ['Playback', 'Live', 'Ads'];
@@ -39,7 +40,7 @@ const IMAGE_PLAYER_ID = 'imagePlayer';
 const MAIN_PLAYER_ID = 'mainPlayer';
 
 export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineDecoratorProvider {
-  private _layout: Layout;
+  private layout!: Layout;
   private _externalLayout: ExternalLayout | null = null;
   private _pipPosition: Position = Position.BottomRight;
   private _removeActivesArr: Function[] = [];
@@ -83,6 +84,18 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
   getEngineDecorator(engine: any, dispatcher: Function) {
     return new DualScreenEngineDecorator(engine, this, dispatcher);
+  }
+
+  set _layout(layout: Layout) {
+    if (layout !== this.layout) {
+      this.layout = layout;
+      // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
+      this.player.dispatchEvent(new FakeEvent(DualscreenEvents.CHANGE_LAYOUT, {layout}));
+    }
+  }
+
+  get _layout(): Layout {
+    return this.layout;
   }
 
   get ready() {
