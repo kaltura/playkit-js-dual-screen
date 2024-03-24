@@ -5,14 +5,14 @@ import {Multiscreen} from './components/multiscreen';
 import {PipMinimized} from './components/pip-minimized';
 import {
   Animations,
+  ButtonsEnum,
+  ExternalLayout,
   Layout,
+  LayoutChangeProps,
+  PlayerContainers,
   PlayerType,
   Position,
-  ReservedPresetAreas,
-  ExternalLayout,
-  ButtonsEnum,
-  PlayerContainers,
-  LayoutChangeProps
+  ReservedPresetAreas
 } from './enums';
 import {VideoSyncManager} from './video-sync-manager';
 import {ImageSyncManager} from './image-sync-manager';
@@ -24,7 +24,7 @@ import {getValueOrUndefined} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
 import {ImagePlayer, SlideItem, SlideThumbnail} from './image-player';
 // @ts-ignore
-import {core, ui, BasePlugin, IEngineDecoratorProvider, KalturaPlayer} from '@playkit-js/kaltura-player-js';
+import {BasePlugin, core, IEngineDecoratorProvider, KalturaPlayer, ui} from '@playkit-js/kaltura-player-js';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import './styles/global.scss';
 import {DualscreenEvents} from './events';
@@ -87,11 +87,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   }
 
   set _layout(layout: Layout) {
-    if (layout !== this.layout) {
-      this.layout = layout;
+    if (!(layout === Layout.PIP && this.layout === Layout.PIPInverse)) {
       // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
       this.player.dispatchEvent(new FakeEvent(DualscreenEvents.CHANGE_LAYOUT, {layout}));
     }
+    this.layout = layout;
   }
 
   get _layout(): Layout {
