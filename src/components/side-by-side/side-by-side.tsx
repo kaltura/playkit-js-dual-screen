@@ -67,6 +67,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
               className={styles.iconContainer}
               onClick={onExpand}
               tooltip={{label: this.props.expandScreen!, type: 'bottom-left'}}
+              ariaLabel={this.props.expandScreen}
               focusOnMount={focusOnButton}
               type={ButtonType.borderless}
               size={ButtonSize.medium}
