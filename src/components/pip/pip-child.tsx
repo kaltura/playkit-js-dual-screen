@@ -1,9 +1,10 @@
-import {h, createRef, Component, Fragment, VNode, cloneElement} from 'preact';
+import {cloneElement, Component, createRef, Fragment, h, VNode} from 'preact';
 import * as styles from './pip.scss';
 import {Animations, ButtonsEnum, Layout} from '../../enums';
 import {icons} from '../../icons';
 import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
 import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
+
 const {connect} = KalturaPlayer.ui.redux;
 const {utils, reducers} = KalturaPlayer.ui;
 const {Icon} = KalturaPlayer.ui.components;
@@ -46,6 +47,7 @@ interface PIPChildComponentOwnProps {
   };
   focusOnButton?: ButtonsEnum;
   layout: Layout;
+  setLayout: (layout:Layout)=> void;
 }
 interface PIPChildComponentConnectProps {
   playerHeight?: number;
@@ -74,6 +76,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
     videoElement.setAttribute('disablePictureInPicture', 'true');
     this.playerContainerRef.current!.prepend(videoElement);
     this.props.setDraggableTarget!(this.playerContainerRef.current!);
+    this.props.setLayout(this.props.layout === Layout.PIP? Layout.PIPInverse: Layout.PIP)
   }
 
   private _renderInnerButtons() {

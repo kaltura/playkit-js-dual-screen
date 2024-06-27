@@ -398,7 +398,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     if (!force && this._layout === Layout.PIP && this._removeActivesArr.length && imagePlayer.active?.portrait === this._pipPortraitMode) {
       return;
     }
-    this._layout = Layout.PIP;
     this._setPipPortraitMode();
 
     this._addActives(
@@ -435,13 +434,13 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 }
                 onInversePIP={(event: OnClickEvent, byKeyboard: boolean) => {
                   this._applyInverse();
-                  this._layout = Layout.PIPInverse; // toggle layout change
                   this._switchToPIP({animation: Animations.Fade, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen)});
                 }}
                 portrait={this._pipPortraitMode}
                 aspectRatio={this.config.childAspectRatio}
                 focusOnButton={focusOnButton}
                 layout={this._layout}
+                setLayout={(layout:Layout)=>{this.layout = layout}}
                 multiscreen={<Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers())} getPosition={this.getPipPosition} />}
               />
             </DragAndSnapManager>
