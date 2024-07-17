@@ -97,6 +97,7 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
   };
 
   private _handleClick = (event: OnClickEvent, byKeyboard = false) => {
+    event.stopPropagation();
     focusOnMultiscreenButton = byKeyboard;
     if (this.props.getParentRef) {
       // a11y wrapper prevents propagation of click event, so parent node uses to handle close
