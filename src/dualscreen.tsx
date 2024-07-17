@@ -398,7 +398,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     if (!force && this._layout === Layout.PIP && this._removeActivesArr.length && imagePlayer.active?.portrait === this._pipPortraitMode) {
       return;
     }
-    this._layout = Layout.PIP;
+
+    const mainPlayer = this.getDualScreenPlayer(MAIN_PLAYER_ID);
+    this._layout = mainPlayer?.container === PlayerContainers.primary ? Layout.PIP : Layout.PIPInverse;
+
     this._setPipPortraitMode();
 
     this._addActives(
@@ -435,7 +438,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 }
                 onInversePIP={(event: OnClickEvent, byKeyboard: boolean) => {
                   this._applyInverse();
-                  this._layout = Layout.PIPInverse; // toggle layout change
                   this._switchToPIP({animation: Animations.Fade, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen)});
                 }}
                 portrait={this._pipPortraitMode}
