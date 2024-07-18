@@ -128,6 +128,7 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
         onClick={this._handleClick}
         focusOnMount={focusOnMultiscreenButton}
         testId="dualscreen_multiscreenButton"
+        ariaLabel={this.props.multiscreenLabel!}
       />
     );
 
