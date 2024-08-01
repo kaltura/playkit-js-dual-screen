@@ -263,7 +263,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
   private _makeMultiscreenPlayers = (multiscreenPlayers: DualScreenPlayer[], invert = false): MultiscreenPlayer[] => {
     this._currentMultiscreenPlayers = multiscreenPlayers.map(dualScreenPlayer => {
-      if (this._layout === Layout.PIP) {
+      if ([Layout.PIP, Layout.PIPInverse].includes(this._layout)) {
         return {
           player: dualScreenPlayer.player,
           setSecondary: () => {
@@ -438,7 +438,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 }
                 onInversePIP={(event: OnClickEvent, byKeyboard: boolean) => {
                   this._applyInverse();
-                  this._switchToPIP({animation: Animations.Fade, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen)});
+                  this._switchToPIP({
+                    force: true,
+                    animation: Animations.Fade,
+                    focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen)
+                  });
                 }}
                 portrait={this._pipPortraitMode}
                 aspectRatio={this.config.childAspectRatio}
