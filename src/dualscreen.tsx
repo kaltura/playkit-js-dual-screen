@@ -263,7 +263,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
   private _makeMultiscreenPlayers = (multiscreenPlayers: DualScreenPlayer[], invert = false): MultiscreenPlayer[] => {
     this._currentMultiscreenPlayers = multiscreenPlayers.map(dualScreenPlayer => {
-      if (this._layout === Layout.PIP) {
+      if ([Layout.PIP, Layout.PIPInverse].includes(this._layout)) {
         return {
           player: dualScreenPlayer.player,
           setSecondary: () => {
