@@ -438,7 +438,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 }
                 onInversePIP={(event: OnClickEvent, byKeyboard: boolean) => {
                   this._applyInverse();
-                  this._switchToPIP({animation: Animations.Fade, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen)});
+                  this._switchToPIP({
+                    force: true,
+                    animation: Animations.Fade,
+                    focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.SwitchScreen)
+                  });
                 }}
                 portrait={this._pipPortraitMode}
                 aspectRatio={this.config.childAspectRatio}
