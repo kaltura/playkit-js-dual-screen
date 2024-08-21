@@ -22,7 +22,12 @@ export class PipParent extends Component<PIPParentComponentProps> {
 
   componentDidMount() {
     const {player} = this.props;
+
+    const videoFilter = document.createElement('div');
+    videoFilter.classList.add('playkit-video-filter');
+
     this.videoContainerRef?.current?.appendChild(player.getVideoElement());
+    this.videoContainerRef?.current?.appendChild(videoFilter);
   }
 
   render(props: PIPParentComponentProps) {

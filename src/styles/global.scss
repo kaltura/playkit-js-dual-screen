@@ -5,4 +5,13 @@
   :global(.playkit-slideIn) {
     z-index: 1;
   }
+  :global(.playkit-container .playkit-video-filter) {
+    &:before {
+      display: none;
+    }
+
+    &:after {
+      display: none;
+    }
+  }
 }
