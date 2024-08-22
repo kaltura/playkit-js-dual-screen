@@ -1,6 +1,6 @@
 import {h, createRef, Component, Fragment, VNode, cloneElement} from 'preact';
 import * as styles from './pip.scss';
-import {Animations, ButtonsEnum, Layout} from '../../enums';
+import {Animations, ButtonsEnum, Layout, PlayerType} from '../../enums';
 import {icons} from '../../icons';
 import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
 import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
@@ -32,6 +32,7 @@ const mapStateToProps = (state: Record<string, any>) => ({
 interface PIPChildComponentOwnProps {
   multiscreen: VNode;
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
+  playerType: PlayerType;
   playerSizePercentage: number;
   hide: OnClick;
   onSideBySideSwitch: OnClick;
@@ -74,6 +75,14 @@ export class PipChild extends Component<PIPChildComponentProps> {
     videoElement.setAttribute('disablePictureInPicture', 'true');
     this.playerContainerRef.current!.prepend(videoElement);
     this.props.setDraggableTarget!(this.playerContainerRef.current!);
+  }
+
+  componentWillUnmount(){
+    const {player,playerType} = this.props;
+    if(playerType === PlayerType.VIDEO){
+      const videoElement = player.getVideoElement();
+      videoElement.removeAttribute('disablePictureInPicture');
+    }
   }
 
   private _renderInnerButtons() {

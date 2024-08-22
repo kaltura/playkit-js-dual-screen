@@ -430,6 +430,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.player as any}
+                playerType={this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.type as PlayerType}
                 hide={(event: OnClickEvent, byKeyboard: boolean) =>
                   this._switchToSingleMedia({animation: Animations.None, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.Show)})
                 }
