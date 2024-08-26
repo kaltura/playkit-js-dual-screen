@@ -6,11 +6,7 @@
     z-index: 1;
   }
   :global(.playkit-container .playkit-video-filter) {
-    &:before {
-      display: none;
-    }
-
-    &:after {
+    &:before, &:after {
       display: none;
     }
   }
