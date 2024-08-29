@@ -409,7 +409,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent animation={animation} player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any} />
+        get: () => <PipParent
+          animation={animation}
+          player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
+          playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
+        />
       }),
       this.player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
@@ -430,7 +434,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.player as any}
-                playerType={this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.type as PlayerType}
                 hide={(event: OnClickEvent, byKeyboard: boolean) =>
                   this._switchToSingleMedia({animation: Animations.None, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.Show)})
                 }
@@ -469,7 +472,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent animation={animation} player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any} />
+        get: () => <PipParent
+          animation={animation}
+          player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
+          playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
+        />
       }),
       this.player.ui.addComponent({
         label: 'kaltura-dual-screen-pip-minimized',
