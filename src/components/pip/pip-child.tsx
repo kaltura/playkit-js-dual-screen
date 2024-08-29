@@ -32,7 +32,6 @@ const mapStateToProps = (state: Record<string, any>) => ({
 interface PIPChildComponentOwnProps {
   multiscreen: VNode;
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
-  playerType: PlayerType;
   playerSizePercentage: number;
   hide: OnClick;
   onSideBySideSwitch: OnClick;
@@ -75,14 +74,6 @@ export class PipChild extends Component<PIPChildComponentProps> {
     videoElement.setAttribute('disablePictureInPicture', 'true');
     this.playerContainerRef.current!.prepend(videoElement);
     this.props.setDraggableTarget!(this.playerContainerRef.current!);
-  }
-
-  componentWillUnmount(){
-    const {player,playerType} = this.props;
-    if(playerType === PlayerType.VIDEO){
-      const videoElement = player.getVideoElement();
-      videoElement.removeAttribute('disablePictureInPicture');
-    }
   }
 
   private _renderInnerButtons() {

@@ -1,6 +1,6 @@
 import {h, createRef, Component} from 'preact';
 import * as styles from './pip.scss';
-import {Animations} from '../../enums';
+import {Animations, PlayerType} from '../../enums';
 const {connect} = KalturaPlayer.ui.redux;
 
 const mapStateToProps = (state: Record<string, any>) => ({
@@ -10,6 +10,7 @@ const mapStateToProps = (state: Record<string, any>) => ({
 interface PIPParentComponentOwnProps {
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
   animation: Animations;
+  playerType: PlayerType;
 }
 interface PIPParentComponentConnectProps {
   prePlayback?: boolean;
@@ -21,7 +22,11 @@ export class PipParent extends Component<PIPParentComponentProps> {
   videoContainerRef = createRef<HTMLDivElement>();
 
   componentDidMount() {
-    const {player} = this.props;
+    const {player,playerType} = this.props;
+    if(playerType === PlayerType.VIDEO){
+      const videoElement = player.getVideoElement();
+      videoElement.removeAttribute('disablePictureInPicture');
+    }
     this.videoContainerRef?.current?.appendChild(player.getVideoElement());
   }
 

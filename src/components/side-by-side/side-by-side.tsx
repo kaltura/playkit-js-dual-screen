@@ -48,6 +48,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
 
   componentDidMount() {
     const videoElement = this.props.player.getVideoElement();
+    videoElement.setAttribute('disablePictureInPicture', 'true');
     videoElement.tabIndex = -1;
     this.ref.current.prepend(videoElement);
   }
