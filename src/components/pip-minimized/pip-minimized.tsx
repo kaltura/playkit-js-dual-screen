@@ -42,6 +42,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
     this._multiscreenPlayersRefs.forEach((ref, index) => {
       const videoElement = this.props.players[index].player.getVideoElement();
       videoElement.tabIndex = -1;
+      videoElement.setAttribute('disablePictureInPicture', 'true');
       ref.current!.prepend(videoElement);
     });
   }
