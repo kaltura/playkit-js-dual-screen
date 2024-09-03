@@ -1,6 +1,6 @@
 import {h, createRef, Component, Fragment, VNode, cloneElement} from 'preact';
 import * as styles from './pip.scss';
-import {Animations, ButtonsEnum, Layout} from '../../enums';
+import {Animations, ButtonsEnum, Layout, PlayerType} from '../../enums';
 import {icons} from '../../icons';
 import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
 import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
