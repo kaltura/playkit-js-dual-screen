@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.1.32 (2024-09-05)
+
+
+### Bug Fixes
+
+* **FEC-14080:** Accessibility fix for the top bar and the bottom bar ([ea4e2d6](https://github.com/kaltura/playkit-js-dual-screen/commit/ea4e2d6))
+
+
+
 ### 3.1.31 (2024-08-22)
 
 
