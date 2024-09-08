@@ -22,16 +22,12 @@ export class PipParent extends Component<PIPParentComponentProps> {
   videoContainerRef = createRef<HTMLDivElement>();
 
   componentDidMount() {
-    const {player, playerType} = this.props;
-    if (playerType === PlayerType.VIDEO) {
+    const {player,playerType} = this.props;
+    if(playerType === PlayerType.VIDEO){
       const videoElement = player.getVideoElement();
       videoElement.removeAttribute('disablePictureInPicture');
     }
-    const videoFilter = document.createElement('div');
-    videoFilter.classList.add('playkit-video-filter');
-
     this.videoContainerRef?.current?.appendChild(player.getVideoElement());
-    this.videoContainerRef?.current?.appendChild(videoFilter);
   }
 
   render(props: PIPParentComponentProps) {
