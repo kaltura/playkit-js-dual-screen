@@ -201,7 +201,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         }
       }
     });
-    this.eventManager.listen(this.player, EventType.VIDEO_TRACK_CHANGED, (event) => {
+    this.eventManager.listen(this.player, EventType.VIDEO_TRACK_CHANGED, event => {
       this._changeQuality(event.payload.selectedVideoTrack.label);
     });
   }
@@ -235,17 +235,17 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
   private _changeQuality = (label: string) => {
     this._dualScreenPlayers.forEach(dualScreenPlayer => {
-      if(dualScreenPlayer.id != 'mainPlayer' && dualScreenPlayer.id != 'imagePlayer'){
+      if (dualScreenPlayer.id !== MAIN_PLAYER_ID && dualScreenPlayer.id !== IMAGE_PLAYER_ID) {
         //@ts-expect-error
         const videoTrack = dualScreenPlayer.player.getTracks('video');
         const selectedVideoTrack = videoTrack.find((track: any) => track.label === label);
-        if (selectedVideoTrack){
+        if (selectedVideoTrack) {
           //@ts-expect-error
           dualScreenPlayer.player.changeChildQuality(selectedVideoTrack);
         }
       }
     });
-  }
+  };
 
   private _setActiveDualScreenPlayer = (id: string, container: PlayerContainers.primary | PlayerContainers.secondary) => {
     if (this.getActiveDualScreenPlayer(container)?.id === id) {
