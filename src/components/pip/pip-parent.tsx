@@ -28,6 +28,7 @@ export class PipParent extends Component<PIPParentComponentProps> {
       videoElement.removeAttribute('disablePictureInPicture');
     }
     const videoFilter = document.createElement('div');
+    // TODO use ui.style.videoFilter after player version upgrade
     videoFilter.classList.add('playkit-video-filter');
 
     this.videoContainerRef?.current?.appendChild(player.getVideoElement());
