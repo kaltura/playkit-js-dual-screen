@@ -77,7 +77,9 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this._layout = Layout.Hidden;
     this._pipPosition = this.config.position;
     const dualScreenApi = {
-      getDualScreenThumbs: this.getDualScreenThumbs
+      getDualScreenThumbs: this.getDualScreenThumbs,
+      getDualScreenPlayers: this.getDualScreenPlayers,
+      ready: this.ready
     };
     this.player.registerService('dualScreen', dualScreenApi);
   }
@@ -231,6 +233,15 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     });
     // protection for edge-cases when layout already changed but slides doesn't ready
     return thumbs[0] && thumbs[1] ? thumbs : thumbs[0] ?? thumbs[1];
+  };
+
+  public getDualScreenPlayers = (
+    types = [PlayerType.VIDEO, PlayerType.IMAGE],
+    container = [PlayerContainers.primary, PlayerContainers.secondary, PlayerContainers.none]
+  ) => {
+    return this._dualScreenPlayers.filter(
+      dualScreenPlayer => types.includes(dualScreenPlayer.type) && container.includes(dualScreenPlayer.container)
+    );
   };
 
   private _changeQuality = (label: string) => {
@@ -426,11 +437,13 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent
-          animation={animation}
-          player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
-          playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
-        />
+        get: () => (
+          <PipParent
+            animation={animation}
+            player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
+            playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
+          />
+        )
       }),
       this.player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
@@ -489,11 +502,13 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.VideoContainer,
-        get: () => <PipParent
-          animation={animation}
-          player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
-          playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
-        />
+        get: () => (
+          <PipParent
+            animation={animation}
+            player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
+            playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
+          />
+        )
       }),
       this.player.ui.addComponent({
         label: 'kaltura-dual-screen-pip-minimized',
