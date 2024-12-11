@@ -251,8 +251,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         const videoTrack = dualScreenPlayer.player.getTracks('video');
         const selectedVideoTrack = videoTrack.find((track: any) => track.label === label);
         if (selectedVideoTrack) {
-          //@ts-expect-error
-          dualScreenPlayer.player.changeQuality(selectedVideoTrack);
+          setTimeout(()=> {
+            //@ts-expect-error
+            dualScreenPlayer.player.changeQuality(selectedVideoTrack);
+          }, 1000);
         }
       }
     });
