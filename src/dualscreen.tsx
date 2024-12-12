@@ -53,7 +53,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   private _undoRemoveSettings?: Function | null = null;
   private _dualScreenPlayers: Array<DualScreenPlayer> = [];
   private _currentMultiscreenPlayers: MultiscreenPlayer[] = [];
-
+  private first_playing = false
   /**
    * The default configuration of the plugin.
    * @type {VisibilityConfigObject}
@@ -204,7 +204,9 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       }
     });
     this.eventManager.listen(this.player, EventType.VIDEO_TRACK_CHANGED, event => {
-      this._changeQuality(event.payload.selectedVideoTrack.label);
+     if(this.first_playing) {
+       this._changeQuality(event.payload.selectedVideoTrack.label);
+     }
     });
   }
 
@@ -251,10 +253,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         const videoTrack = dualScreenPlayer.player.getTracks('video');
         const selectedVideoTrack = videoTrack.find((track: any) => track.label === label);
         if (selectedVideoTrack) {
-          setTimeout(()=> {
-            //@ts-expect-error
-            dualScreenPlayer.player.changeQuality(selectedVideoTrack);
-          }, 1000);
+          //@ts-expect-error
+          dualScreenPlayer.player.changeQuality(selectedVideoTrack)
         }
       }
     });
@@ -707,6 +707,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
               this.logger.debug('secondary player first playing - show dual mode');
               this._setDefaultMode();
               this._setMode();
+              this.first_playing = true;
             });
           } else {
             this._setActiveDualScreenPlayer(IMAGE_PLAYER_ID, PlayerContainers.secondary);
