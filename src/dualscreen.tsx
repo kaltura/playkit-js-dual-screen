@@ -53,7 +53,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   private _undoRemoveSettings?: Function | null = null;
   private _dualScreenPlayers: Array<DualScreenPlayer> = [];
   private _currentMultiscreenPlayers: MultiscreenPlayer[] = [];
-
+  private _firstPlayingFired:boolean = false
   /**
    * The default configuration of the plugin.
    * @type {VisibilityConfigObject}
@@ -168,6 +168,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this._dualScreenPlayers = [];
     this._currentMultiscreenPlayers = [];
     this.eventManager.removeAll();
+    this._firstPlayingFired = false;
   }
 
   private _removeSecondaryPlaceholder(id: string) {
@@ -204,7 +205,9 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       }
     });
     this.eventManager.listen(this.player, EventType.VIDEO_TRACK_CHANGED, event => {
-      this._changeQuality(event.payload.selectedVideoTrack.label);
+     if(this._firstPlayingFired) {
+       this._changeQuality(event.payload.selectedVideoTrack.label);
+     }
     });
   }
 
@@ -705,6 +708,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
               this.logger.debug('secondary player first playing - show dual mode');
               this._setDefaultMode();
               this._setMode();
+              this._firstPlayingFired = true;
             });
           } else {
             this._setActiveDualScreenPlayer(IMAGE_PLAYER_ID, PlayerContainers.secondary);
