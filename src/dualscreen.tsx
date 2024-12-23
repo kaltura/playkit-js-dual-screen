@@ -82,6 +82,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       ready: this.ready
     };
     this.player.registerService('dualScreen', dualScreenApi);
+    if (this.timelineManager) {
+      this.player.ready().then(() => {
+        this.timelineManager.setGetThumbnailInfo(this.getDualScreenThumbs);
+      });
+    }
   }
 
   getEngineDecorator(engine: any, dispatcher: Function) {
@@ -102,6 +107,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
   get ready() {
     return this._readyPromise;
+  }
+
+  get timelineManager() {
+    return this.player.getService('timeline') as any;
   }
 
   private _removeSettingsComponent = () => {
