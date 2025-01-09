@@ -16,7 +16,7 @@ const mapStateToProps = (state: Record<string, any>) => ({
   isInPictureInPicture: state.engine.isInPictureInPicture,
 });
 
-const COMPONENT_NAME = 'PictureInPictureDualScreen';
+const COMPONENT_NAME = 'PictureInPicture';
 
 interface PictureInPictureDualScreenProps {
   player: KalturaPlayerTypes.Player | KalturaPlayerTypes.ImagePlayer;
@@ -39,7 +39,7 @@ interface PictureInPictureDualScreenProps {
   pictureInPictureText: 'controls.pictureInPicture',
   pictureInPictureExitText: 'controls.pictureInPictureExit'
 })
-class PictureInPictureDualScreen extends Component<PictureInPictureDualScreenProps>  {
+class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
   /**
    * Creates an instance of PictureInPicture.
    * @memberof PictureInPicture
@@ -48,9 +48,9 @@ class PictureInPictureDualScreen extends Component<PictureInPictureDualScreenPro
     super(props);
   }
   componentDidMount() {
-    const elem = window.document.querySelector(".picture-in-picture-dual-screen")
+    const element = document.querySelector(".picture-in-picture-dual-screen")
     //@ts-ignore
-    elem?.nextSibling?.textContent = this.props.pictureInPictureText
+    element?.nextSibling?.textContent = this.props.pictureInPictureText
   }
 
   /**
@@ -67,23 +67,23 @@ class PictureInPictureDualScreen extends Component<PictureInPictureDualScreenPro
     //@ts-ignore
     if (this.isSomePlayerInPip()) {
       this.exitPlayerInPip();
-      const elem = window.document.querySelector(".picture-in-picture-dual-screen")
+      const element = document.querySelector(".picture-in-picture-dual-screen")
       //@ts-ignore
-      elem?.classList.remove(style.isInPictureInPicture)
+      element?.classList.remove(style.isInPictureInPicture)
       //@ts-ignore
-      elem?.setAttribute('aria-label', this.props.pictureInPictureText)
+      element?.setAttribute('aria-label', this.props.pictureInPictureText)
       //@ts-ignore
-      elem?.nextSibling?.textContent = this.props.pictureInPictureText
+      element?.nextSibling?.textContent = this.props.pictureInPictureText
     } else {
       //@ts-ignore
       player.enterPictureInPicture();
-      const elem = window.document.querySelector(".picture-in-picture-dual-screen")
+      const element = document.querySelector(".picture-in-picture-dual-screen")
       //@ts-ignore
-      elem?.classList.add(style.isInPictureInPicture)
+      element?.classList.add(style.isInPictureInPicture)
       //@ts-ignore
-      elem?.setAttribute('aria-label', this.props.pictureInPictureExitText)
+      element?.setAttribute('aria-label', this.props.pictureInPictureExitText)
       //@ts-ignore
-      elem?.nextSibling?.textContent = this.props.pictureInPictureExitText
+      element?.nextSibling?.textContent = this.props.pictureInPictureExitText
     }
   };
 
@@ -140,5 +140,5 @@ class PictureInPictureDualScreen extends Component<PictureInPictureDualScreenPro
  }
 }
 
-PictureInPictureDualScreen.displayName = COMPONENT_NAME;
-export {PictureInPictureDualScreen};
+PictureInPicture.displayName = COMPONENT_NAME;
+export {PictureInPicture};

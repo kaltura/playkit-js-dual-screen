@@ -28,7 +28,7 @@ import {BasePlugin, core, IEngineDecoratorProvider, KalturaPlayer, ui} from '@pl
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import './styles/global.scss';
 import {DualscreenEvents} from './events';
-import {PictureInPictureDualScreen} from './components/pip/pictue-in-picture';
+import {PictureInPicture} from './components/pip/pictue-in-picture';
 
 const {
   reducers: {shell}
@@ -455,7 +455,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         container: 'BottomBarRightControls',
         replaceComponent: 'PictureInPicture',
         get: ()=>(
-          <PictureInPictureDualScreen
+          <PictureInPicture
             player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
             dualScreenPlayers={this._dualScreenPlayers}
             playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
