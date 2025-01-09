@@ -64,24 +64,19 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     if (!player) {
       return;
     }
-    //@ts-ignore
     if (this.isSomePlayerInPip()) {
       this.exitPlayerInPip();
       const element = document.querySelector(".picture-in-picture-dual-screen")
-      //@ts-ignore
       element?.classList.remove(style.isInPictureInPicture)
-      //@ts-ignore
-      element?.setAttribute('aria-label', this.props.pictureInPictureText)
+      element?.setAttribute('aria-label', this.props.pictureInPictureText || "")
       //@ts-ignore
       element?.nextSibling?.textContent = this.props.pictureInPictureText
     } else {
       //@ts-ignore
       player.enterPictureInPicture();
       const element = document.querySelector(".picture-in-picture-dual-screen")
-      //@ts-ignore
       element?.classList.add(style.isInPictureInPicture)
-      //@ts-ignore
-      element?.setAttribute('aria-label', this.props.pictureInPictureExitText)
+      element?.setAttribute('aria-label', this.props.pictureInPictureExitText || "")
       //@ts-ignore
       element?.nextSibling?.textContent = this.props.pictureInPictureExitText
     }
