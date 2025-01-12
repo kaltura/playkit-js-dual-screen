@@ -1,0 +1,16 @@
+{
+  "ca": {
+    "dualScreen": {
+      "show": "Mostrar",
+      "show_label": "Mostrar pantalla dual",
+      "hide": "Amagar",
+      "hide_label": "Amagar pantalla dual",
+      "side_by_side": "Pantalles una al costat de l'altra",
+      "switch_to_primary_screen": "Canviar a la pantalla principal",
+      "switch_to_secondary_screen": "Canviar a la pantalla secundària",
+      "expand_primary_screen": "Expandir la pantalla principal",
+      "expand_secondary_screen": "Expandir la pantalla secundària",
+      "multiscreen": "Mostrar més pantalles"
+    }
+  }
+}
