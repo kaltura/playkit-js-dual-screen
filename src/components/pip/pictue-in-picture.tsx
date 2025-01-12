@@ -1,12 +1,13 @@
 import {ui} from '@playkit-js/kaltura-player-js';
-import {Component, h} from 'preact';
+// import {Component, h} from 'preact';
 import {withText} from 'preact-i18n';
 import {Layout, PlayerType} from '../../enums';
 import {DualScreenPlayer} from '../../types';
+import {h, Component, createRef} from 'preact';
+
 
 const { redux,reducers , utils, style} = KalturaPlayer.ui;
 const {Tooltip, Icon} = ui.Components;
-import {createStore, compose, Store} from 'redux';
 /**
  * mapping state to props
  * @param {*} state - redux store state
@@ -42,7 +43,9 @@ interface PictureInPictureDualScreenProps {
   pictureInPictureExitText: 'controls.pictureInPictureExit'
 })
 class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
-  store!: Store<any, any>;
+  buttonContainerRef:HTMLDivElement | null = null
+  buttonContainerRef2:HTMLButtonElement | null = null
+
   /**
    * Creates an instance of PictureInPicture.
    * @memberof PictureInPicture
@@ -51,9 +54,8 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     super(props);
   }
   componentDidMount() {
-    const element = document.querySelector(".picture-in-picture-dual-screen")
     //@ts-ignore
-    element?.nextSibling?.textContent = this.props.pictureInPictureText
+    this.buttonContainerRef2.parentNode?.nextSibling?.textContent = this.props.pictureInPictureText
   }
 
   componentDidUpdate() {
@@ -77,21 +79,22 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     }
     if (this.isSomePlayerInPip()) {
       this.exitPlayerInPip();
-      const element = document.querySelector(".picture-in-picture-dual-screen")
-      element?.classList.remove(style.isInPictureInPicture)
-      element?.setAttribute('aria-label', this.props.pictureInPictureText || "")
+
       //@ts-ignore
-      element?.nextSibling?.textContent = this.props.pictureInPictureText
+      this.buttonContainerRef2?.className = this.buttonContainerRef2?.className.replace(" " + style.isInPictureInPicture, "")
+      this.buttonContainerRef2?.setAttribute('aria-label', this.props.pictureInPictureText || "")
+      //@ts-ignore
+      this.buttonContainerRef2.parentNode?.nextSibling?.textContent = this.props.pictureInPictureText
+
     } else {
       //@ts-ignore
       player.enterPictureInPicture();
 
-      const element = document.querySelector(".picture-in-picture-dual-screen")
-      element?.classList.add(style.isInPictureInPicture)
-      element?.setAttribute('aria-label', this.props.pictureInPictureExitText || "")
       //@ts-ignore
-      element?.nextSibling?.textContent = this.props.pictureInPictureExitText
-
+      this.buttonContainerRef2?.className = this.buttonContainerRef2?.className.concat(" " + style.isInPictureInPicture)
+      this.buttonContainerRef2?.setAttribute('aria-label', this.props.pictureInPictureExitText || "")
+      //@ts-ignore
+      this.buttonContainerRef2.parentNode?.nextSibling?.textContent = this.props.pictureInPictureExitText
     }
   }
 
@@ -133,20 +136,23 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     const isSomePlayerInPip = this.isSomePlayerInPip()
     return (
       <Tooltip label="">
+        <div ref= {node => (  this.buttonContainerRef = node)}>
           <button
+            ref= {node => (  this.buttonContainerRef2 = node)}
             // tabIndex= 0,
             aria-label={isSomePlayerInPip ? this.props.pictureInPictureExitText : this.props.pictureInPictureText}
-            className={isSomePlayerInPip ? [style.controlButton, "picture-in-picture-dual-screen", style.isInPictureInPicture].join(' ') : [style.controlButton, "picture-in-picture-dual-screen"].join(' ')}
-            onClick={this.togglePip}
+            className={isSomePlayerInPip ? [style.controlButton, 'picture-in-picture-dual-screen', style.isInPictureInPicture].join(' ') : [style.controlButton, 'picture-in-picture-dual-screen'].join(' ')}
+            onClick={()=>this.togglePip()}
             //onKeyDown={this.onKeyDown}
           >
             <i className={[style.icon, style.iconPictureInPictureStart].join(' ')} aria-hidden="true" />
             <i className={[style.icon, style.iconPictureInPictureStop].join(' ')} aria-hidden="true" />
           </button>
-        </Tooltip>
-    );
- }
-}
+        </div>
+      </Tooltip>
+  );
+  }
+  }
 
-PictureInPicture.displayName = COMPONENT_NAME;
-export {PictureInPicture};
+  PictureInPicture.displayName = COMPONENT_NAME;
+  export {PictureInPicture};
