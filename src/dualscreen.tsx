@@ -584,6 +584,20 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
             onMinSize={this._switchToSingleMedia}
           />
         )
+      }),
+      this.player.ui.addComponent({
+        label: 'kaltura-dual-screen-picture-in-picture',
+        presets: PRESETS,
+        container: 'BottomBarRightControls',
+        replaceComponent: 'PictureInPicture',
+        get: ()=>(
+          <PictureInPicture
+            player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
+            dualScreenPlayers={this._dualScreenPlayers}
+            playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
+            layout={this._layout}
+          />
+        )
       })
     );
   };

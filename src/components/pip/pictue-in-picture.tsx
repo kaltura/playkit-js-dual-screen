@@ -1,11 +1,12 @@
 import {ui} from '@playkit-js/kaltura-player-js';
-import {h, Component, VNode} from 'preact';
+import {Component, h} from 'preact';
 import {withText} from 'preact-i18n';
-import {PlayerType} from '../../enums';
+import {Layout, PlayerType} from '../../enums';
 import {DualScreenPlayer} from '../../types';
+
 const { redux,reducers , utils, style} = KalturaPlayer.ui;
 const {Tooltip, Icon} = ui.Components;
-
+import {createStore, compose, Store} from 'redux';
 /**
  * mapping state to props
  * @param {*} state - redux store state
@@ -23,9 +24,10 @@ interface PictureInPictureDualScreenProps {
   dualScreenPlayers: Array<DualScreenPlayer>;
   playerType: PlayerType;
   isInPictureInPicture?: boolean| undefined;
-  isPictureInPictureSupported?:boolean| undefined;
-  pictureInPictureExitText?:string;
-  pictureInPictureText?:string;
+  isPictureInPictureSupported?: boolean| undefined;
+  pictureInPictureExitText?: string;
+  pictureInPictureText?: string;
+  layout?: Layout;
 }
 
 /**
@@ -40,6 +42,7 @@ interface PictureInPictureDualScreenProps {
   pictureInPictureExitText: 'controls.pictureInPictureExit'
 })
 class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
+  store!: Store<any, any>;
   /**
    * Creates an instance of PictureInPicture.
    * @memberof PictureInPicture
@@ -51,6 +54,14 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     const element = document.querySelector(".picture-in-picture-dual-screen")
     //@ts-ignore
     element?.nextSibling?.textContent = this.props.pictureInPictureText
+  }
+
+  componentDidUpdate() {
+    if(this.props.layout == Layout.SideBySide){
+      // to prevent from picture-in-picture-overly take effect
+      //@ts-ignore
+      this.props.player.ui.store.dispatch(reducers.engine.actions.updateIsInPictureInPicture(false));
+    }
   }
 
   /**
@@ -74,13 +85,15 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     } else {
       //@ts-ignore
       player.enterPictureInPicture();
+
       const element = document.querySelector(".picture-in-picture-dual-screen")
       element?.classList.add(style.isInPictureInPicture)
       element?.setAttribute('aria-label', this.props.pictureInPictureExitText || "")
       //@ts-ignore
       element?.nextSibling?.textContent = this.props.pictureInPictureExitText
+
     }
-  };
+  }
 
   public exitPlayerInPip = () => {
     return this.props.dualScreenPlayers.find(dualScreenPlayer => {
