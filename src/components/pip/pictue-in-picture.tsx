@@ -43,7 +43,6 @@ interface PictureInPictureDualScreenProps {
   pictureInPictureExitText: 'controls.pictureInPictureExit'
 })
 class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
-  buttonContainerRef:HTMLDivElement | null = null
   buttonContainerRef2:HTMLButtonElement | null = null
 
   /**
@@ -59,11 +58,15 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
   }
 
   componentDidUpdate() {
-    if(this.props.layout == Layout.SideBySide){
-      // to prevent from picture-in-picture-overly take effect
-      //@ts-ignore
-      this.props.player.ui.store.dispatch(reducers.engine.actions.updateIsInPictureInPicture(false));
-    }
+    // if(this.props.layout == Layout.SideBySide){
+    //   // to prevent from picture-in-picture-overly take effect
+    //   //@ts-ignore
+    //   this.props.player.ui.store.dispatch(reducers.engine.actions.updateIsInPictureInPicture(false));
+    // }
+
+    //@ts-ignore
+    this.props.player.ui.store.dispatch(reducers.engine.actions.updateIsInPictureInPicture(false));
+
   }
 
   /**
@@ -136,7 +139,7 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     const isSomePlayerInPip = this.isSomePlayerInPip()
     return (
       <Tooltip label="">
-        <div ref= {node => (  this.buttonContainerRef = node)}>
+        <div>
           <button
             ref= {node => (  this.buttonContainerRef2 = node)}
             // tabIndex= 0,
