@@ -501,6 +501,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       })
     );
+    this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
   private _switchToSingleMedia = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}) => {
@@ -539,6 +540,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       })
     );
+    this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
   private _switchToSideBySide = ({animation = Animations.Fade, focusOnButton, force}: LayoutChangeProps = {}) => {
@@ -581,6 +583,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       })
     );
+    this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
   private _onActiveSlideChanged = (slideItem: SlideItem | null) => {
