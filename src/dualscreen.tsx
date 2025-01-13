@@ -501,6 +501,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       })
     );
+    // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
     this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
@@ -540,6 +541,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       })
     );
+    // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
     this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
@@ -583,6 +585,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       })
     );
+    // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
     this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
