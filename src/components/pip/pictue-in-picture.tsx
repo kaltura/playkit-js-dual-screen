@@ -64,9 +64,10 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     //   this.props.player.ui.store.dispatch(reducers.engine.actions.updateIsInPictureInPicture(false));
     // }
 
-    //@ts-ignore
-    this.props.player.ui.store.dispatch(reducers.engine.actions.updateIsInPictureInPicture(false));
-
+    if(this.props.playerType === PlayerType.VIDEO) {
+      const videoPlayer:KalturaPlayerTypes.Player = this.props.player as KalturaPlayerTypes.Player;
+      videoPlayer.ui.store.dispatch(reducers.engine.actions.updateIsInPictureInPicture(false));
+    }
   }
 
   /**
@@ -83,22 +84,22 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     if (this.isSomePlayerInPip()) {
       this.exitPlayerInPip();
 
-      //@ts-ignore
-      this.buttonContainerRef2?.className = this.buttonContainerRef2?.className.replace(" " + style.isInPictureInPicture, "")
-      this.buttonContainerRef2?.setAttribute('aria-label', this.props.pictureInPictureText || "")
-      //@ts-ignore
-      this.buttonContainerRef2.parentNode?.nextSibling?.textContent = this.props.pictureInPictureText
-
+      const currentClassName = this.buttonContainerRef2?.className.replace(" " + style.isInPictureInPicture, "") as string;
+      this.updateParams(currentClassName, this.props.pictureInPictureText|| "")
     } else {
       //@ts-ignore
       player.enterPictureInPicture();
 
-      //@ts-ignore
-      this.buttonContainerRef2?.className = this.buttonContainerRef2?.className.concat(" " + style.isInPictureInPicture)
-      this.buttonContainerRef2?.setAttribute('aria-label', this.props.pictureInPictureExitText || "")
-      //@ts-ignore
-      this.buttonContainerRef2.parentNode?.nextSibling?.textContent = this.props.pictureInPictureExitText
+      const currentClassName = this.buttonContainerRef2?.className.concat(" " + style.isInPictureInPicture || "") as string;
+      this.updateParams(currentClassName, this.props.pictureInPictureExitText|| "")
     }
+  }
+
+  private updateParams = (className:string, ariaLabel:string) => {
+    this.buttonContainerRef2?.setAttribute('class', className)
+    this.buttonContainerRef2?.setAttribute('aria-label', ariaLabel)
+    //@ts-ignore
+    this.buttonContainerRef2.parentNode?.nextSibling?.textContent = ariaLabel
   }
 
   public exitPlayerInPip = () => {
