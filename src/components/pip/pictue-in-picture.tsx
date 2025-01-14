@@ -43,7 +43,7 @@ interface PictureInPictureDualScreenProps {
   pictureInPictureExitText: 'controls.pictureInPictureExit'
 })
 class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
-  buttonContainerRef2:HTMLButtonElement | null = null
+  buttonContainerRef:HTMLButtonElement | null = null
 
   /**
    * Creates an instance of PictureInPicture.
@@ -54,7 +54,7 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
   }
   componentDidMount() {
     //@ts-ignore
-    this.buttonContainerRef2.parentNode?.nextSibling?.textContent = this.props.pictureInPictureText
+    this.buttonContainerRef.parentNode?.nextSibling?.textContent = this.props.pictureInPictureText
   }
 
   componentDidUpdate() {
@@ -84,22 +84,21 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     if (this.isSomePlayerInPip()) {
       this.exitPlayerInPip();
 
-      const currentClassName = this.buttonContainerRef2?.className.replace(" " + style.isInPictureInPicture, "") as string;
+      const currentClassName = this.buttonContainerRef?.className.replace(" " + style.isInPictureInPicture, "") as string;
       this.updateParams(currentClassName, this.props.pictureInPictureText|| "")
     } else {
       //@ts-ignore
       player.enterPictureInPicture();
 
-      const currentClassName = this.buttonContainerRef2?.className.concat(" " + style.isInPictureInPicture || "") as string;
+      const currentClassName = this.buttonContainerRef?.className.concat(" " + style.isInPictureInPicture || "") as string;
       this.updateParams(currentClassName, this.props.pictureInPictureExitText|| "")
     }
   }
 
   private updateParams = (className:string, ariaLabel:string) => {
-    this.buttonContainerRef2?.setAttribute('class', className)
-    this.buttonContainerRef2?.setAttribute('aria-label', ariaLabel)
-    //@ts-ignore
-    this.buttonContainerRef2.parentNode?.nextSibling?.textContent = ariaLabel
+    this.buttonContainerRef?.setAttribute('class', className)
+    this.buttonContainerRef?.setAttribute('aria-label', ariaLabel)
+    this.buttonContainerRef!.parentElement!.nextElementSibling!.textContent = ariaLabel;
   }
 
   public exitPlayerInPip = () => {
@@ -142,7 +141,7 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
       <Tooltip label="">
         <div>
           <button
-            ref= {node => (  this.buttonContainerRef2 = node)}
+            ref= {node => (  this.buttonContainerRef = node)}
             // tabIndex= 0,
             aria-label={isSomePlayerInPip ? this.props.pictureInPictureExitText : this.props.pictureInPictureText}
             className={isSomePlayerInPip ? [style.controlButton, 'picture-in-picture-dual-screen', style.isInPictureInPicture].join(' ') : [style.controlButton, 'picture-in-picture-dual-screen'].join(' ')}
