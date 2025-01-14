@@ -1,10 +1,8 @@
 import {ui} from '@playkit-js/kaltura-player-js';
-// import {Component, h} from 'preact';
 import {withText} from 'preact-i18n';
 import {Layout, PlayerType} from '../../enums';
 import {DualScreenPlayer} from '../../types';
 import {h, Component, createRef} from 'preact';
-
 
 const { redux,reducers , utils, style} = KalturaPlayer.ui;
 const {Tooltip, Icon} = ui.Components;
@@ -81,6 +79,11 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     if (!player) {
       return;
     }
+
+    if(this.props.playerType === PlayerType.IMAGE) {
+      return
+    }
+
     if (this.isSomePlayerInPip()) {
       this.exitPlayerInPip();
 
