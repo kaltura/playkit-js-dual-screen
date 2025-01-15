@@ -51,17 +51,10 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     super(props);
   }
   componentDidMount() {
-    //@ts-ignore
-    this.buttonContainerRef.parentNode?.nextSibling?.textContent = this.props.pictureInPictureText
+    this.buttonContainerRef!.parentNode!.nextSibling!.textContent = this.props.pictureInPictureText|| ""
   }
 
   componentDidUpdate() {
-    // if(this.props.layout == Layout.SideBySide){
-    //   // to prevent from picture-in-picture-overly take effect
-    //   //@ts-ignore
-    //   this.props.player.ui.store.dispatch(reducers.engine.actions.updateIsInPictureInPicture(false));
-    // }
-
     if(this.props.playerType === PlayerType.VIDEO) {
       const videoPlayer:KalturaPlayerTypes.Player = this.props.player as KalturaPlayerTypes.Player;
       videoPlayer.ui.store.dispatch(reducers.engine.actions.updateIsInPictureInPicture(false));
@@ -145,11 +138,9 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
         <div>
           <button
             ref= {node => (  this.buttonContainerRef = node)}
-            // tabIndex= 0,
             aria-label={isSomePlayerInPip ? this.props.pictureInPictureExitText : this.props.pictureInPictureText}
             className={isSomePlayerInPip ? [style.controlButton, 'picture-in-picture-dual-screen', style.isInPictureInPicture].join(' ') : [style.controlButton, 'picture-in-picture-dual-screen'].join(' ')}
             onClick={()=>this.togglePip()}
-            //onKeyDown={this.onKeyDown}
           >
             <i className={[style.icon, style.iconPictureInPictureStart].join(' ')} aria-hidden="true" />
             <i className={[style.icon, style.iconPictureInPictureStop].join(' ')} aria-hidden="true" />
