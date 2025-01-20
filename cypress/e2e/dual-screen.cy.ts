@@ -1,8 +1,8 @@
 // @ts-ignore
 import {core} from '@playkit-js/kaltura-player-js';
 import {mockKalturaBe, loadPlayer, MANIFEST, MANIFEST_SAFARI, getPlayer} from './env';
-import { DualscreenEvents } from 'playkit-js-dual-screen/src';
-import { Layout } from 'playkit-js-dual-screen/src/enums';
+import { DualscreenEvents } from '@playkit-js-dual-screen/src';
+import { Layout } from '@playkit-js-dual-screen/src/enums';
 
 const {EventType, FakeEvent, Error} = core;
 
