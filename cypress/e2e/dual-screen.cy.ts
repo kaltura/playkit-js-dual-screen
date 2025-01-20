@@ -1,6 +1,8 @@
 // @ts-ignore
 import {core} from '@playkit-js/kaltura-player-js';
 import {mockKalturaBe, loadPlayer, MANIFEST, MANIFEST_SAFARI, getPlayer} from './env';
+import { DualscreenEvents } from 'playkit-js-dual-screen/src';
+import { Layout } from 'playkit-js-dual-screen/src/enums';
 
 const {EventType, FakeEvent, Error} = core;
 
@@ -433,6 +435,31 @@ describe('Dual-Screen plugin', () => {
             expect(testThumbsResult(thumbs[0], mediaThumb)).to.be.true;
             expect(thumbs[1]).to.eql(slideThumb);
           });
+      });
+    });
+  });
+
+  describe('analytics events', () => {
+    it('should raise the SIDE_DISPLAYED event', () => {
+      mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
+      loadPlayer({layout: 'PIP'}).then(playerMain => {
+        cy.stub(playerMain, 'dispatchEvent').as('dispatchEvent');
+        cy.get('@dispatchEvent').should('have.been.calledOnce');      
+        cy.get('@dispatchEvent').should('have.been.calledWith',  new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, {layout: Layout.PIP}));
+      });
+    });
+
+    it('should raise the CHANGE_LAYOUT event', () => {
+      mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
+      loadPlayer({layout: 'PIP'}).then(playerMain => {
+        cy.stub(playerMain, 'dispatchEvent').as('dispatchEvent');
+        cy.get('@dispatchEvent').should('have.been.calledOnce');
+        cy.get('@dispatchEvent').should('have.been.calledWith',  new FakeEvent(DualscreenEvents.CHANGE_LAYOUT, {layout: Layout.SideBySide}));
+
+        cy.get('[data-testid="dualscreen_sideBySideWrapper"]').should('not.exist');
+        cy.get('[data-testid="dualscreen_pipChildren"]').within(() => {
+          cy.get('[data-testid="dualscreen_switchToSideBySide"]').click({force: true});
+        });
       });
     });
   });
