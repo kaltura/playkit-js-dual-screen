@@ -501,6 +501,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       })
     );
+    // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
+    this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
   private _switchToSingleMedia = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}) => {
@@ -539,6 +541,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       })
     );
+    // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
+    this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
   private _switchToSideBySide = ({animation = Animations.Fade, focusOnButton, force}: LayoutChangeProps = {}) => {
@@ -581,6 +585,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       })
     );
+    // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
+    this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
   private _onActiveSlideChanged = (slideItem: SlideItem | null) => {
