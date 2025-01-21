@@ -436,4 +436,29 @@ describe('Dual-Screen plugin', () => {
       });
     });
   });
+
+  describe('analytics events', () => {
+    it('should raise the SIDE_DISPLAYED event', done => {
+      mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
+      loadPlayer({layout: 'PIP'}).then(playerMain => {
+        playerMain.addEventListener('dualscreen_side_displayed', () => {
+          done();
+        });
+      });
+    });
+
+    it('should raise the CHANGE_LAYOUT event', done => {
+      mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
+      loadPlayer({layout: 'PIP'}).then(playerMain => {
+        playerMain.addEventListener('dualscreen_change_layout', () => {
+          done();
+        });
+
+        cy.get('[data-testid="dualscreen_sideBySideWrapper"]').should('not.exist');
+        cy.get('[data-testid="dualscreen_pipChildren"]').within(() => {
+          cy.get('[data-testid="dualscreen_switchToSideBySide"]').click({force: true});
+        });
+      });
+    });
+  });
 });
