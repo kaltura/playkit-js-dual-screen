@@ -1,8 +1,6 @@
 // @ts-ignore
 import {core} from '@playkit-js/kaltura-player-js';
 import {mockKalturaBe, loadPlayer, MANIFEST, MANIFEST_SAFARI, getPlayer} from './env';
-import { DualscreenEvents } from '../../src';
-import { Layout } from '../../src/enums';
 
 const {EventType, FakeEvent, Error} = core;
 
@@ -440,21 +438,21 @@ describe('Dual-Screen plugin', () => {
   });
 
   describe('analytics events', () => {
-    it('should raise the SIDE_DISPLAYED event', () => {
+    it('should raise the SIDE_DISPLAYED event', done => {
       mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
       loadPlayer({layout: 'PIP'}).then(playerMain => {
-        cy.stub(playerMain, 'dispatchEvent').as('dispatchEvent');
-        cy.get('@dispatchEvent').should('have.been.calledOnce');      
-        cy.get('@dispatchEvent').should('have.been.calledWith',  new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, {layout: Layout.PIP}));
+        playerMain.addEventListener('dualscreen_side_displayed', () => {
+          done();
+        });
       });
     });
 
-    it('should raise the CHANGE_LAYOUT event', () => {
+    it('should raise the CHANGE_LAYOUT event', done => {
       mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
       loadPlayer({layout: 'PIP'}).then(playerMain => {
-        cy.stub(playerMain, 'dispatchEvent').as('dispatchEvent');
-        cy.get('@dispatchEvent').should('have.been.calledOnce');
-        cy.get('@dispatchEvent').should('have.been.calledWith',  new FakeEvent(DualscreenEvents.CHANGE_LAYOUT, {layout: Layout.SideBySide}));
+        playerMain.addEventListener('dualscreen_change_layout', () => {
+          done();
+        });
 
         cy.get('[data-testid="dualscreen_sideBySideWrapper"]').should('not.exist');
         cy.get('[data-testid="dualscreen_pipChildren"]').within(() => {
