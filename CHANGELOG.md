@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.1.42 (2025-01-23)
+
+
+### Bug Fixes
+
+* **FEC-14011:** Slide and CTA Analytics ([#167](https://github.com/kaltura/playkit-js-dual-screen/issues/167)) ([ac08f3f](https://github.com/kaltura/playkit-js-dual-screen/commit/ac08f3f))
+
+
+
 ### 3.1.41 (2025-01-09)
 
 
