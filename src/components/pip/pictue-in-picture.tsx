@@ -129,13 +129,16 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
    */
   render() {
     const isSomePlayerInPip = this.isSomePlayerInPip()
+    const classNames = [style.controlButton, 'picture-in-picture-dual-screen'];
+    if (isSomePlayerInPip) { classNames.push(style.isInPictureInPicture); }
+
     return (
       <Tooltip label="">
         <div>
           <button
             ref= {node => (  this.buttonContainerRef = node)}
             aria-label={isSomePlayerInPip ? this.props.pictureInPictureExitText : this.props.pictureInPictureText}
-            className={isSomePlayerInPip ? [style.controlButton, 'picture-in-picture-dual-screen', style.isInPictureInPicture].join(' ') : [style.controlButton, 'picture-in-picture-dual-screen'].join(' ')}
+            className= {classNames.join(' ')}
             onClick={()=>this.togglePip()}
           >
             <i className={[style.icon, style.iconPictureInPictureStart].join(' ')} aria-hidden="true" />
