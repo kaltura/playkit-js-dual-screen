@@ -69,10 +69,6 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
    */
   togglePip = (): void => {
     const player = this.props.player;
-    if (!player) {
-      return;
-    }
-
     if(this.props.playerType === PlayerType.IMAGE) {
       return
     }
@@ -99,23 +95,23 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
 
   public exitPlayerInPip = () => {
     return this.props.dualScreenPlayers.find(dualScreenPlayer => {
-      try{
-        //@ts-ignore
-        if(dualScreenPlayer.player.isInPictureInPicture()){
-          //@ts-ignore
-          dualScreenPlayer.player.exitPictureInPicture();
-          return
+        try {
+          // @ts-expect-error
+          if (dualScreenPlayer.player.isInPictureInPicture()) {
+            // @ts-expect-error
+            dualScreenPlayer.player.exitPictureInPicture();
+            return
+          }
         }
-      }
-      catch {
-      }
+        catch {
+        }
     });
   };
 
   public isSomePlayerInPip = () => {
     return this.props.dualScreenPlayers.find(dualScreenPlayer => {
       try{
-        //@ts-ignore
+        // @ts-expect-error
         if(dualScreenPlayer.player.isInPictureInPicture()){
           return true
         }
