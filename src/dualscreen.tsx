@@ -74,7 +74,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   constructor(name: string, player: KalturaPlayer, config: DualScreenConfig) {
     super(name, player, config);
     this._readyPromise = this._makeReadyPromise();
-    this._layout = Layout.Hidden;
+    this.updateLayout(Layout.Hidden);
     this._pipPosition = this.config.position;
     const dualScreenApi = {
       getDualScreenThumbs: this.getDualScreenThumbs,
@@ -93,8 +93,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     return new DualScreenEngineDecorator(engine, this, dispatcher);
   }
 
-  set _layout(layout: Layout) {
-    if (!(layout === Layout.PIP && this.layout === Layout.PIPInverse)) {
+  updateLayout(layout: Layout, userInteraction = false) {
+    if (userInteraction && !(layout === Layout.PIP && this.layout === Layout.PIPInverse)) {
       // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
       this.player.dispatchEvent(new FakeEvent(DualscreenEvents.CHANGE_LAYOUT, {layout}));
     }
@@ -157,7 +157,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
   reset(): void {
     this._setDefaultMode();
-    this._layout = Layout.Hidden;
+    this.updateLayout(Layout.Hidden);
     this._dualScreenPlayers.forEach(dualScreenPlayer => {
       if (dualScreenPlayer.id !== MAIN_PLAYER_ID) {
         const player = dualScreenPlayer.player as any;
@@ -377,7 +377,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   private _setDefaultMode = () => {
     this._switchToHidden();
     const configLayouts = [Layout.PIP, Layout.PIPInverse, Layout.SideBySide, Layout.SideBySideInverse, Layout.SingleMedia, Layout.SingleMediaInverse];
-    this._layout = configLayouts.includes(this.config.layout) ? this.config.layout : Layout.Hidden;
+    const layout = configLayouts.includes(this.config.layout) ? this.config.layout : Layout.Hidden;
+    this.updateLayout(layout);
     this._pipPosition = this.config.position;
     this._pipPortraitMode = false;
     this._externalLayout = null;
@@ -424,7 +425,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     const {
       store: {dispatch}
     } = this.player.ui;
-    this._layout = Layout.Hidden;
+    this.updateLayout(Layout.Hidden);
     // @ts-ignore
     dispatch(shell.actions.removePlayerClass(HAS_DUAL_SCREEN_PLUGIN_OVERLAY));
     this._removeActives();
@@ -440,7 +441,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     }
 
     const mainPlayer = this.getDualScreenPlayer(MAIN_PLAYER_ID);
-    this._layout = mainPlayer?.container === PlayerContainers.primary ? Layout.PIP : Layout.PIPInverse;
+    const layout = mainPlayer?.container === PlayerContainers.primary ? Layout.PIP : Layout.PIPInverse;
+    this.updateLayout(layout);
 
     this._setPipPortraitMode();
 
@@ -509,7 +511,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     if (!force && this._layout === Layout.SingleMedia && this._removeActivesArr.length) {
       return;
     }
-    this._layout = Layout.SingleMedia;
+    this.updateLayout(Layout.SingleMedia, true);
 
     this._addActives(
       this.player.ui.addComponent({
@@ -549,7 +551,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     if (!force && this._layout === Layout.SideBySide && this._removeActivesArr.length) {
       return;
     }
-    this._layout = Layout.SideBySide;
+    this.updateLayout(Layout.SideBySide, true);
 
     const leftSideProps = {
       player: this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any,
