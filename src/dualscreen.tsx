@@ -193,7 +193,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     });
   };
 
-  private _addBindings() {
+  private _addBindings(userInteraction = false) {
     this.eventManager.listen(this.player, EventType.PLAYBACK_ENDED, () => {
       this._playbackEnded = true;
     });
@@ -206,10 +206,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         this._playbackEnded = false;
         const secondaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.secondary) as DualScreenPlayer;
         if (secondaryPlayer.type === PlayerType.IMAGE && !(secondaryPlayer.player as ImagePlayer).active) {
-          this._switchToHidden();
+          this._switchToHidden(userInteraction);
         } else {
           this._setDefaultMode(false);
-          this._setMode();
+          this._setMode(userInteraction);
         }
       }
     });
@@ -343,31 +343,31 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     return this._currentMultiscreenPlayers;
   };
 
-  private _setMode = (force?: boolean) => {
+  private _setMode = (force?: boolean, userInteraction = true) => {
     switch (this._layout) {
       case Layout.PIP:
-        this._switchToPIP({force});
+        this._switchToPIP({force}, userInteraction);
         break;
       case Layout.PIPInverse:
         this._applyInverse();
-        this._switchToPIP({force});
+        this._switchToPIP({force}, userInteraction);
         break;
       case Layout.SingleMedia:
-        this._switchToSingleMedia({force});
+        this._switchToSingleMedia({force}, userInteraction);
         break;
       case Layout.SingleMediaInverse:
         this._applyInverse();
-        this._switchToSingleMedia({force});
+        this._switchToSingleMedia({force}, userInteraction);
         break;
       case Layout.SideBySide:
-        this._switchToSideBySide({force});
+        this._switchToSideBySide({force}, userInteraction);
         break;
       case Layout.SideBySideInverse:
         this._applyInverse();
-        this._switchToSideBySide({force});
+        this._switchToSideBySide({force}, userInteraction);
         break;
       case Layout.Hidden:
-        this._switchToHidden();
+        this._switchToHidden(userInteraction);
         break;
       default:
         this.logger.warn('unrecognized layout, got:', this._layout);
@@ -434,7 +434,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     }
   };
 
-  private _switchToPIP = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}) => {
+  private _switchToPIP = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}, userInteraction = true) => {
     const imagePlayer = this.getDualScreenPlayer(IMAGE_PLAYER_ID)?.player as ImagePlayer;
     if (!force && this._layout === Layout.PIP && this._removeActivesArr.length && imagePlayer.active?.portrait === this._pipPortraitMode) {
       return;
@@ -442,7 +442,9 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
     const mainPlayer = this.getDualScreenPlayer(MAIN_PLAYER_ID);
     const layout = mainPlayer?.container === PlayerContainers.primary ? Layout.PIP : Layout.PIPInverse;
-    this.updateLayout(layout);
+    if (userInteraction) {
+      this.updateLayout(layout);
+    }
 
     this._setPipPortraitMode();
 
@@ -507,11 +509,13 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
-  private _switchToSingleMedia = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}) => {
+  private _switchToSingleMedia = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}, userInteraction = true) => {
     if (!force && this._layout === Layout.SingleMedia && this._removeActivesArr.length) {
       return;
     }
-    this.updateLayout(Layout.SingleMedia);
+    if (userInteraction) {
+      this.updateLayout(Layout.SingleMedia);
+    }
 
     this._addActives(
       this.player.ui.addComponent({
@@ -547,11 +551,13 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
-  private _switchToSideBySide = ({animation = Animations.Fade, focusOnButton, force}: LayoutChangeProps = {}) => {
+  private _switchToSideBySide = ({animation = Animations.Fade, focusOnButton, force}: LayoutChangeProps = {}, userInteraction = true) => {
     if (!force && this._layout === Layout.SideBySide && this._removeActivesArr.length) {
       return;
     }
-    this.updateLayout(Layout.SideBySide);
+    if (userInteraction) {
+      this.updateLayout(Layout.SideBySide);
+    }
 
     const leftSideProps = {
       player: this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any,
@@ -693,7 +699,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     }
   };
 
-  private _getSecondaryMedia() {
+  private _getSecondaryMedia(userInteraction = false) {
     // @ts-ignore
     this.player.provider
       // @ts-ignore
@@ -724,7 +730,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
             this.eventManager.listenOnce(secondaryPlayer, EventType.FIRST_PLAYING, () => {
               this.logger.debug('secondary player first playing - show dual mode');
               this._setDefaultMode(false);
-              this._setMode();
+              this._setMode(userInteraction);
               this._firstPlayingFired = true;
             });
           } else {
