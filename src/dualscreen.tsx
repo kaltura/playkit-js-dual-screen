@@ -442,9 +442,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
     const mainPlayer = this.getDualScreenPlayer(MAIN_PLAYER_ID);
     const layout = mainPlayer?.container === PlayerContainers.primary ? Layout.PIP : Layout.PIPInverse;
-    if (userInteraction) {
-      this.updateLayout(layout);
-    }
+    this.updateLayout(layout, userInteraction);
 
     this._setPipPortraitMode();
 
@@ -513,9 +511,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     if (!force && this._layout === Layout.SingleMedia && this._removeActivesArr.length) {
       return;
     }
-    if (userInteraction) {
-      this.updateLayout(Layout.SingleMedia);
-    }
+    this.updateLayout(Layout.SingleMedia, userInteraction);
 
     this._addActives(
       this.player.ui.addComponent({
@@ -555,9 +551,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     if (!force && this._layout === Layout.SideBySide && this._removeActivesArr.length) {
       return;
     }
-    if (userInteraction) {
-      this.updateLayout(Layout.SideBySide);
-    }
+    this.updateLayout(Layout.SideBySide, userInteraction);
 
     const leftSideProps = {
       player: this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any,
