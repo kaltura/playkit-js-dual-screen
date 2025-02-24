@@ -639,7 +639,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this._applyExternalLayout();
   };
 
-  private _applyExternalLayout = () => {
+  private _applyExternalLayout = (userInteraction = false) => {
     // external layout applies by Kaltura Webcast Studion app, that support only 1 media and slides
     const primaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.primary);
     const secondaryPlayer = this.getActiveDualScreenPlayer(PlayerContainers.secondary);
@@ -652,42 +652,42 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     };
     switch (this._externalLayout) {
       case ExternalLayout.Hidden:
-        this._switchToHidden();
+        this._switchToHidden(userInteraction);
         break;
       case ExternalLayout.SingleMedia:
         if (this._layout !== Layout.SingleMedia || !_checkPlayerContainers()) {
           _applyPlayerContainers();
-          this._switchToSingleMedia({force: true});
+          this._switchToSingleMedia({force: true}, userInteraction);
         }
         break;
       case ExternalLayout.SingleMediaInverse:
         if (this._layout !== Layout.SingleMediaInverse || !_checkPlayerContainers(true)) {
           _applyPlayerContainers(true);
-          this._switchToSingleMedia({force: true});
+          this._switchToSingleMedia({force: true}, userInteraction);
         }
         break;
       case ExternalLayout.PIP:
         if (this._layout !== Layout.PIP || !_checkPlayerContainers()) {
           _applyPlayerContainers();
-          this._switchToPIP({force: true});
+          this._switchToPIP({force: true}, userInteraction);
         }
         break;
       case ExternalLayout.PIPInverse:
         if (this._layout !== Layout.PIPInverse || !_checkPlayerContainers(true)) {
           _applyPlayerContainers(true);
-          this._switchToPIP({force: true});
+          this._switchToPIP({force: true}, userInteraction);
         }
         break;
       case ExternalLayout.SideBySide:
         if (this._layout !== Layout.SideBySide || !_checkPlayerContainers()) {
           _applyPlayerContainers();
-          this._switchToSideBySide({force: true});
+          this._switchToSideBySide({force: true}, userInteraction);
         }
         break;
       case ExternalLayout.SideBySideInverse:
         if (this._layout !== Layout.SideBySideInverse || !_checkPlayerContainers(true)) {
           _applyPlayerContainers(true);
-          this._switchToSideBySide({force: true});
+          this._switchToSideBySide({force: true}, userInteraction);
         }
         break;
     }
