@@ -209,7 +209,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
           this._switchToHidden(userInteraction);
         } else {
           this._setDefaultMode(false);
-          this._setMode(userInteraction);
+          this._setMode(undefined, userInteraction);
         }
       }
     });
@@ -730,7 +730,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
             this.eventManager.listenOnce(secondaryPlayer, EventType.FIRST_PLAYING, () => {
               this.logger.debug('secondary player first playing - show dual mode');
               this._setDefaultMode(false);
-              this._setMode(userInteraction);
+              this._setMode(undefined, userInteraction);
               this._firstPlayingFired = true;
             });
           } else {
