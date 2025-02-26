@@ -29,7 +29,12 @@ interface PictureInPictureDualScreenProps {
   layout?: Layout;
 }
 
-/**
+type AppState = {
+  classname: string;
+  ariaLabel:string|undefined;
+}
+
+  /**
  * PictureInPicture component
  *
  * @class PictureInPicture
@@ -40,7 +45,7 @@ interface PictureInPictureDualScreenProps {
   pictureInPictureText: 'controls.pictureInPicture',
   pictureInPictureExitText: 'controls.pictureInPictureExit'
 })
-class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
+class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppState>  {
   buttonContainerRef:HTMLButtonElement | null = null
 
   /**
@@ -49,15 +54,21 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
    */
   constructor(props: any) {
     super(props);
+    this.state = {
+      classname: [style.controlButton, 'picture-in-picture-dual-screen'].join(" "),
+      ariaLabel: this.props.pictureInPictureText
+    }
   }
+
   componentDidMount() {
     this.buttonContainerRef!.parentNode!.nextSibling!.textContent = this.props.pictureInPictureText|| ""
   }
 
   componentDidUpdate() {
+    //this is to hide picture-in-picture-overly
     if(this.props.playerType === PlayerType.VIDEO) {
       const videoPlayer:KalturaPlayerTypes.Player = this.props.player as KalturaPlayerTypes.Player;
-      videoPlayer.ui.store.dispatch(reducers.engine.actions.updateIsInPictureInPicture(false));
+      videoPlayer.ui.store.dispatch?.(reducers.engine.actions.updateIsInPictureInPicture(false));
     }
   }
 
@@ -76,20 +87,20 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     if (this.isSomePlayerInPip()) {
       this.exitPlayerInPip();
 
-      const currentClassName = this.buttonContainerRef?.className.replace(" " + style.isInPictureInPicture, "") as string;
+      const currentClassName = this.state.classname.replace(" " + style.isInPictureInPicture, "") as string;
       this.updateParams(currentClassName, this.props.pictureInPictureText|| "")
     } else {
       //@ts-ignore
       player.enterPictureInPicture();
 
-      const currentClassName = this.buttonContainerRef?.className.concat(" " + style.isInPictureInPicture || "") as string;
+      const currentClassName = this.state.classname.concat(" " + style.isInPictureInPicture || "") as string;
       this.updateParams(currentClassName, this.props.pictureInPictureExitText|| "")
     }
   }
 
   private updateParams = (className:string, ariaLabel:string) => {
-    this.buttonContainerRef?.setAttribute('class', className)
-    this.buttonContainerRef?.setAttribute('aria-label', ariaLabel)
+    this.setState({classname: className})
+    this.setState({ariaLabel: ariaLabel})
     this.buttonContainerRef!.parentElement!.nextElementSibling!.textContent = ariaLabel;
   }
 
@@ -125,17 +136,13 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
    * @memberof PictureInPicture
    */
   render() {
-    const isSomePlayerInPip = this.isSomePlayerInPip()
-    const classNames = [style.controlButton, 'picture-in-picture-dual-screen'];
-    if (isSomePlayerInPip) { classNames.push(style.isInPictureInPicture); }
-
     return (
       <Tooltip label="">
         <div>
           <button
             ref= {node => (  this.buttonContainerRef = node)}
-            aria-label={isSomePlayerInPip ? this.props.pictureInPictureExitText : this.props.pictureInPictureText}
-            className= {classNames.join(' ')}
+            aria-label={this.state.ariaLabel}
+            className= {this.state.classname}
             onClick={()=>this.togglePip()}
           >
             <i className={[style.icon, style.iconPictureInPictureStart].join(' ')} aria-hidden="true" />
@@ -143,9 +150,9 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
           </button>
         </div>
       </Tooltip>
-  );
+    );
   }
-  }
+}
 
   PictureInPicture.displayName = COMPONENT_NAME;
   export {PictureInPicture};
