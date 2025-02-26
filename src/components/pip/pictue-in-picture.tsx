@@ -31,7 +31,7 @@ interface PictureInPictureDualScreenProps {
 
 type AppState = {
   classname: string;
-  ariaLabel:string|undefined;
+  ariaLabel:string;
 }
 
   /**
@@ -54,14 +54,13 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppSta
    */
   constructor(props: any) {
     super(props);
-    this.state = {
-      classname: [style.controlButton, 'picture-in-picture-dual-screen'].join(" "),
-      ariaLabel: this.props.pictureInPictureText
-    }
-  }
 
-  componentDidMount() {
-    this.buttonContainerRef!.parentNode!.nextSibling!.textContent = this.props.pictureInPictureText|| ""
+    const isSomePlayerInPip = this.isSomePlayerInPip()
+    const classname = [style.controlButton, 'picture-in-picture-dual-screen'].join(" ");
+    this.state = {
+      classname: isSomePlayerInPip ? classname.concat(" " + style.isInPictureInPicture || "") as string : classname,
+      ariaLabel: isSomePlayerInPip? this.props.pictureInPictureExitText || "" : this.props.pictureInPictureText || ""
+    }
   }
 
   componentDidUpdate() {
@@ -101,7 +100,6 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppSta
   private updateParams = (className:string, ariaLabel:string) => {
     this.setState({classname: className})
     this.setState({ariaLabel: ariaLabel})
-    this.buttonContainerRef!.parentElement!.nextElementSibling!.textContent = ariaLabel;
   }
 
 
@@ -137,7 +135,7 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppSta
    */
   render() {
     return (
-      <Tooltip label="">
+      <Tooltip label={this.state.ariaLabel}>
         <div>
           <button
             ref= {node => (  this.buttonContainerRef = node)}
