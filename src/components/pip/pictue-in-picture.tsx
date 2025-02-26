@@ -93,30 +93,27 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps>  {
     this.buttonContainerRef!.parentElement!.nextElementSibling!.textContent = ariaLabel;
   }
 
+
   public exitPlayerInPip = () => {
+    const current = this.getDualScreenPlayer()
+    // @ts-expect-error
+    current.player.exitPictureInPicture()
+  };
+
+  public getDualScreenPlayer(){
     return this.props.dualScreenPlayers.find(dualScreenPlayer => {
-        try {
-          // @ts-expect-error
-          if (dualScreenPlayer.player.isInPictureInPicture()) {
-            // @ts-expect-error
-            dualScreenPlayer.player.exitPictureInPicture();
-            return
-          }
-        }
-        catch {
+        // @ts-expect-error
+        if (dualScreenPlayer.player.isInPictureInPicture?.()) {
+          return dualScreenPlayer
         }
     });
-  };
+  }
 
   public isSomePlayerInPip = () => {
     return this.props.dualScreenPlayers.find(dualScreenPlayer => {
-      try{
-        // @ts-expect-error
-        if(dualScreenPlayer.player.isInPictureInPicture()){
-          return true
-        }
-      }
-      catch {
+      // @ts-expect-error
+      if(dualScreenPlayer.player.isInPictureInPicture?.()){
+        return true
       }
     });
   };
