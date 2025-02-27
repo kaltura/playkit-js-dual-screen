@@ -47,8 +47,6 @@ type AppState = {
   pictureInPictureExitText: 'controls.pictureInPictureExit'
 })
 class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppState>  {
-  buttonContainerRef:HTMLButtonElement | null = null
-
   /**
    * Creates an instance of PictureInPicture.
    * @memberof PictureInPicture
@@ -140,7 +138,6 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppSta
         <div>
           <A11yWrapper onClick={this.togglePip}>
             <button
-            ref= {node => (  this.buttonContainerRef = node)}
             aria-label={this.state.ariaLabel}
             className= {this.state.classname}
             >
