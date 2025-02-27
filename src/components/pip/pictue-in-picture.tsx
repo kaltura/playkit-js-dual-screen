@@ -65,10 +65,14 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppSta
   }
 
   componentDidUpdate() {
-    //this is to hide picture-in-picture-overly
+    //this is to hide picture-in-picture-overly when mainPlayer go to picture in picture
     if(this.props.playerType === PlayerType.VIDEO) {
-      const videoPlayer:KalturaPlayerTypes.Player = this.props.player as KalturaPlayerTypes.Player;
-      videoPlayer.ui.store.dispatch?.(reducers.engine.actions.updateIsInPictureInPicture(false));
+      const dualScreenPlayer = this.getDualScreenPlayer()
+      if(dualScreenPlayer && dualScreenPlayer.player == this.props.player) {
+        // @ts-expect-error
+        const videoPlayer:KalturaPlayerTypes.Player = this.props.player as KalturaPlayerTypes.Player;
+        videoPlayer.ui.store.dispatch?.(reducers.engine.actions.updateIsInPictureInPicture(false));
+      }
     }
   }
 
@@ -90,7 +94,7 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppSta
       const currentClassName = this.state.classname.replace(" " + style.isInPictureInPicture, "") as string;
       this.updateParams(currentClassName, this.props.pictureInPictureText|| "")
     } else {
-      //@ts-ignore
+      // @ts-expect-error
       player.enterPictureInPicture();
 
       const currentClassName = this.state.classname.concat(" " + style.isInPictureInPicture || "") as string;
