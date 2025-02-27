@@ -3,6 +3,7 @@ import {withText} from 'preact-i18n';
 import {Layout, PlayerType} from '../../enums';
 import {DualScreenPlayer} from '../../types';
 import {h, Component, createRef} from 'preact';
+import {A11yWrapper} from '@playkit-js/common';
 
 const { redux,reducers , utils, style} = KalturaPlayer.ui;
 const {Tooltip, Icon} = ui.Components;
@@ -137,15 +138,16 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppSta
     return (
       <Tooltip label={this.state.ariaLabel}>
         <div>
-          <button
+          <A11yWrapper onClick={()=>this.togglePip()}>
+            <button
             ref= {node => (  this.buttonContainerRef = node)}
             aria-label={this.state.ariaLabel}
             className= {this.state.classname}
-            onClick={()=>this.togglePip()}
-          >
+            >
             <i className={[style.icon, style.iconPictureInPictureStart].join(' ')} aria-hidden="true" />
             <i className={[style.icon, style.iconPictureInPictureStop].join(' ')} aria-hidden="true" />
-          </button>
+            </button>
+          </A11yWrapper>
         </div>
       </Tooltip>
     );
