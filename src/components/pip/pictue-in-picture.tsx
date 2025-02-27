@@ -120,12 +120,8 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppSta
   }
 
   public isSomePlayerInPip = () => {
-    return this.props.dualScreenPlayers.find(dualScreenPlayer => {
-      // @ts-expect-error
-      if(dualScreenPlayer.player.isInPictureInPicture?.()){
-        return true
-      }
-    });
+    const dualScreenPlayer = this.getDualScreenPlayer()
+    return !!dualScreenPlayer;
   };
 
   /**
