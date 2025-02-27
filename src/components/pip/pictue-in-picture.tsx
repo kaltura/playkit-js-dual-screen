@@ -138,7 +138,7 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppSta
     return (
       <Tooltip label={this.state.ariaLabel}>
         <div>
-          <A11yWrapper onClick={()=>this.togglePip()}>
+          <A11yWrapper onClick={this.togglePip}>
             <button
             ref= {node => (  this.buttonContainerRef = node)}
             aria-label={this.state.ariaLabel}
