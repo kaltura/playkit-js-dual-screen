@@ -631,12 +631,12 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     }
   };
 
-  private _onSlideViewChanged = (viewChange: ExternalLayout) => {
+  private _onSlideViewChanged = (viewChange: ExternalLayout, userInteraction = false) => {
     if (this._externalLayout === viewChange) {
       return;
     }
     this._externalLayout = viewChange;
-    this._applyExternalLayout();
+    this._applyExternalLayout(userInteraction);
   };
 
   private _applyExternalLayout = (userInteraction = false) => {
