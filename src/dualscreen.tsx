@@ -28,6 +28,7 @@ import {BasePlugin, core, IEngineDecoratorProvider, KalturaPlayer, ui} from '@pl
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import './styles/global.scss';
 import {DualscreenEvents} from './events';
+import {PictureInPicture} from './components/pip/pictue-in-picture';
 
 const {
   reducers: {shell}
@@ -460,6 +461,19 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       }),
       this.player.ui.addComponent({
+        label: 'kaltura-dual-screen-picture-in-picture',
+        presets: PRESETS,
+        container: 'BottomBarRightControls',
+        replaceComponent: 'PictureInPicture',
+        get: ()=>(
+          <PictureInPicture
+            player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
+            dualScreenPlayers={this._dualScreenPlayers}
+            playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
+          />
+        )
+      }),
+      this.player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.InteractiveArea,
@@ -541,6 +555,19 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
             />
           </ResponsiveManager>
         )
+      }),
+      this.player.ui.addComponent({
+        label: 'kaltura-dual-screen-picture-in-picture',
+        presets: PRESETS,
+        container: 'BottomBarRightControls',
+        replaceComponent: 'PictureInPicture',
+        get: ()=>(
+          <PictureInPicture
+            player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
+            dualScreenPlayers={this._dualScreenPlayers}
+            playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
+          />
+        )
       })
     );
     // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
@@ -583,6 +610,20 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
             layout={this._layout}
             onSizeChange={this._setMode}
             onMinSize={this._switchToSingleMedia}
+          />
+        )
+      }),
+      this.player.ui.addComponent({
+        label: 'kaltura-dual-screen-picture-in-picture',
+        presets: PRESETS,
+        container: 'BottomBarRightControls',
+        replaceComponent: 'PictureInPicture',
+        get: ()=>(
+          <PictureInPicture
+            player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
+            dualScreenPlayers={this._dualScreenPlayers}
+            playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
+            layout={this._layout}
           />
         )
       })
