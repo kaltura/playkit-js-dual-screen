@@ -30,7 +30,7 @@ interface PictureInPictureDualScreenProps {
   layout?: Layout;
 }
 
-type AppState = {
+type PictureInPictureDualScreenState = {
   classname: string;
   ariaLabel:string;
 }
@@ -46,7 +46,7 @@ type AppState = {
   pictureInPictureText: 'controls.pictureInPicture',
   pictureInPictureExitText: 'controls.pictureInPictureExit'
 })
-class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppState>  {
+class PictureInPicture extends Component<PictureInPictureDualScreenProps, PictureInPictureDualScreenState>  {
   /**
    * Creates an instance of PictureInPicture.
    * @memberof PictureInPicture
@@ -81,28 +81,34 @@ class PictureInPicture extends Component<PictureInPictureDualScreenProps, AppSta
    * @memberof PictureInPicture
    */
   togglePip = (): void => {
+    const { classname } = this.state
     const player = this.props.player;
+
+    let  currentClassName:string = "";
+    let ariaLabel:string | undefined;
+
     if(this.props.playerType === PlayerType.IMAGE) {
       return
     }
 
     if (this.isSomePlayerInPip()) {
       this.exitPlayerInPip();
-
-      const currentClassName = this.state.classname.replace(" " + style.isInPictureInPicture, "") as string;
-      this.updateParams(currentClassName, this.props.pictureInPictureText|| "")
+      currentClassName = classname.replace(" " + style.isInPictureInPicture, "") as string;
+      ariaLabel = this.props.pictureInPictureText;
     } else {
       // @ts-expect-error
       player.enterPictureInPicture();
-
-      const currentClassName = this.state.classname.concat(" " + style.isInPictureInPicture || "") as string;
-      this.updateParams(currentClassName, this.props.pictureInPictureExitText|| "")
+      currentClassName = classname.concat(" " + style.isInPictureInPicture || "") as string;
+      ariaLabel = this.props.pictureInPictureExitText;
     }
+    this.updateParams(currentClassName, ariaLabel|| "")
   }
 
   private updateParams = (className:string, ariaLabel:string) => {
-    this.setState({classname: className})
-    this.setState({ariaLabel: ariaLabel})
+    this.setState({
+      classname: className,
+      ariaLabel: ariaLabel
+    })
   }
 
 
