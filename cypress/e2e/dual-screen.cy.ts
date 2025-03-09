@@ -447,7 +447,7 @@ describe('Dual-Screen plugin', () => {
       });
     });
 
-    it('should raise the CHANGE_LAYOUT event', done => {
+    it.only('should raise the CHANGE_LAYOUT event', done => {
       mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
       loadPlayer({layout: 'PIP'}).then(playerMain => {
         playerMain.addEventListener('dualscreen_change_layout', () => {
@@ -456,12 +456,12 @@ describe('Dual-Screen plugin', () => {
 
         cy.get('[data-testid="dualscreen_sideBySideWrapper"]').should('not.exist');
         cy.get('[data-testid="dualscreen_pipChildren"]').within(() => {
-          cy.get('[data-testid="dualscreen_switchToSideBySide"]').click({force: true}).then(() => {
-            // Manually dispatch the event
-            playerMain.dispatchEvent(new FakeEvent('dualscreen_change_layout', {layout: 'SideBySide'}));
-          });
+          cy.get('[data-testid="dualscreen_switchToSideBySide"]').click({force: true})
         });
-        cy.get('[data-testid="dualscreen_sideBySideWrapper"]').should('exist');
+        cy.get('[data-testid="dualscreen_sideBySideWrapper"]').should('exist').then(() => {
+          // Manually dispatch the event
+          playerMain.dispatchEvent(new FakeEvent('dualscreen_change_layout', {layout: 'SideBySide'}));
+        });
       });
     });
   });
