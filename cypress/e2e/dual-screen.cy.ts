@@ -447,7 +447,7 @@ describe('Dual-Screen plugin', () => {
       });
     });
 
-    it.only('should raise the CHANGE_LAYOUT event', done => {
+    it('should raise the CHANGE_LAYOUT event', done => {
       mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
       loadPlayer({layout: 'PIP'}).then(playerMain => {
         playerMain.addEventListener('dualscreen_change_layout', () => {
