@@ -456,7 +456,7 @@ describe('Dual-Screen plugin', () => {
 
         cy.get('[data-testid="dualscreen_sideBySideWrapper"]').should('not.exist');
         cy.get('[data-testid="dualscreen_pipChildren"]').within(() => {
-          cy.get('[data-testid="dualscreen_switchToSideBySide"]').click({force: true})
+          cy.get('[data-testid="dualscreen_switchToSideBySide"]').click({force: true});
         });
         cy.get('[data-testid="dualscreen_sideBySideWrapper"]').should('exist').then(() => {
           // Manually dispatch the event
