@@ -30,9 +30,13 @@ export class VideoSyncManager {
   private _errorHandling = () => {
     this._eventManager.listen(this._secondaryPlayer, EventType.ERROR, (e: Error) => {
       this._logger.debug('errorHandling :: secondary player got error');
+      const error = new Error(Error.Severity.CRITICAL, Error.Category.PLAYER, Error.Code.VIDEO_ERROR, e);
+      // @ts-ignore
+      this._mainPlayer.dispatchEvent(new FakeEvent(EventType.ERROR, error));
     });
     this._eventManager.listen(this._mainPlayer, EventType.ERROR, () => {
       this._logger.debug('errorHandling :: main player got error');
+      this._secondaryPlayer.reset();
     });
   };
 
