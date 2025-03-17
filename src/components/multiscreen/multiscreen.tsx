@@ -137,7 +137,7 @@ export class Multiscreen extends Component<MultiscreenProps, MultiscreenState> {
         {this.state.isOpen ? (
           popoverMenuButton
         ) : (
-          <Tooltip type="bottom-left" label={this.props.multiscreenLabel}>
+          <Tooltip type="bottom-left" label={this.props.multiscreenLabel} strictPosition>
             {popoverMenuButton}
           </Tooltip>
         )}
