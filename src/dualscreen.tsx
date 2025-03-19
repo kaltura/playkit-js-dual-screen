@@ -94,7 +94,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     return new DualScreenEngineDecorator(engine, this, dispatcher);
   }
 
-  updateLayout(layout: Layout, userInteraction = true) {
+  updateLayout(layout: Layout, userInteraction = false) {
     if (userInteraction && !(layout === Layout.PIP && this.layout === Layout.PIPInverse)) {
       // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
       this.player.dispatchEvent(new FakeEvent(DualscreenEvents.CHANGE_LAYOUT, {layout}));
@@ -302,7 +302,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     });
   };
 
-  private _makeMultiscreenPlayers = (multiscreenPlayers: DualScreenPlayer[], invert = false, userInteraction = true): MultiscreenPlayer[] => {
+  private _makeMultiscreenPlayers = (multiscreenPlayers: DualScreenPlayer[], invert = false, userInteraction = false): MultiscreenPlayer[] => {
     this._currentMultiscreenPlayers = multiscreenPlayers.map(dualScreenPlayer => {
       if ([Layout.PIP, Layout.PIPInverse].includes(this._layout)) {
         return {
@@ -344,7 +344,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     return this._currentMultiscreenPlayers;
   };
 
-  private _setMode = (force?: boolean, userInteraction = true) => {
+  private _setMode = (force?: boolean, userInteraction = false) => {
     switch (this._layout) {
       case Layout.PIP:
         this._switchToPIP({force}, userInteraction);
@@ -375,7 +375,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     }
   };
 
-  private _setDefaultMode = (userInteraction = true) => {
+  private _setDefaultMode = (userInteraction = false) => {
     this._switchToHidden(userInteraction);
     const configLayouts = [Layout.PIP, Layout.PIPInverse, Layout.SideBySide, Layout.SideBySideInverse, Layout.SingleMedia, Layout.SingleMediaInverse];
     const layout = configLayouts.includes(this.config.layout) ? this.config.layout : Layout.Hidden;
@@ -422,7 +422,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     });
   };
 
-  private _switchToHidden = (userInteraction = true) => {
+  private _switchToHidden = (userInteraction = false) => {
     const {
       store: {dispatch}
     } = this.player.ui;
@@ -435,7 +435,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     }
   };
 
-  private _switchToPIP = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}, userInteraction = true) => {
+  private _switchToPIP = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}, userInteraction = false) => {
     const imagePlayer = this.getDualScreenPlayer(IMAGE_PLAYER_ID)?.player as ImagePlayer;
     if (!force && this._layout === Layout.PIP && this._removeActivesArr.length && imagePlayer.active?.portrait === this._pipPortraitMode) {
       return;
@@ -495,7 +495,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
                 animation={Animations.Fade}
                 playerSizePercentage={this.config.childSizePercentage}
                 player={this.getActiveDualScreenPlayer(PlayerContainers.secondary)!.player as any}
-                hide={(event: OnClickEvent, byKeyboard: boolean) =>
+                hide={(event: OnClickEvent, byKeyboard: boolean, userInteraction = true) =>
                   this._switchToSingleMedia({animation: Animations.None, focusOnButton: getValueOrUndefined(byKeyboard, ButtonsEnum.Show)}, userInteraction)
                 }
                 onSideBySideSwitch={(event: OnClickEvent, byKeyboard: boolean, userInteraction = true) =>
@@ -524,7 +524,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
-  private _switchToSingleMedia = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}, userInteraction = true) => {
+  private _switchToSingleMedia = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}, userInteraction = false) => {
     if (!force && this._layout === Layout.SingleMedia && this._removeActivesArr.length) {
       return;
     }
@@ -579,7 +579,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
   };
 
-  private _switchToSideBySide = ({animation = Animations.Fade, focusOnButton, force}: LayoutChangeProps = {}, userInteraction = true) => {
+  private _switchToSideBySide = ({animation = Animations.Fade, focusOnButton, force}: LayoutChangeProps = {}, userInteraction = false) => {
     if (!force && this._layout === Layout.SideBySide && this._removeActivesArr.length) {
       return;
     }
