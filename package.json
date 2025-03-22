@@ -16,7 +16,7 @@
     "cy:run:firefox": "cypress run --browser firefox --config video=false",
     "cy:run:edge": "cypress run --browser edge --config video=false",
     "cy:run:safari": "cypress run --browser webkit --config video=false",
-    "test:prepare": "yarn run build && yes | cp -i ./dist/playkit-dual-screen.js ./cypress/public/plugin.js",
+    "test:prepare": "yarn run build && yes | cp -i ./dist/playkit-dual-screen.js ./cypress/public/plugin.js && yes | cp -i ./dist/playkit-dual-screen.js.map ./cypress/public/playkit-dual-screen.js.map",
     "test:watch": "yarn run test:prepare && cypress open",
     "test": "yarn run test:prepare && yarn run cy:run",
     "release": "standard-version",
