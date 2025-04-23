@@ -13,7 +13,7 @@
     <script src="../playkit-dual-screen.js"></script>
   </head>
   <body>
-    <label for="width-selector" style="color: rgb(218, 197, 197)">Player size:</label>
+    <label for="width-selector">Player size:</label>
     <select id="width-selector">
       <option value="280">TINY</option>
       <option value="380">EXTRA_SMALL</option>
@@ -29,7 +29,7 @@
         document.getElementById('player-placeholder').style.width = width;
       });
     </script>
-    <div id="player-placeholder"></div>
+    <div id="player-placeholder" style="width: 768px; aspect-ratio: 10 / 5.62"></div>
     <script type="text/javascript">
       const config = {
         log: {
@@ -46,7 +46,7 @@
         plugins: {
           kalturaCuepoints: {},
           timeline: {},
-          dualscreen: {},
+          dualscreen: {}
         }
       };
 
