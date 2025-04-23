@@ -1,6 +1,6 @@
 import {h, createRef, Component} from 'preact';
 import * as styles from './pip.scss';
-import {Animations, PlayerType} from '../../enums';
+import {Animations, PlayerType, DUAL_SCREEN_CLASSNAME} from '../../enums';
 const {connect} = KalturaPlayer.ui.redux;
 
 const mapStateToProps = (state: Record<string, any>) => ({
@@ -36,7 +36,7 @@ export class PipParent extends Component<PIPParentComponentProps> {
   }
 
   render(props: PIPParentComponentProps) {
-    let styleClass = [styles.videoContainer, styles.parentPlayer];
+    let styleClass = [DUAL_SCREEN_CLASSNAME, styles.videoContainer, styles.parentPlayer];
 
     if (!props.prePlayback && props.animation) {
       switch (props.animation) {

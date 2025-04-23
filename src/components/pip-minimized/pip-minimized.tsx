@@ -3,7 +3,7 @@ import * as styles from './pip-minimized.scss';
 import {icons} from '../../icons';
 import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
 import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
-import {ButtonsEnum} from '../../enums';
+import {ButtonsEnum, DUAL_SCREEN_CLASSNAME} from '../../enums';
 import {MultiscreenPlayer} from '../../types';
 const {
   components: {Icon}
@@ -79,7 +79,7 @@ export class PipMinimized extends Component<PIPMinimizedProps> {
 
   render(props: PIPMinimizedProps) {
     return (
-      <div className={styles.childPlayerContainer} data-testid="dualscreen_pipMinimized">
+      <div className={[DUAL_SCREEN_CLASSNAME, styles.childPlayerContainer].join(' ')} data-testid="dualscreen_pipMinimized">
         {this.props.players.map((player, index) => {
           const ref = createRef<HTMLDivElement>();
           this._multiscreenPlayersRefs[index] = ref;

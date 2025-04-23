@@ -6,3 +6,8 @@
     z-index: 1;
   }
 }
+
+:global(.playkit-player.playkit-overlay-active .dual-screen-layout) {
+  // hide dual-screen layout to prevent focus issues when player overlay is active
+  visibility: hidden;
+}
