@@ -1,6 +1,6 @@
 import {h, createRef, Component, Fragment, VNode, cloneElement} from 'preact';
 import * as styles from './pip.scss';
-import {Animations, ButtonsEnum, Layout, PlayerType} from '../../enums';
+import {Animations, ButtonsEnum, Layout, DUAL_SCREEN_CLASSNAME} from '../../enums';
 import {icons} from '../../icons';
 import {Button, ButtonSize, ButtonType} from '@playkit-js/common/dist/components/button';
 import {OnClick} from '@playkit-js/common/dist/hoc/a11y-wrapper';
@@ -136,7 +136,7 @@ export class PipChild extends Component<PIPChildComponentProps> {
   }
 
   render(props: PIPChildComponentProps) {
-    const styleClass = [styles.childPlayer];
+    const styleClass = [DUAL_SCREEN_CLASSNAME, styles.childPlayer];
 
     if (props.isDragging) {
       styleClass.push(styles.dragging);
