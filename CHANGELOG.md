@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.2.5 (2025-05-11)
+
+
+### Bug Fixes
+
+* **FEC-14452:** player v 7 transcript navigate order with shift tab from search result arrows is off ([#177](https://github.com/kaltura/playkit-js-dual-screen/issues/177)) ([0d664f0](https://github.com/kaltura/playkit-js-dual-screen/commit/0d664f0))
+
+
+
 ### 3.2.4 (2025-04-02)
 
 
