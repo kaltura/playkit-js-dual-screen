@@ -83,11 +83,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       ready: this.ready
     };
     this.player.registerService('dualScreen', dualScreenApi);
-    if (this.timelineManager) {
-      this.player.ready().then(() => {
-        this.timelineManager.setGetThumbnailInfo(this.getDualScreenThumbs);
-      });
-    }
   }
 
   getEngineDecorator(engine: any, dispatcher: Function) {
@@ -153,6 +148,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       this._imageSyncManager = new ImageSyncManager(this.eventManager, this.player, imagePlayer as any, this.logger, this._onSlideViewChanged);
     } else {
       this.logger.warn('kalturaCuepoints service is not registered');
+    }
+    if (this.timelineManager) {
+      this.player.ready().then(() => {
+        this.timelineManager.setGetThumbnailInfo(this.getDualScreenThumbs);
+      });
     }
   }
 
