@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.2.6 (2025-06-05)
+
+
+### Bug Fixes
+
+* **SUP-48038:** UC-Berkeley | Dual Stream Preview Not Working for up-to-date V7 Players ([#178](https://github.com/kaltura/playkit-js-dual-screen/issues/178)) ([9ac1dff](https://github.com/kaltura/playkit-js-dual-screen/commit/9ac1dff))
+
+
+
 ### 3.2.5 (2025-05-11)
 
 
