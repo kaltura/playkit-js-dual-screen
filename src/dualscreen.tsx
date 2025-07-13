@@ -802,6 +802,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     secondaryPlaceholder.style.height = '135px';
     secondaryPlaceholder.hidden = true;
     document.body.appendChild(secondaryPlaceholder);
+    // @ts-ignore
+    const {entryId: id, entryType, ...filteredConfig} = this.player.plugins['kava']?.config || {}
     const secondaryPlayerConfig = {
       targetId,
       disableUserCache: true,
@@ -823,8 +825,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
           ...(this.player.plugins['kaltura-live']?.config || {})
         },
         'kava':{
-          // @ts-ignore
-          ...(this.player.plugins['kava']?.config || {})
+          ...filteredConfig
         }
       }
     };
