@@ -821,6 +821,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         'kaltura-live': {
           // @ts-ignore
           ...(this.player.plugins['kaltura-live']?.config || {})
+        },
+        'kava':{
+          // @ts-ignore
+          ...(this.player.plugins['kava']?.config || {})
         }
       }
     };
