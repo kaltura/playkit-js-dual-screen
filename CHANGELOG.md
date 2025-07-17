@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.2.7 (2025-07-17)
+
+
+### Bug Fixes
+
+* **FEC-14575:** As client running multiple player on Dual screen plugin, I would like the non-primary players to inherit config from the primary ([#179](https://github.com/kaltura/playkit-js-dual-screen/issues/179)) ([68d9a98](https://github.com/kaltura/playkit-js-dual-screen/commit/68d9a98))
+
+
+
 ### 3.2.6 (2025-06-05)
 
 
