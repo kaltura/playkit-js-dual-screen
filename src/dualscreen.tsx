@@ -28,9 +28,6 @@ import {BasePlugin, core, IEngineDecoratorProvider,ui, KalturaPlayer} from '@pla
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import './styles/global.scss';
 import {DualscreenEvents} from './events';
-const {utils} = ui;
-//@ts-ignore
-const {setActivePlayer, setDualScreenPlayers} = utils;
 
 const {
   reducers: {shell}
@@ -82,6 +79,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     const dualScreenApi = {
       getDualScreenThumbs: this.getDualScreenThumbs,
       getDualScreenPlayers: this.getDualScreenPlayers,
+      getActivePlayer: this.getActivePlayer,
+      getPipPlayer: this.getPipPlayer,
       ready: this.ready
     };
     this.player.registerService('dualScreen', dualScreenApi);
@@ -123,11 +122,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       };
       this._undoRemoveSettings = this.player.ui.addComponent(removeSettings);
     }
-  };
-
-  private _updatePlayersInUi () {
-    const players = this._dualScreenPlayers.map(item => item.player);
-    setDualScreenPlayers(players);
   };
 
   loadMedia(): void {
@@ -263,6 +257,21 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       dualScreenPlayer => types.includes(dualScreenPlayer.type) && container.includes(dualScreenPlayer.container)
     );
   };
+
+  public getActivePlayer = () => {
+    return this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player;
+  };
+
+  public getPipPlayer = () => {
+    const players = this._dualScreenPlayers.map(item => item.player);
+    return players.find(dualScreenPlayer => {
+      // @ts-ignore
+      if (dualScreenPlayer.isInPictureInPicture?.()) {
+        return dualScreenPlayer;
+      }
+    });
+    
+  }
 
   private _changeQuality = (label: string) => {
     this._dualScreenPlayers.forEach(dualScreenPlayer => {
@@ -454,8 +463,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
     this._setPipPortraitMode();
 
-    setActivePlayer(this.getActiveDualScreenPlayer(PlayerContainers.primary)?.player);
-
     this._addActives(
       this.player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
@@ -526,8 +533,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     }
     this.updateLayout(Layout.SingleMedia, userInteraction);
 
-    setActivePlayer(this.getActiveDualScreenPlayer(PlayerContainers.primary)?.player);
-
     this._addActives(
       this.player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
@@ -587,8 +592,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       animation: Animations.Fade,
       multiscreen: <Multiscreen players={this._makeMultiscreenPlayers(this._getMultiscreenPlayers(), true, userInteraction)} />
     };
-
-    setActivePlayer(this.getActiveDualScreenPlayer(PlayerContainers.primary)?.player);
 
     this._addActives(
       this.player.ui.addComponent({
@@ -760,7 +763,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
           this._resolveReadyPromise();
           this.eventManager.removeAll();
         }
-        this._updatePlayersInUi();
       })
       .catch((e: any) => {
         this.logger.error(e);
