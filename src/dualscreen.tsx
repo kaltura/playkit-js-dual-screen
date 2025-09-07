@@ -24,13 +24,14 @@ import {getValueOrUndefined} from './utils';
 import {DualScreenEngineDecorator} from './dualscreen-engine-decorator';
 import {ImagePlayer, SlideItem, SlideThumbnail} from './image-player';
 // @ts-ignore
-import {BasePlugin, core, IEngineDecoratorProvider,ui, KalturaPlayer} from '@playkit-js/kaltura-player-js';
+import {BasePlugin, core, IEngineDecoratorProvider, KalturaPlayer, ui} from '@playkit-js/kaltura-player-js';
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import './styles/global.scss';
 import {DualscreenEvents} from './events';
 
 const {
-  reducers: {shell}
+  // @ts-ignore
+  reducers: {shell, engine}
 } = ui;
 const {EventType, FakeEvent} = core;
 
@@ -286,6 +287,19 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       }
     });
   };
+
+  private _createPipListeners = (): void => {
+    this._dualScreenPlayers.forEach((dualScreenPlayer: any) => {
+      if (dualScreenPlayer.id !== "imagePlayer" && dualScreenPlayer.id !== "mainPlayer"){
+        this.eventManager.listen(dualScreenPlayer.player, dualScreenPlayer.player.Event.Core.ENTER_PICTURE_IN_PICTURE, () => {
+          this.player.ui.store.dispatch?.(engine.actions.updateIsInPictureInPicture(true));
+        });
+        this.eventManager.listen(dualScreenPlayer.player, dualScreenPlayer.player.Event.Core.LEAVE_PICTURE_IN_PICTURE, () => {
+          this.player.ui.store.dispatch?.(engine.actions.updateIsInPictureInPicture(false));
+        });
+      } 
+    });
+  }
 
   private _setActiveDualScreenPlayer = (id: string, container: PlayerContainers.primary | PlayerContainers.secondary) => {
     if (this.getActiveDualScreenPlayer(container)?.id === id) {
@@ -763,6 +777,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
           this._resolveReadyPromise();
           this.eventManager.removeAll();
         }
+        this._createPipListeners();
       })
       .catch((e: any) => {
         this.logger.error(e);
