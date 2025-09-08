@@ -28,10 +28,10 @@ import {BasePlugin, core, IEngineDecoratorProvider, KalturaPlayer, ui} from '@pl
 import {OnClickEvent} from '@playkit-js/common/dist/hoc/a11y-wrapper';
 import './styles/global.scss';
 import {DualscreenEvents} from './events';
-import {PictureInPicture} from './components/pip/pictue-in-picture';
 
 const {
-  reducers: {shell}
+  // @ts-ignore
+  reducers: {shell, engine}
 } = ui;
 const {EventType, FakeEvent} = core;
 
@@ -80,6 +80,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     const dualScreenApi = {
       getDualScreenThumbs: this.getDualScreenThumbs,
       getDualScreenPlayers: this.getDualScreenPlayers,
+      getActivePlayer: this.getActivePlayer,
+      getPipPlayer: this.getPipPlayer,
       ready: this.ready
     };
     this.player.registerService('dualScreen', dualScreenApi);
@@ -257,6 +259,21 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     );
   };
 
+  public getActivePlayer = () => {
+    return this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player;
+  };
+
+  public getPipPlayer = () => {
+    const players = this._dualScreenPlayers.map(item => item.player);
+    return players.find(dualScreenPlayer => {
+      // @ts-ignore
+      if (dualScreenPlayer.isInPictureInPicture?.()) {
+        return dualScreenPlayer;
+      }
+    });
+    
+  }
+
   private _changeQuality = (label: string) => {
     this._dualScreenPlayers.forEach(dualScreenPlayer => {
       if (dualScreenPlayer.id !== MAIN_PLAYER_ID && dualScreenPlayer.id !== IMAGE_PLAYER_ID) {
@@ -270,6 +287,19 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       }
     });
   };
+
+  private _createPipListeners = (): void => {
+    this._dualScreenPlayers.forEach((dualScreenPlayer: any) => {
+      if (dualScreenPlayer.id !== "imagePlayer" && dualScreenPlayer.id !== "mainPlayer"){
+        this.eventManager.listen(dualScreenPlayer.player, dualScreenPlayer.player.Event.Core.ENTER_PICTURE_IN_PICTURE, () => {
+          this.player.ui.store.dispatch?.(engine.actions.updateIsInPictureInPicture(true));
+        });
+        this.eventManager.listen(dualScreenPlayer.player, dualScreenPlayer.player.Event.Core.LEAVE_PICTURE_IN_PICTURE, () => {
+          this.player.ui.store.dispatch?.(engine.actions.updateIsInPictureInPicture(false));
+        });
+      } 
+    });
+  }
 
   private _setActiveDualScreenPlayer = (id: string, container: PlayerContainers.primary | PlayerContainers.secondary) => {
     if (this.getActiveDualScreenPlayer(container)?.id === id) {
@@ -461,19 +491,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         )
       }),
       this.player.ui.addComponent({
-        label: 'kaltura-dual-screen-picture-in-picture',
-        presets: PRESETS,
-        container: 'BottomBarRightControls',
-        replaceComponent: 'PictureInPicture',
-        get: ()=>(
-          <PictureInPicture
-            player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
-            dualScreenPlayers={this._dualScreenPlayers}
-            playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
-          />
-        )
-      }),
-      this.player.ui.addComponent({
         label: 'kaltura-dual-screen-pip',
         presets: PRESETS,
         container: ReservedPresetAreas.InteractiveArea,
@@ -561,19 +578,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
           </ResponsiveManager>
         )
       }),
-      this.player.ui.addComponent({
-        label: 'kaltura-dual-screen-picture-in-picture',
-        presets: PRESETS,
-        container: 'BottomBarRightControls',
-        replaceComponent: 'PictureInPicture',
-        get: ()=>(
-          <PictureInPicture
-            player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
-            dualScreenPlayers={this._dualScreenPlayers}
-            playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
-          />
-        )
-      })
     );
     // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
     this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
@@ -622,20 +626,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
           />
         )
       }),
-      this.player.ui.addComponent({
-        label: 'kaltura-dual-screen-picture-in-picture',
-        presets: PRESETS,
-        container: 'BottomBarRightControls',
-        replaceComponent: 'PictureInPicture',
-        get: ()=>(
-          <PictureInPicture
-            player={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.player as any}
-            dualScreenPlayers={this._dualScreenPlayers}
-            playerType={this.getActiveDualScreenPlayer(PlayerContainers.primary)!.type as PlayerType}
-            layout={this._layout}
-          />
-        )
-      })
     );
     // @ts-expect-error - TS2339: Property 'dispatchEvent' does not exist on type 'KalturaPlayer'
     this.player.dispatchEvent(new FakeEvent(DualscreenEvents.SIDE_DISPLAYED, this._layout));
@@ -787,6 +777,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
           this._resolveReadyPromise();
           this.eventManager.removeAll();
         }
+        this._createPipListeners();
       })
       .catch((e: any) => {
         this.logger.error(e);

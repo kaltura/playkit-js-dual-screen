@@ -370,7 +370,7 @@ describe('Dual-Screen plugin', () => {
       loadPlayer({}, {autoplay: false}).then(kalturaPlayer => {
         const dualScreenService = kalturaPlayer.getService('dualScreen');
         expect(dualScreenService).not.undefined;
-        expect(dualScreenService).has.keys(['getDualScreenThumbs', 'getDualScreenPlayers', 'ready']);
+        expect(dualScreenService).has.keys(['getDualScreenThumbs', 'getDualScreenPlayers','getActivePlayer', 'getPipPlayer', 'ready']);
       });
     });
     it('should return thumbs for 2 active media', () => {

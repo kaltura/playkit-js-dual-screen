@@ -11,3 +11,9 @@
   // hide dual-screen layout to prevent focus issues when player overlay is active
   visibility: hidden;
 }
+
+:global(.playkit-player.has-dual-screen-plugin-overlay) {
+  :global(.playkit-picture-in-picture-overlay) {
+    visibility: hidden;
+  }
+}
