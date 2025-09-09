@@ -8,6 +8,8 @@ const MIN_PLAYBACK_RATE = 0.1; // browsers throws a "NotSupportedError" DOMExcep
 const DEBOUNCE_SEEK_INTERVAL = 1000;
 const SYNC_INTERVAL = 1000;
 
+const MAX_SAFARI_PLAYBACK_RATE = 2.0;
+
 export class VideoSyncManager {
   private _isSyncDelay = false;
   private _debouncedSeekSecondaryPlayer: (aheadTime?: number) => void;
@@ -120,7 +122,7 @@ export class VideoSyncManager {
     // @ts-ignore
     const synchDelayDefaultThreshold = this._secondaryPlayer._localPlayer.env.isSafari ? 0.5 : 0;
     // @ts-ignore
-    const synchDelayThreshold = synchDelayDefaultThreshold * this._mainPlayer.playbackRate
+    const synchDelayThreshold = synchDelayDefaultThreshold * this._mainPlayer.playbackRate;
 
     if (this._secondaryPlayer) {
       let doSeek = false;
@@ -130,9 +132,11 @@ export class VideoSyncManager {
       const adaptivePlaybackRate = Math.round(Math.abs(synchDelay) * 100) / 100;
       if (synchDelay - synchDelayThreshold > synchDelayThresholdPositive) {
         playbackRateChange = -1 * adaptivePlaybackRate;
-      } else if (synchDelay + synchDelayThreshold  < synchDelayThresholdNegative) {
+      } else if (synchDelay + synchDelayThreshold < synchDelayThresholdNegative) {
         playbackRateChange = adaptivePlaybackRate;
       }
+      // @ts-ignore
+      const isSafari = this._secondaryPlayer._localPlayer.env.isSafari;
       if (playbackRateChange !== 0) {
         if (Math.abs(synchDelay) < maxGap) {
           // @ts-ignore
@@ -140,10 +144,21 @@ export class VideoSyncManager {
           if (newPlaybackRate < MIN_PLAYBACK_RATE) {
             newPlaybackRate = MIN_PLAYBACK_RATE;
           }
-          this._logger.debug(`mediaSync :: Adjusting slave playbackRateChange = ${newPlaybackRate}`);
-          // set a slower playback rate for the video to let the master video catch up
-          // @ts-ignore
-          this._secondaryPlayer.playbackRate = newPlaybackRate;
+          // Clamp playback rate for Safari
+          if (isSafari && newPlaybackRate > MAX_SAFARI_PLAYBACK_RATE) {
+            this._logger.debug(
+              `mediaSync :: Safari - desired playbackRate (${newPlaybackRate}) exceeds max (${MAX_SAFARI_PLAYBACK_RATE}), will seek instead.`
+            );
+            // set playback rate back to normal
+            // @ts-ignore
+            this._secondaryPlayer.playbackRate = this._mainPlayer.playbackRate;
+            doSeek = true;
+          } else {
+            this._logger.debug(`mediaSync :: Adjusting slave playbackRateChange = ${newPlaybackRate}`);
+            // set a slower playback rate for the video to let the master video catch up
+            // @ts-ignore
+            this._secondaryPlayer.playbackRate = newPlaybackRate;
+          }
         } else {
           this._logger.debug('mediaSync :: Adjusting secondary player playbackRateChange to main player and flagging for seek');
           // set playback rate back to normal
