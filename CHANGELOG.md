@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.2.8 (2025-09-11)
+
+
+### Bug Fixes
+
+* **SUP-45260:** University of California - Berkeley | v7 player issues when using picture-in-picture ([#181](https://github.com/kaltura/playkit-js-dual-screen/issues/181)) ([7333f2a](https://github.com/kaltura/playkit-js-dual-screen/commit/7333f2a))
+
+
+
 ### 3.2.7 (2025-07-17)
 
 
