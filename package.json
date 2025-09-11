@@ -1,6 +1,6 @@
 {
   "name": "@playkit-js/playkit-js-dual-screen",
-  "version": "3.2.8",
+  "version": "3.2.9",
   "main": "dist/playkit-dual-screen.js",
   "scripts": {
     "clean": "rimraf ./dist",
