@@ -2,6 +2,7 @@
 
 import {DualScreen} from './dualscreen';
 import {DualscreenEvents} from './events';
+import {registerPlugin} from '@playkit-js/kaltura-player-js';
 
 declare var __VERSION__: string;
 declare var __NAME__: string;
@@ -14,4 +15,4 @@ export {VERSION, NAME};
 export {DualscreenEvents};
 
 const pluginName: string = 'dualscreen';
-KalturaPlayer.core.registerPlugin(pluginName, DualScreen);
+registerPlugin(pluginName, DualScreen as any);
