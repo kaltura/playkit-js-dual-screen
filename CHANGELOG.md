@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.2.11 (2025-12-18)
+
+
+### Bug Fixes
+
+* **FEC:14736:** Remove access to window.KalturaPlayer from plugns ([#184](https://github.com/kaltura/playkit-js-dual-screen/issues/184)) ([1afb48f](https://github.com/kaltura/playkit-js-dual-screen/commit/1afb48f))
+
+
+
 ### 3.2.10 (2025-10-23)
 
 
