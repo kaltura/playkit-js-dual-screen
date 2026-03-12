@@ -221,6 +221,18 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
        this._changeQuality(event.payload.selectedVideoTrack.label);
      }
     });
+     this.eventManager.listen(this.player, EventType.THUMBNAIL_KS_UPDATED, event => {
+      this._updateThumbnailUrl(event.payload.newKs);
+    });
+  }
+
+  private _updateThumbnailUrl(newKs: string) {
+    this._dualScreenPlayers.forEach(dualScreenPlayer => {
+      if (dualScreenPlayer.type === PlayerType.VIDEO) {
+        // @ts-ignore
+        dualScreenPlayer.player.updateThumbnailKs(newKs, false);
+      }
+    });
   }
 
   public getDualScreenPlayer = (id: string) => {
