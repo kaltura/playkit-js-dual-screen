@@ -226,15 +226,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     });
   }
 
-  private _updateThumbnailUrl(newKs: string) {
-    this._dualScreenPlayers.forEach(dualScreenPlayer => {
-      if (dualScreenPlayer.type === PlayerType.VIDEO) {
-        // @ts-ignore
-        dualScreenPlayer.player.updateThumbnailKs(newKs, false);
-      }
-    });
-  }
-
   public getDualScreenPlayer = (id: string) => {
     return this._dualScreenPlayers.find(dualScreenPlayer => {
       return dualScreenPlayer.id === id;
@@ -284,6 +275,15 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       }
     });
     
+  }
+
+  private _updateThumbnailUrl(newKs: string) {
+    this._dualScreenPlayers.forEach(dualScreenPlayer => {
+      if (dualScreenPlayer.type === PlayerType.VIDEO) {
+        // @ts-ignore
+        dualScreenPlayer.player.updateThumbnailKs(newKs, false);
+      }
+    });
   }
 
   private _changeQuality = (label: string) => {
