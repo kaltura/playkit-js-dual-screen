@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.2.12 (2026-03-26)
+
+
+### Bug Fixes
+
+* **FEC-14903:** Player v7| add KS in runtime using API doesnt work on dual screen entreis on the secodnrey thumbnail ([#185](https://github.com/kaltura/playkit-js-dual-screen/issues/185)) ([e721c90](https://github.com/kaltura/playkit-js-dual-screen/commit/e721c90)), closes [kaltura/kaltura-player-js#1188](https://github.com/kaltura/playkit-js-dual-screen/issues/1188) [kaltura/playkit-js#865](https://github.com/kaltura/playkit-js-dual-screen/issues/865)
+
+
+
 ### 3.2.11 (2025-12-18)
 
 
