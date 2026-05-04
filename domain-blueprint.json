@@ -1,0 +1,249 @@
+{
+  "repositoryName": "playkit-js-dual-screen",
+  "version": "1.0.0",
+  "lastUpdated": "2026-05-04",
+
+  "coreResponsibility": {
+    "summary": "A Kaltura Player plugin that enables dual-screen video playback, allowing simultaneous display of multiple video streams and/or presentation slides in configurable layouts (PiP, Side-by-Side, Single Media).",
+    "type": "plugin",
+    "category": "UI/Playback Extension"
+  },
+
+  "domainAndLogicOwnership": {
+    "featureOwnership": [
+      "Dual-screen/multi-screen video playback coordination",
+      "Picture-in-Picture (PiP) layout with drag-and-snap positioning",
+      "Side-by-Side (SbS) video layout",
+      "Single Media view with minimized secondary player",
+      "Video synchronization between primary and secondary players",
+      "Slide/presentation image synchronization with cue points",
+      "Image player for displaying presentation slides",
+      "Layout switching animations (fade, scale)",
+      "Responsive layout management based on player size",
+      "External layout control via Kaltura Webcast Studio cue points",
+      "Multi-screen player selection UI"
+    ],
+    "dataHandling": [
+      {
+        "name": "DualScreenConfig",
+        "description": "Plugin configuration for layout, position, child player size, and aspect ratio"
+      },
+      {
+        "name": "Layout State",
+        "description": "Current dual-screen layout mode (PIP, PIPInverse, SideBySide, SideBySideInverse, SingleMedia, SingleMediaInverse, Hidden)"
+      },
+      {
+        "name": "DualScreenPlayer",
+        "description": "Player instances array tracking video/image players and their container assignments (primary, secondary, none)"
+      },
+      {
+        "name": "VideoSyncManager",
+        "description": "Manages playback rate adjustment and seeking to keep secondary video synchronized with primary"
+      },
+      {
+        "name": "ImageSyncManager",
+        "description": "Manages slide image display based on timed cue points from kalturaCuepoints service"
+      },
+      {
+        "name": "SlideItem",
+        "description": "Slide image metadata including dimensions, loading state, and portrait orientation"
+      },
+      {
+        "name": "PiP Position",
+        "description": "Current position of PiP child player (bottom-left, bottom-right, top-left, top-right)"
+      },
+      {
+        "name": "ExternalLayout",
+        "description": "Layout commands received from external sources like Kaltura Webcast Studio"
+      }
+    ]
+  },
+
+  "integrationPoints": {
+    "upstream": [
+      {
+        "name": "@playkit-js/kaltura-player-js",
+        "relationship": "peer dependency",
+        "description": "Core Kaltura Player providing BasePlugin class, event system, and player API"
+      },
+      {
+        "name": "playkit-kaltura-cuepoints",
+        "relationship": "plugin dependency",
+        "description": "Provides timed metadata for slides and view-change cue points"
+      },
+      {
+        "name": "playkit-timeline",
+        "relationship": "plugin dependency",
+        "description": "Timeline service for thumbnail info integration"
+      },
+      {
+        "name": "@playkit-js/playkit-js-ui",
+        "relationship": "dependency",
+        "description": "UI components and preact framework for rendering"
+      },
+      {
+        "name": "@playkit-js/common",
+        "relationship": "dependency",
+        "description": "Shared utilities and accessibility wrappers"
+      },
+      {
+        "name": "Kaltura BE API",
+        "relationship": "data source",
+        "description": "Provides secondary media entries via baseEntry.list API with parentEntryIdEqual filter"
+      }
+    ],
+    "downstream": [
+      {
+        "name": "Kaltura Player V7",
+        "relationship": "consumer",
+        "description": "Main player application that loads and configures this plugin"
+      },
+      {
+        "name": "Kaltura Webcast Studio",
+        "relationship": "integration",
+        "description": "Sends view-change cue points to control dual-screen layout externally"
+      }
+    ],
+    "externalAPIs": [
+      {
+        "name": "Kaltura baseEntry.list API",
+        "description": "Used by SecondaryMediaLoader to fetch child entries for multi-camera/dual-screen content"
+      },
+      {
+        "name": "kalturaCuepoints service",
+        "description": "Player service providing slide cue points (THUMB type, SLIDE subtype) and view-change cue points (CODE type)"
+      },
+      {
+        "name": "timeline service",
+        "description": "Player service for registering dual-screen thumbnail provider"
+      },
+      {
+        "name": "kava plugin",
+        "description": "Analytics plugin whose config is cloned for secondary players"
+      },
+      {
+        "name": "kaltura-live plugin",
+        "description": "Live streaming plugin whose config is cloned for secondary players"
+      }
+    ]
+  },
+
+  "technicalStack": {
+    "primaryLanguages": ["TypeScript", "TSX/Preact"],
+    "frameworks": ["Preact (via @playkit-js/playkit-js-ui)"],
+    "buildTools": ["Webpack", "TypeScript Compiler"],
+    "testingTools": ["Cypress (E2E)"],
+    "styling": ["SCSS"],
+    "entryPoints": [
+      {
+        "file": "src/index.ts",
+        "description": "Plugin registration entry point - registers 'dualscreen' plugin with Kaltura Player"
+      },
+      {
+        "file": "src/dualscreen.tsx",
+        "description": "Main plugin class (DualScreen) extending BasePlugin - core logic for layout management, player synchronization, and UI components"
+      },
+      {
+        "file": "src/video-sync-manager.ts",
+        "description": "Video synchronization logic between primary and secondary video players"
+      },
+      {
+        "file": "src/image-sync-manager.ts",
+        "description": "Slide image synchronization logic based on timed cue points"
+      },
+      {
+        "file": "src/image-player/image-player.tsx",
+        "description": "Image player class for displaying and preloading presentation slides"
+      },
+      {
+        "file": "src/providers/secondary-media-loader.ts",
+        "description": "Provider loader for fetching secondary media entries from Kaltura BE"
+      }
+    ],
+    "outputArtifact": "dist/playkit-dual-screen.js"
+  },
+
+  "triageKeywords": [
+    "dual-screen",
+    "dual screen",
+    "dualscreen",
+    "dual video",
+    "picture-in-picture",
+    "PiP layout",
+    "side-by-side",
+    "SbS layout",
+    "secondary player",
+    "secondary video",
+    "video sync",
+    "video synchronization",
+    "playback rate sync",
+    "slide sync",
+    "presentation slides",
+    "image player",
+    "multiscreen",
+    "multi-camera",
+    "child entry",
+    "parent entry",
+    "drag and snap",
+    "pip position",
+    "layout switch",
+    "webcast studio",
+    "view-change cue point",
+    "CHANGE_LAYOUT event",
+    "dualscreen_change_layout",
+    "dualscreen_side_displayed",
+    "secondary media loader",
+    "childSizePercentage",
+    "PIPInverse",
+    "SideBySideInverse",
+    "SingleMedia layout"
+  ],
+
+  "errorPatterns": [
+    "secondary player got error",
+    "kalturaCuepoints service is not registered",
+    "SecondaryMediaLoader does not exist",
+    "child media not found",
+    "synchDelay",
+    "seekSecondaryPlayer",
+    "unrecognized layout"
+  ],
+
+  "configurationOptions": {
+    "pluginName": "dualscreen",
+    "options": [
+      {
+        "name": "layout",
+        "type": "string",
+        "default": "PIP",
+        "values": ["PIP", "PIPInverse", "SingleMedia", "SingleMediaInverse", "SideBySide", "SideBySideInverse"]
+      },
+      {
+        "name": "position",
+        "type": "string",
+        "default": "bottom-right",
+        "values": ["bottom-left", "bottom-right", "top-left", "top-right"]
+      },
+      {
+        "name": "childSizePercentage",
+        "type": "number",
+        "default": 30
+      },
+      {
+        "name": "childAspectRatio",
+        "type": "object",
+        "default": { "width": 16, "height": 9 }
+      },
+      {
+        "name": "slidesPreloadEnabled",
+        "type": "boolean",
+        "default": true
+      },
+      {
+        "name": "removePlayerSettings",
+        "type": "boolean",
+        "default": false
+      }
+    ]
+  }
+}
