@@ -50,6 +50,7 @@ export class SideBySide extends Component<SideBySideComponentProps> {
     const videoElement = this.props.player.getVideoElement();
     videoElement.tabIndex = -1;
     this.ref.current.prepend(videoElement);
+    videoElement.removeAttribute('disablePictureInPicture');
   }
 
   private _renderHoverButton() {
