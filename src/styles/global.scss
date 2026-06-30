@@ -16,4 +16,7 @@
   :global(.playkit-picture-in-picture-overlay) {
     visibility: hidden;
   }
+  :global(.playkit-bumper-container) {
+    z-index: 1;
+  }
 }
