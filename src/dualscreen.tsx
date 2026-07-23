@@ -848,9 +848,6 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   }
 
   destroy(): void {
-    if (this._originalVideoElementParent) {
-      this._originalVideoElementParent.prepend(this.player.getVideoElement());
-    }
     this.eventManager.destroy();
   }
 
