@@ -197,11 +197,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   };
 
   private _addBindings(userInteraction = false) {
+    this.eventManager.listen(this.player, EventType.CHANGE_SOURCE_ENDED, () => {
+      this._originalVideoElementParent = this.player.getVideoElement().parentElement!;
+    });
     this.eventManager.listen(this.player, EventType.PLAYBACK_ENDED, () => {
       this._playbackEnded = true;
-    });
-    this.eventManager.listenOnce(this.player, EventType.FIRST_PLAY, () => {
-      this._originalVideoElementParent = this.player.getVideoElement().parentElement!;
     });
     this.eventManager.listen(this.player, EventType.PLAY, () => {
       if (this._playbackEnded) {
@@ -471,10 +471,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this.updateLayout(Layout.Hidden, userInteraction);
     // @ts-ignore
     dispatch(shell.actions.removePlayerClass(HAS_DUAL_SCREEN_PLUGIN_OVERLAY));
-    this._removeActives();
     if (this._originalVideoElementParent) {
       this._originalVideoElementParent.prepend(this.player.getVideoElement());
     }
+    this._removeActives();
   };
 
   private _switchToPIP = ({animation = Animations.None, focusOnButton, force}: LayoutChangeProps = {}, userInteraction = false) => {
@@ -848,6 +848,9 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   }
 
   destroy(): void {
+    if (this._originalVideoElementParent) {
+      this._originalVideoElementParent.prepend(this.player.getVideoElement());
+    }
     this.eventManager.destroy();
   }
 
