@@ -199,3 +199,4 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
 
 Plugin dependencies:<br/>
 <a href="https://github.com/kaltura/playkit-js-kaltura-cuepoints">Cue Points</a><br/>
+
