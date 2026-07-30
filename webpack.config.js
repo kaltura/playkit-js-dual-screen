@@ -21,6 +21,7 @@ module.exports = {
     path: __dirname + '/dist',
     filename: '[name].js',
     library: ['KalturaPlayer', 'plugins', 'dualscreen'],
+    libraryTarget: 'window',
     devtoolModuleFilenameTemplate: './dualscreen/[resource-path]'
   },
   devtool: 'source-map',
