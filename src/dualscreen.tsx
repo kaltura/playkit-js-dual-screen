@@ -69,7 +69,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     },
     position: Position.BottomRight,
     slidesPreloadEnabled: true,
-    removePlayerSettings: false
+    removePlayerSettings: false,
+    plugins: {},
   };
 
   constructor(name: string, player: KalturaPlayer, config: DualScreenConfig) {
@@ -829,7 +830,8 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         },
         'kava':{
           ...filteredConfig
-        }
+        },
+        ...this.config.plugins // dual-screen-only plugins, never touch the main player
       }
     };
     const secondaryPlayer = (window as any).KalturaPlayer.setup(secondaryPlayerConfig);
