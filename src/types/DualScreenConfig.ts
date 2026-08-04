@@ -1,4 +1,5 @@
 import {Layout, Position} from '../enums';
+import {PluginsConfig} from './PluginsConfig';
 
 export interface DualScreenConfig {
   layout: Layout;
@@ -8,6 +9,7 @@ export interface DualScreenConfig {
     width: number;
     height: number;
   };
+  plugins: PluginsConfig;
   slidesPreloadEnabled: boolean;
   removePlayerSettings: boolean;
 }
