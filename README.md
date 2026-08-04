@@ -128,7 +128,8 @@ Defines the configuration of the dual screen. Except `childSizePercentage`, the 
   childAspectRatio?: { // optional
     width: number,
     height: number
-  }
+  },
+  plugins: {...} // optional
 }
 ```
 
