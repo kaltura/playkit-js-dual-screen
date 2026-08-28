@@ -385,7 +385,7 @@ describe('Dual-Screen plugin', () => {
           slide: undefined
         };
         const dualScreenService = kalturaPlayer.getService('dualScreen');
-        cy.get('[data-testid="dualscreen_pipChildren"]').then(() => {
+        cy.get('[data-testid="dualscreen_pipChildren"]').should(() => {
           const thumbs = dualScreenService.getDualScreenThumbs(1);
           expect(Array.isArray(thumbs)).to.be.true;
           thumbs.map((thumbInfo: any) => {
