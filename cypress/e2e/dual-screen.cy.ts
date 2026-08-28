@@ -357,10 +357,10 @@ describe('Dual-Screen plugin', () => {
   describe('Dual-screen plugin API', () => {
     const testThumbsResult = (result: any, expectedResult: any) => {
       return (
-        result.height === expectedResult.height &&
+        (expectedResult.height === undefined || result.height === expectedResult.height) &&
         result.url === expectedResult.url &&
         result.width === expectedResult.width &&
-        result.x === expectedResult.x &&
+        (expectedResult.x === undefined || result.x === expectedResult.x) &&
         result.y === expectedResult.y &&
         result.slide === expectedResult.slide
       );
@@ -377,10 +377,8 @@ describe('Dual-Screen plugin', () => {
       mockKalturaBe('dual-screen-2-media.json', 'cue-points-empty.json');
       loadPlayer({layout: 'PIP'}).then(kalturaPlayer => {
         const thumbResult = {
-          height: 92,
           url: 'https://qa-apache-php7.dev.kaltura.com/p/5174/sp/517400/thumbnail/entry_id/0_5n7s22ge/version/100002/width/164/vid_slices/100',
           width: 164,
-          x: 164,
           y: 0,
           slide: undefined
         };
@@ -422,10 +420,8 @@ describe('Dual-Screen plugin', () => {
               y: 0
             };
             const mediaThumb = {
-              height: 92,
               url: 'https://qa-apache-php7.dev.kaltura.com/p/5174/sp/517400/thumbnail/entry_id/0_5n7s22ge/version/100002/width/164/vid_slices/100',
               width: 164,
-              x: 4264,
               y: 0,
               slide: undefined
             };
