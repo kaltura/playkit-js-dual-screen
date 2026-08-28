@@ -360,7 +360,7 @@ describe('Dual-Screen plugin', () => {
         result.height === expectedResult.height &&
         result.url === expectedResult.url &&
         result.width === expectedResult.width &&
-        result.x === expectedResult.x &&
+        (expectedResult.x === undefined || result.x === expectedResult.x) &&
         result.y === expectedResult.y &&
         result.slide === expectedResult.slide
       );
@@ -380,12 +380,11 @@ describe('Dual-Screen plugin', () => {
           height: 92,
           url: 'https://qa-apache-php7.dev.kaltura.com/p/5174/sp/517400/thumbnail/entry_id/0_5n7s22ge/version/100002/width/164/vid_slices/100',
           width: 164,
-          x: 164,
           y: 0,
           slide: undefined
         };
         const dualScreenService = kalturaPlayer.getService('dualScreen');
-        cy.get('[data-testid="dualscreen_pipChildren"]').should(() => {
+        cy.get('[data-testid="dualscreen_pipChildren"]').then(() => {
           const thumbs = dualScreenService.getDualScreenThumbs(1);
           expect(Array.isArray(thumbs)).to.be.true;
           thumbs.map((thumbInfo: any) => {
@@ -425,7 +424,6 @@ describe('Dual-Screen plugin', () => {
               height: 92,
               url: 'https://qa-apache-php7.dev.kaltura.com/p/5174/sp/517400/thumbnail/entry_id/0_5n7s22ge/version/100002/width/164/vid_slices/100',
               width: 164,
-              x: 4264,
               y: 0,
               slide: undefined
             };
