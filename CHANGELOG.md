@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 3.2.130 (2026-08-28)
+
+
+
 ### [3.2.129](https://github.com/kaltura/playkit-js-dual-screen/compare/v3.2.128...v3.2.129) (2026-08-04)
 
 
