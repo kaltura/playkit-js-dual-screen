@@ -652,7 +652,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     }
 
     let originalHiddenLayout = false;
-    if (this._layout === Layout.Hidden && !this._externalLayout) {
+    // For VOD recordings of live sessions, cue points baked into the recording may set
+    // _externalLayout before the first slide appears (e.g. at time=0), which would bypass
+    // the player's configured default layout. Only honour a pre-existing external layout
+    // during a live stream; for VOD always start from the configured default.
+    if (this._layout === Layout.Hidden && (!this._externalLayout || !this.player.isLive())) {
       originalHiddenLayout = true;
       this._setDefaultMode(userInteraction);
     }
