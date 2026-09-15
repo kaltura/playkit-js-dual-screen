@@ -693,6 +693,12 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       return;
     }
     this._externalLayout = viewChange;
+    // For VOD recordings the layout is still Hidden when the first cue point fires
+    // (the slide hasn't appeared yet). Don't apply the baked-in layout now;
+    // _onActiveSlideChanged will call _setDefaultMode to honour the configured layout.
+    if (!this.player.isLive() && this._layout === Layout.Hidden) {
+      return;
+    }
     this._applyExternalLayout();
   };
 
