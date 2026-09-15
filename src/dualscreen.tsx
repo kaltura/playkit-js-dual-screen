@@ -55,6 +55,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   private _dualScreenPlayers: Array<DualScreenPlayer> = [];
   private _currentMultiscreenPlayers: MultiscreenPlayer[] = [];
   private _firstPlayingFired:boolean = false
+  private _firstSlideActivated = false;
   /**
    * The default configuration of the plugin.
    * @type {VisibilityConfigObject}
@@ -160,6 +161,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   }
 
   reset(): void {
+    this._firstSlideActivated = false;
     this._setDefaultMode(false);
     this.updateLayout(Layout.Hidden, false);
     this._dualScreenPlayers.forEach(dualScreenPlayer => {
@@ -212,6 +214,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
         if (secondaryPlayer.type === PlayerType.IMAGE && !(secondaryPlayer.player as ImagePlayer).active) {
           this._switchToHidden(userInteraction);
         } else {
+          this._firstSlideActivated = false;
           this._setDefaultMode(false);
           this._setMode(undefined, userInteraction);
         }
@@ -418,14 +421,16 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     }
   };
 
-  private _setDefaultMode = (userInteraction = false) => {
+  private _setDefaultMode = (userInteraction = false, keepExternalLayout = false) => {
     this._switchToHidden(userInteraction);
     const configLayouts = [Layout.PIP, Layout.PIPInverse, Layout.SideBySide, Layout.SideBySideInverse, Layout.SingleMedia, Layout.SingleMediaInverse];
     const layout = configLayouts.includes(this.config.layout) ? this.config.layout : Layout.Hidden;
     this.updateLayout(layout, userInteraction);
     this._pipPosition = this.config.position;
     this._pipPortraitMode = false;
-    this._externalLayout = null;
+    if (!keepExternalLayout) {
+      this._externalLayout = null;
+    }
   };
 
   private _addActives(...removeActives: Array<Function>) {
@@ -652,14 +657,24 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     }
 
     let originalHiddenLayout = false;
-    if (this._layout === Layout.Hidden && !this._externalLayout) {
+    // For VOD recordings of live sessions, cue points baked into the recording may set
+    // _externalLayout before the first slide appears (e.g. at time=0), which would bypass
+    // the player's configured default layout. Only honour a pre-existing external layout
+    // during a live stream, or after first-slide initialization (where mid-recording cue
+    // points intentionally change layout). On VOD before the first slide, pass
+    // keepExternalLayout=true so that the same cue point re-firing via TIMED_METADATA_CHANGE
+    // is a no-op (the early-return in _onSlideViewChanged kicks in) after we apply the
+    // configured layout.
+    if (this._layout === Layout.Hidden && (!this._externalLayout || (!this.player.isLive() && !this._firstSlideActivated))) {
       originalHiddenLayout = true;
-      this._setDefaultMode(userInteraction);
+      this._setDefaultMode(userInteraction, !this.player.isLive());
     }
 
     if (this._layout === Layout.Hidden && this._externalLayout) {
       this._applyExternalLayout(userInteraction);
     }
+
+    this._firstSlideActivated = true;
 
     let portraitModeChanged = false;
     if (slideItem.portrait !== this._pipPortraitMode) {
@@ -689,6 +704,13 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       return;
     }
     this._externalLayout = viewChange;
+    // For VOD recordings, skip applying external layout until the first slide has been
+    // shown and _setDefaultMode has applied the configured layout. This prevents baked-in
+    // time=0 cue points from overriding the configured layout before initialization.
+    // After first slide activation, mid-recording cue points are applied normally.
+    if (!this.player.isLive() && !this._firstSlideActivated) {
+      return;
+    }
     this._applyExternalLayout();
   };
 
