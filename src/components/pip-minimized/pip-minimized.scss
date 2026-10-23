@@ -15,9 +15,9 @@ $show-container-gap: 5px;
     width: auto;
   }
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
-  transform: translateY(-100%);
+  pointer-events: auto;
   animation: fading $animation-duration linear;
 
   .childPlayer {
