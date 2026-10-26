@@ -576,7 +576,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       this.player.ui.addComponent({
         label: 'kaltura-dual-screen-pip-minimized',
         presets: PRESETS,
-        container: ReservedPresetAreas.BottomBar,
+        container: ReservedPresetAreas.InteractiveArea,
         get: () => (
           <ResponsiveManager onDefaultSize={() => {
             this._setMode(undefined, userInteraction);
