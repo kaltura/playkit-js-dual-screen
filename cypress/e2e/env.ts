@@ -13,9 +13,9 @@ export const getPlayer = (id = 'player-placeholder') => {
   return cy.window().then($win => $win.KalturaPlayer.getPlayers()[id]);
 };
 
-export const createPlayer = (win: any, puginConf = {}, playbackConf = {}) => {
+export const createPlayer = (win: any, puginConf = {}, playbackConf = {}, targetId = 'player-placeholder') => {
   return win.KalturaPlayer.setup({
-    targetId: 'player-placeholder',
+    targetId,
     provider: {
       partnerId: -1,
       env: {

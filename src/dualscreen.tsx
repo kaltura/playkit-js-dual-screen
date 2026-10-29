@@ -186,6 +186,14 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this._firstPlayingFired = false;
   }
 
+  private _isPlayerAttached(player: any): boolean {
+    try {
+      return !!player?.getVideoElement()?.isConnected;
+    } catch (e) {
+      return false;
+    }
+  }
+
   private _removeSecondaryPlaceholder(id: string) {
     const secondaryPlaceholderEl = document.getElementById(id);
     if (secondaryPlaceholderEl) {
@@ -806,8 +814,11 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
   private _createSecondaryPlayer(entryId: string): KalturaPlayer {
     const targetId = `secondaryPlaceholder-${entryId}`;
-    (document.getElementById(targetId) as any)?.secondaryPlayer?.destroy();
-    this._removeSecondaryPlaceholder(targetId);
+    const previousPlaceholder = document.getElementById(targetId) as any;
+    if (previousPlaceholder && !this._isPlayerAttached(previousPlaceholder.mainPlayer)) {
+      previousPlaceholder.secondaryPlayer?.destroy();
+      this._removeSecondaryPlaceholder(targetId);
+    }
     let secondaryPlaceholder = document.createElement('div');
     secondaryPlaceholder.setAttribute('id', targetId);
     secondaryPlaceholder.style.width = '240px';
@@ -844,6 +855,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     };
     const secondaryPlayer = (window as any).KalturaPlayer.setup(secondaryPlayerConfig);
     (secondaryPlaceholder as any).secondaryPlayer = secondaryPlayer;
+    (secondaryPlaceholder as any).mainPlayer = this.player;
     // @ts-ignore
     secondaryPlayer.loadMedia({entryId, ks: this.player.config.session.isAnonymous ? '' : this.player.config.session.ks});
     return secondaryPlayer;
