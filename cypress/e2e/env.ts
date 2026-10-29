@@ -13,27 +13,33 @@ export const getPlayer = (id = 'player-placeholder') => {
   return cy.window().then($win => $win.KalturaPlayer.getPlayers()[id]);
 };
 
+export const createPlayer = (win: any, puginConf = {}, playbackConf = {}, targetId = 'player-placeholder') => {
+  return win.KalturaPlayer.setup({
+    targetId,
+    provider: {
+      partnerId: -1,
+      env: {
+        cdnUrl: 'http://mock-cdn',
+        serviceUrl: 'http://mock-api'
+      }
+    },
+    plugins: {
+      dualscreen: puginConf,
+      kalturaCuepoints: {}
+    },
+    playback: {muted: true, autoplay: true, ...playbackConf}
+  });
+};
+
+export const setupPlayer = (win: any, puginConf = {}, playbackConf = {}) => {
+  return createPlayer(win, puginConf, playbackConf).loadMedia({entryId: '0_wifqaipd'});
+};
+
 export const preparePage = (puginConf = {}, playbackConf = {}) => {
   cy.visit('index.html');
   return cy.window().then(win => {
     try {
-      // @ts-ignore
-      var kalturaPlayer = win.KalturaPlayer.setup({
-        targetId: 'player-placeholder',
-        provider: {
-          partnerId: -1,
-          env: {
-            cdnUrl: 'http://mock-cdn',
-            serviceUrl: 'http://mock-api'
-          }
-        },
-        plugins: {
-          dualscreen: puginConf,
-          kalturaCuepoints: {}
-        },
-        playback: {muted: true, autoplay: true, ...playbackConf}
-      });
-      return kalturaPlayer.loadMedia({entryId: '0_wifqaipd'});
+      return setupPlayer(win, puginConf, playbackConf);
     } catch (e: any) {
       return Promise.reject(e.message);
     }
