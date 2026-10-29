@@ -540,6 +540,23 @@ describe('Dual-Screen plugin', () => {
       });
     });
 
+    it('should finish cleaning up when destroying a secondary player throws', () => {
+      mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
+      loadPlayer({layout: 'PIP'}).then(mainPlayer => {
+        cy.get('[data-testid="dualscreen_pipChildren"]').should('exist');
+        cy.window().then(win => {
+          const dualScreenPlugin = mainPlayer.plugins.dualscreen as any;
+          // @ts-ignore
+          cy.stub(win.KalturaPlayer.getPlayers()[PLACEHOLDER_ID], 'destroy').throws(new Error('destroy failed'));
+
+          expect(() => mainPlayer.destroy()).to.not.throw();
+
+          expect(win.document.getElementById(PLACEHOLDER_ID), 'placeholder is removed').to.not.exist;
+          expect(dualScreenPlugin._dualScreenPlayers.length, 'players list is cleared').to.equal(0);
+        });
+      });
+    });
+
     it('should not destroy the secondary player of another main player that is still active', () => {
       mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
       let secondaryMediaRequests = 0;
@@ -576,6 +593,7 @@ describe('Dual-Screen plugin', () => {
         cy.window().then(win => {
           expect(firstSecondaryPlayer.destroy, 'first secondary player is not destroyed').to.not.have.been.called;
           expect((win.document.getElementById(PLACEHOLDER_ID) as any).secondaryPlayer, 'first placeholder is kept').to.equal(firstSecondaryPlayer);
+          expect(win.document.querySelectorAll(`[id="${PLACEHOLDER_ID}"]`).length, 'no extra placeholder is added').to.equal(1);
           expect(firstMainPlayer.getService('dualScreen').getDualScreenPlayers('video').length, 'first main and secondary video players').to.equal(2);
         });
       });

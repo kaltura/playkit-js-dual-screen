@@ -163,16 +163,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   reset(): void {
     this._setDefaultMode(false);
     this.updateLayout(Layout.Hidden, false);
-    this._dualScreenPlayers.forEach(dualScreenPlayer => {
-      if (dualScreenPlayer.id !== MAIN_PLAYER_ID) {
-        const player = dualScreenPlayer.player as any;
-        const targetId = player.config?.targetId;
-        player.destroy();
-        if (dualScreenPlayer.type === PlayerType.VIDEO) {
-          this._removeSecondaryPlaceholder(targetId);
-        }
-      }
-    });
+    this._destroySecondaryPlayers();
     this._imageSyncManager?.reset();
     this._imageSyncManager = undefined;
     this._readyPromise = this._makeReadyPromise();
@@ -186,12 +177,30 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this._firstPlayingFired = false;
   }
 
+  // a destroyed main player has no state to query, but its video element is detached from the page
   private _isPlayerAttached(player: any): boolean {
     try {
       return !!player?.getVideoElement()?.isConnected;
     } catch (e) {
       return false;
     }
+  }
+
+  private _destroySecondaryPlayers() {
+    this._dualScreenPlayers.forEach(dualScreenPlayer => {
+      if (dualScreenPlayer.id !== MAIN_PLAYER_ID) {
+        const player = dualScreenPlayer.player as any;
+        const targetId = player.config?.targetId;
+        try {
+          player.destroy();
+        } catch (e) {
+          this.logger.error('failed to destroy secondary player', e);
+        }
+        if (dualScreenPlayer.type === PlayerType.VIDEO) {
+          this._removeSecondaryPlaceholder(targetId);
+        }
+      }
+    });
   }
 
   private _removeSecondaryPlaceholder(id: string) {
@@ -815,7 +824,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   private _createSecondaryPlayer(entryId: string): KalturaPlayer {
     const targetId = `secondaryPlaceholder-${entryId}`;
     const previousPlaceholder = document.getElementById(targetId) as any;
-    if (previousPlaceholder && !this._isPlayerAttached(previousPlaceholder.mainPlayer)) {
+    if (previousPlaceholder) {
+      if (this._isPlayerAttached(previousPlaceholder.mainPlayer)) {
+        throw new Error(`secondary placeholder ${targetId} is used by another active player`);
+      }
       previousPlaceholder.secondaryPlayer?.destroy();
       this._removeSecondaryPlaceholder(targetId);
     }
@@ -872,16 +884,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
   destroy(): void {
     this._destroyed = true;
-    this._dualScreenPlayers.forEach(dualScreenPlayer => {
-      if (dualScreenPlayer.id !== MAIN_PLAYER_ID) {
-        const player = dualScreenPlayer.player as any;
-        const targetId = player.config?.targetId;
-        player.destroy();
-        if (dualScreenPlayer.type === PlayerType.VIDEO) {
-          this._removeSecondaryPlaceholder(targetId);
-        }
-      }
-    });
+    this._destroySecondaryPlayers();
     this._dualScreenPlayers = [];
     this.eventManager.destroy();
   }
