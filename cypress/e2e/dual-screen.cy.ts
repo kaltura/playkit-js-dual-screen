@@ -1,6 +1,6 @@
 // @ts-ignore
 import {core} from '@playkit-js/kaltura-player-js';
-import {mockKalturaBe, loadPlayer, setupPlayer, MANIFEST, MANIFEST_SAFARI, getPlayer} from './env';
+import {mockKalturaBe, loadPlayer, createPlayer, setupPlayer, MANIFEST, MANIFEST_SAFARI, getPlayer} from './env';
 
 const {EventType, FakeEvent, Error} = core;
 
@@ -476,18 +476,67 @@ describe('Dual-Screen plugin', () => {
           const mainPlayer = win.KalturaPlayer.getPlayers()['player-placeholder'];
           const dualScreenPlugin = mainPlayer.plugins.dualscreen;
           dualScreenPlugin.destroy = () => {};
+          // @ts-ignore
+          const staleSecondaryPlayer = win.KalturaPlayer.getPlayers()[PLACEHOLDER_ID];
+          cy.spy(staleSecondaryPlayer, 'destroy').as('staleSecondaryPlayerDestroy');
           mainPlayer.destroy();
           expect(win.document.getElementById(PLACEHOLDER_ID), 'stale placeholder is left behind').to.exist;
+          expect(staleSecondaryPlayer.destroy, 'stale secondary player is not destroyed yet').to.not.have.been.called;
         });
 
         cy.window().then(win => setupPlayer(win, {layout: 'PIP'}));
         cy.get('[data-testid="dualscreen_pipChildren"]').should('exist');
+        cy.get('@staleSecondaryPlayerDestroy').should('have.been.calledOnce');
         cy.window().then(win => {
           // @ts-ignore
           const recreatedPlayer = win.KalturaPlayer.getPlayers()['player-placeholder'];
           expect(recreatedPlayer.getService('dualScreen').getDualScreenPlayers('video').length, 'main and secondary video players').to.equal(2);
           expect(win.document.querySelectorAll(`[id="${PLACEHOLDER_ID}"]`).length, 'single placeholder').to.equal(1);
         });
+      });
+    });
+
+    it('should not create the secondary player when the secondary media response arrives after destroy', () => {
+      mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
+      let secondaryMediaRequested = false;
+      let releaseSecondaryMedia = () => {};
+      const secondaryMediaReleased = new Promise<void>(resolve => {
+        releaseSecondaryMedia = resolve;
+      });
+      // registered after mockKalturaBe so it takes precedence; holds the secondary media response until released
+      cy.intercept('http://mock-api/service/multirequest', req => {
+        if (req.body[2]?.filter?.parentEntryIdEqual) {
+          secondaryMediaRequested = true;
+          return secondaryMediaReleased.then(() => req.reply({fixture: 'dual-screen-1-media.json'}));
+        }
+      });
+      cy.visit('index.html');
+      let mainPlayer: any;
+      const pendingRequests: Promise<unknown>[] = [];
+      cy.window().then(win => {
+        mainPlayer = createPlayer(win, {layout: 'PIP'});
+        const doRequest = mainPlayer.provider.doRequest.bind(mainPlayer.provider);
+        mainPlayer.provider.doRequest = (...args: any[]) => {
+          const request = doRequest(...args);
+          pendingRequests.push(request);
+          return request;
+        };
+        return mainPlayer.loadMedia({entryId: '0_wifqaipd'});
+      });
+      cy.wrap(null).should(() => {
+        expect(secondaryMediaRequested, 'secondary media requested').to.be.true;
+      });
+      cy.then(() => {
+        mainPlayer.destroy();
+        releaseSecondaryMedia();
+        // the plugin attached its response handler to each request before this code did,
+        // so once the requests settle the plugin has already handled the response
+        return Promise.all(pendingRequests);
+      });
+      cy.window().then(win => {
+        expect(win.document.getElementById(PLACEHOLDER_ID), 'no placeholder created after destroy').to.not.exist;
+        // @ts-ignore
+        expect(win.KalturaPlayer.getPlayers()[PLACEHOLDER_ID], 'no secondary player created after destroy').to.not.exist;
       });
     });
   });

@@ -55,6 +55,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   private _dualScreenPlayers: Array<DualScreenPlayer> = [];
   private _currentMultiscreenPlayers: MultiscreenPlayer[] = [];
   private _firstPlayingFired:boolean = false
+  private _destroyed = false;
   /**
    * The default configuration of the plugin.
    * @type {VisibilityConfigObject}
@@ -165,9 +166,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
     this._dualScreenPlayers.forEach(dualScreenPlayer => {
       if (dualScreenPlayer.id !== MAIN_PLAYER_ID) {
         const player = dualScreenPlayer.player as any;
+        const targetId = player.config?.targetId;
         player.destroy();
         if (dualScreenPlayer.type === PlayerType.VIDEO) {
-          this._removeSecondaryPlaceholder(player.config?.targetId);
+          this._removeSecondaryPlaceholder(targetId);
         }
       }
     });
@@ -752,6 +754,10 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       // @ts-ignore
       .doRequest([{loader: SecondaryMediaLoader, params: {parentEntryId: this.player.sources.id}}])
       .then((data: Map<string, any>) => {
+        if (this._destroyed) {
+          this._resolveReadyPromise();
+          return;
+        }
         if (data && data.has(SecondaryMediaLoader.id)) {
           const secondaryMediaLoader = data.get(SecondaryMediaLoader.id);
           const secondaryMedias = secondaryMediaLoader?.response?.entries || [];
@@ -800,6 +806,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
   private _createSecondaryPlayer(entryId: string): KalturaPlayer {
     const targetId = `secondaryPlaceholder-${entryId}`;
+    (document.getElementById(targetId) as any)?.secondaryPlayer?.destroy();
     this._removeSecondaryPlaceholder(targetId);
     let secondaryPlaceholder = document.createElement('div');
     secondaryPlaceholder.setAttribute('id', targetId);
@@ -836,6 +843,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
       }
     };
     const secondaryPlayer = (window as any).KalturaPlayer.setup(secondaryPlayerConfig);
+    (secondaryPlaceholder as any).secondaryPlayer = secondaryPlayer;
     // @ts-ignore
     secondaryPlayer.loadMedia({entryId, ks: this.player.config.session.isAnonymous ? '' : this.player.config.session.ks});
     return secondaryPlayer;
@@ -851,6 +859,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   }
 
   destroy(): void {
+    this._destroyed = true;
     this._dualScreenPlayers.forEach(dualScreenPlayer => {
       if (dualScreenPlayer.id !== MAIN_PLAYER_ID) {
         const player = dualScreenPlayer.player as any;

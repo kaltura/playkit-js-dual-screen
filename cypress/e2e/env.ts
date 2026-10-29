@@ -13,8 +13,8 @@ export const getPlayer = (id = 'player-placeholder') => {
   return cy.window().then($win => $win.KalturaPlayer.getPlayers()[id]);
 };
 
-export const setupPlayer = (win: any, puginConf = {}, playbackConf = {}) => {
-  const kalturaPlayer = win.KalturaPlayer.setup({
+export const createPlayer = (win: any, puginConf = {}, playbackConf = {}) => {
+  return win.KalturaPlayer.setup({
     targetId: 'player-placeholder',
     provider: {
       partnerId: -1,
@@ -29,7 +29,10 @@ export const setupPlayer = (win: any, puginConf = {}, playbackConf = {}) => {
     },
     playback: {muted: true, autoplay: true, ...playbackConf}
   });
-  return kalturaPlayer.loadMedia({entryId: '0_wifqaipd'});
+};
+
+export const setupPlayer = (win: any, puginConf = {}, playbackConf = {}) => {
+  return createPlayer(win, puginConf, playbackConf).loadMedia({entryId: '0_wifqaipd'});
 };
 
 export const preparePage = (puginConf = {}, playbackConf = {}) => {
