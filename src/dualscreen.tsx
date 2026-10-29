@@ -800,6 +800,7 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
 
   private _createSecondaryPlayer(entryId: string): KalturaPlayer {
     const targetId = `secondaryPlaceholder-${entryId}`;
+    this._removeSecondaryPlaceholder(targetId);
     let secondaryPlaceholder = document.createElement('div');
     secondaryPlaceholder.setAttribute('id', targetId);
     secondaryPlaceholder.style.width = '240px';
@@ -850,6 +851,17 @@ export class DualScreen extends BasePlugin<DualScreenConfig> implements IEngineD
   }
 
   destroy(): void {
+    this._dualScreenPlayers.forEach(dualScreenPlayer => {
+      if (dualScreenPlayer.id !== MAIN_PLAYER_ID) {
+        const player = dualScreenPlayer.player as any;
+        const targetId = player.config?.targetId;
+        player.destroy();
+        if (dualScreenPlayer.type === PlayerType.VIDEO) {
+          this._removeSecondaryPlaceholder(targetId);
+        }
+      }
+    });
+    this._dualScreenPlayers = [];
     this.eventManager.destroy();
   }
 
