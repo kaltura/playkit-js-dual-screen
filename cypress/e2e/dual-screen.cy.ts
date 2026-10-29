@@ -1,6 +1,6 @@
 // @ts-ignore
 import {core} from '@playkit-js/kaltura-player-js';
-import {mockKalturaBe, loadPlayer, MANIFEST, MANIFEST_SAFARI, getPlayer} from './env';
+import {mockKalturaBe, loadPlayer, setupPlayer, MANIFEST, MANIFEST_SAFARI, getPlayer} from './env';
 
 const {EventType, FakeEvent, Error} = core;
 
@@ -429,6 +429,65 @@ describe('Dual-Screen plugin', () => {
             expect(testThumbsResult(thumbs[0], mediaThumb)).to.be.true;
             expect(thumbs[1]).to.eql(slideThumb);
           });
+      });
+    });
+  });
+
+  describe('destroy and recreate on the same page', () => {
+    const SECONDARY_ENTRY_ID = '1_3vus9bhe';
+    const PLACEHOLDER_ID = `secondaryPlaceholder-${SECONDARY_ENTRY_ID}`;
+
+    it('should remove the secondary player and its placeholder on destroy and load the secondary stream again on recreate', () => {
+      mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
+      loadPlayer({layout: 'PIP'}).then(kalturaPlayer => {
+        cy.get('[data-testid="dualscreen_pipChildren"]').should('exist');
+        cy.window().then(win => {
+          // @ts-ignore
+          expect(win.KalturaPlayer.getPlayers()[PLACEHOLDER_ID], 'secondary player is registered').to.exist;
+          expect(win.document.getElementById(PLACEHOLDER_ID), 'placeholder exists').to.exist;
+
+          kalturaPlayer.destroy();
+
+          // @ts-ignore
+          expect(win.KalturaPlayer.getPlayers()[PLACEHOLDER_ID], 'secondary player is removed from the registry').to.not.exist;
+          expect(win.document.getElementById(PLACEHOLDER_ID), 'placeholder is removed').to.not.exist;
+        });
+        cy.get('[data-testid="dualscreen_pipChildren"]').should('not.exist');
+
+        cy.window().then(win => setupPlayer(win, {layout: 'PIP'}));
+        cy.get('[data-testid="dualscreen_pipChildren"]').should('exist');
+        cy.get('[data-testid="dualscreen_pipParent"]').should('exist');
+        cy.window().then(win => {
+          // @ts-ignore
+          const recreatedPlayer = win.KalturaPlayer.getPlayers()['player-placeholder'];
+          expect(recreatedPlayer.getService('dualScreen').getDualScreenPlayers('video').length, 'main and secondary video players').to.equal(2);
+          expect(win.document.querySelectorAll(`[id="${PLACEHOLDER_ID}"]`).length, 'single placeholder').to.equal(1);
+        });
+      });
+    });
+
+    it('should load the secondary stream again when the previous destroy did not reach the dual-screen plugin', () => {
+      mockKalturaBe('dual-screen-1-media.json', 'cue-points-empty.json');
+      loadPlayer({layout: 'PIP'}).then(() => {
+        cy.get('[data-testid="dualscreen_pipChildren"]').should('exist');
+        cy.window().then(win => {
+          // simulates a plugin that throws in destroy() before the dual-screen plugin is destroyed
+          // @ts-ignore
+          const mainPlayer = win.KalturaPlayer.getPlayers()['player-placeholder'];
+          const dualScreenPlugin = mainPlayer.plugins.dualscreen;
+          dualScreenPlugin.destroy = () => {};
+          mainPlayer.destroy();
+          expect(win.document.getElementById(PLACEHOLDER_ID), 'stale placeholder is left behind').to.exist;
+        });
+
+        cy.window().then(win => setupPlayer(win, {layout: 'PIP'}));
+        cy.get('[data-testid="dualscreen_pipChildren"]').should('exist');
+        cy.window().then(win => {
+          // @ts-ignore
+          const recreatedPlayer = win.KalturaPlayer.getPlayers()['player-placeholder'];
+          expect(recreatedPlayer.getService('dualScreen').getDualScreenPlayers('video').length, 'main and secondary video players').to.equal(2);
+          expect(win.document.querySelectorAll(`[id="${PLACEHOLDER_ID}"]`).length, 'single placeholder').to.equal(1);
+        });
       });
     });
   });
